@@ -1,4 +1,5 @@
 #include "application.h"
+#include <iostream>
 
 static Application* s_application = nullptr;
 
@@ -38,11 +39,17 @@ b8 Application::create()
 
 	glfwMakeContextCurrent(m_window);
 
+	if(glewInit() != GLEW_OK)
+	{
+		logOutput(LOG_LEVEL_FATAL, "Failed to link GLEW against OpenGL context!");
+	}
+
 	return true;
 }
 
 void Application::run()
 {
+	// main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
 		glfwPollEvents();
