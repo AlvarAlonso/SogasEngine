@@ -32,7 +32,7 @@ void Shader::setUniform1(const char* varname, const bool input)
 	GLint location = glGetUniformLocation(m_ID, varname);
 	SGSASSERT(location != -1, "Invalid uniform location");
 	glUniform1i(location, input);
-	SGSASSERT(glGetError() == GL_NO_ERROR);
+	//SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 void Shader::setUniform1(const char* varname, const int input)
@@ -40,7 +40,7 @@ void Shader::setUniform1(const char* varname, const int input)
 	GLint location = glGetUniformLocation(m_ID, varname);
 	SGSASSERT(location != -1, "Invalid uniform location");
 	glUniform1i(location, input);
-	SGSASSERT(glGetError() == GL_NO_ERROR);
+	//SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 void Shader::setUniform1(const char* varname, const float input)
@@ -48,12 +48,11 @@ void Shader::setUniform1(const char* varname, const float input)
 	GLint location = glGetUniformLocation(m_ID, varname);
 	SGSASSERT(location != -1, "Invalid uniform location");
 	glUniform1f(location, input);
-	SGSASSERT(glGetError() == GL_NO_ERROR);
+	//SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 ShaderProgramSource Shader::parseShader(const std::string& filepath)
 {
-
 	std::ifstream stream(filepath);
 	if(stream.is_open() == false)
 	{

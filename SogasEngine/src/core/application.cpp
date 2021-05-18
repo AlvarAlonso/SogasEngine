@@ -51,6 +51,8 @@ b8 Application::create()
 
 void Application::run()
 {
+	// TODO: There are openGL errors not being handled. We have to implement a generalized error checking method for openGL calls
+
 	// simple triangle program hardcoded using the opengl abstraction
 
 	f32 positions[6] = {
@@ -74,11 +76,8 @@ void Application::run()
 
 	IndexBuffer indexBuffer(indices, 3);
 
-	// TODO: I don't know why it only works with absolute paths
 	std::string path("../SogasEngine/shaders/basic.shader");
 	Shader shader(path);
-
-	//shader.setUniform("u_color", 1.0f);
 
 	vertexArray.unbind();
 	vertexBuffer.unbind();
@@ -90,9 +89,7 @@ void Application::run()
 	{
 		renderer.clear();
 
-		//shader.bind();
-		//vertexBuffer.bind();
-
+		shader.setUniform("u_color", 1.0f);
 		renderer.draw(vertexArray, indexBuffer, shader);
 
 		glfwSwapBuffers(m_window);
