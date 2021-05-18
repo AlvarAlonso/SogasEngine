@@ -75,8 +75,10 @@ void Application::run()
 	IndexBuffer indexBuffer(indices, 3);
 
 	// TODO: I don't know why it only works with absolute paths
-	std::string path("../../shaders/basic.shader");
+	std::string path("../SogasEngine/shaders/basic.shader");
 	Shader shader(path);
+
+	//shader.setUniform("u_color", 1.0f);
 
 	vertexArray.unbind();
 	vertexBuffer.unbind();
@@ -88,8 +90,8 @@ void Application::run()
 	{
 		renderer.clear();
 
-		shader.bind();
-		vertexBuffer.bind();
+		//shader.bind();
+		//vertexBuffer.bind();
 
 		renderer.draw(vertexArray, indexBuffer, shader);
 

@@ -1,5 +1,5 @@
 #include "shader.h"
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
+#include "core/assertions.h"
 
 #include <iostream>
 #include <fstream>
@@ -25,6 +25,30 @@ void Shader::bind() const
 void Shader::unbind() const
 {
 	glUseProgram(0);
+}
+
+void Shader::setUniform1(const char* varname, const bool input)
+{
+	GLint location = glGetUniformLocation(m_ID, varname);
+	SGSASSERT(location != -1, "Invalid uniform location");
+	glUniform1i(location, input);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
+}
+
+void Shader::setUniform1(const char* varname, const int input)
+{
+	GLint location = glGetUniformLocation(m_ID, varname);
+	SGSASSERT(location != -1, "Invalid uniform location");
+	glUniform1i(location, input);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
+}
+
+void Shader::setUniform1(const char* varname, const float input)
+{
+	GLint location = glGetUniformLocation(m_ID, varname);
+	SGSASSERT(location != -1, "Invalid uniform location");
+	glUniform1f(location, input);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 ShaderProgramSource Shader::parseShader(const std::string& filepath)
@@ -65,7 +89,7 @@ ShaderProgramSource Shader::parseShader(const std::string& filepath)
 	return { ss[0].str(), ss[1].str() };
 }
 
-bool Shader::compileShader(u32 type, const std::string& source)
+u32 Shader::compileShader(u32 type, const std::string& source)
 {
 	u32 id = glCreateShader(type);
 	// TODO: Solve the char to i8 issue

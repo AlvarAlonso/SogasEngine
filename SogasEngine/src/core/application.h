@@ -1,7 +1,7 @@
 #pragma once
 
 #include "logger.h"
-#include "../external//GLEW/glew-2.1.0/include/GL/glew.h"
+#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 #include "../external/GLFW/glfw3.h"
 
 class SGS Application
