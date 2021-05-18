@@ -2,8 +2,8 @@
 
 #include <vector>
 #include "defines.h"
-#include "../core/assertions.h"
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
+#include "core/assertions.h"
+#include "GLEW/glew-2.1.0/include/GL/glew.h"
 
 struct VertexBufferElement
 {
@@ -20,7 +20,7 @@ struct VertexBufferElement
 		case GL_UNSIGNED_BYTE: return 1;
 		}
 
-		SGSASSERT(false, "Wrong type size!");
+		SGSASSERT_MSG(false, "Just a false assertion!");
 		return 0;
 	}
 };

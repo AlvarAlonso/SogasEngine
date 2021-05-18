@@ -1,13 +1,9 @@
-#include <iostream>
-
 #include "application.h"
-#include "../renderer/renderer.h"
+
+#include "renderer/renderer.h"
+#include "logger.h"
 
 static Application* s_application = nullptr;
-
-Application::Application() {}
-
-Application::~Application() {}
 
 Application* Application::getInstance()
 {
@@ -17,7 +13,7 @@ Application* Application::getInstance()
 	}
 	else
 	{
-		// TODO: Add warning the constructor has been called twice
+		SGSWARN("Application constructor has been called twice!");
 		s_application = this;
 	}
 	return s_application;
@@ -27,7 +23,7 @@ b8 Application::create()
 {
 	if (!glfwInit())
 	{
-		// TODO: return a fatal error because glfw could not be initialised
+		SGSFATAL("GLFW could not be initialised!");
 		return -1;
 	}
 
@@ -35,15 +31,22 @@ b8 Application::create()
 	if (!m_window)
 	{
 		glfwTerminate();
-		// TODO: return a fatal error because window was not created properly
+		SGSFATAL("Window was not properly created!");
 		return -1;
 	}
 
 	glfwMakeContextCurrent(m_window);
 
+	SGSFATAL("A test message: %f", 3.14f);
+	SGSERROR("A test message: %f", 3.14f);
+	SGSWARN("A test message: %f", 3.14f);
+	SGSINFO("A test message: %f", 3.14f);
+	SGSDEBUG("A test message: %f", 3.14f);
+	SGSTRACE("A test message: %f", 3.14f);
+
 	if(glewInit() != GLEW_OK)
 	{
-		logOutput(LOG_LEVEL_FATAL, "Failed to link GLEW against OpenGL context!");
+		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
 	return true;

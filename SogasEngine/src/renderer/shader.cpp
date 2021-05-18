@@ -1,9 +1,11 @@
 #include "shader.h"
 #include "core/assertions.h"
 
-#include <iostream>
+#include "GLEW/glew-2.1.0/include/GL/glew.h"
 #include <fstream>
 #include <sstream>
+
+#include "core/logger.h"
 
 Shader::Shader(const std::string& filepath)
 	: m_filePath(filepath), m_ID(0)
@@ -56,7 +58,7 @@ ShaderProgramSource Shader::parseShader(const std::string& filepath)
 	std::ifstream stream(filepath);
 	if(stream.is_open() == false)
 	{
-		std::cout << "[ERROR]: Shader file not opened!" << std::endl;
+		SGSERROR("Shader file not opened!");
 	}
 
 	enum class ShaderType
@@ -81,10 +83,12 @@ ShaderProgramSource Shader::parseShader(const std::string& filepath)
 			ss[(i32)type] << line << '\n';
 		}
 	}
-
+	//TODO: output stringstreams in tracer
+	/*
+	SGSTRACE("VERTEX SHADER: \n" + ss[0]);
 	std::cout << "VERTEX SHADER: \n" + ss[0].str() << std::endl;
 	std::cout << "FRAGMENT SHADER: \n" + ss[1].str() << std::endl;
-
+	*/
 	return { ss[0].str(), ss[1].str() };
 }
 
@@ -134,8 +138,10 @@ u32 Shader::getUniformLocation(const std::string& name)
 		return m_uniformLocationCache[name];
 
 	i32 location = glGetUniformLocation(m_ID, name.c_str());
-	if (location == -1)
-		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+	if (location == -1) {
+		SGSWARN("Uniform %s doesn't exist", name);
+	}
+		//std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 	
 	m_uniformLocationCache[name] = location;
 	return location;

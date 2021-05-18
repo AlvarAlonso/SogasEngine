@@ -18,30 +18,32 @@ typedef enum e_logLevel {
 
 SGS void logOutput(e_logLevel level, const char* message, ...);
 
-#ifndef CSTERROR
-#define CSTERROR(message, ...) logOutput(LOG_LEVEL_ERROR, message, ##__VA_ARGS__);
+#define SGSFATAL(message, ...) logOutput(LOG_LEVEL_FATAL, message, ##__VA_ARGS__);
+
+#ifndef SGSERROR
+#define SGSERROR(message, ...) logOutput(LOG_LEVEL_ERROR, message, ##__VA_ARGS__);
 #endif
 
 #if LOG_WARN_ENABLED == 1
-#define CSTWARN(message, ...) logOutput(LOG_LEVEL_WARN, message, ##__VA_ARGS__);
+#define SGSWARN(message, ...) logOutput(LOG_LEVEL_WARN, message, ##__VA_ARGS__);
 #else
-#define CSTWARN(message, ...);
+#define SGSWARN(message, ...);
 #endif
 
 #if LOG_INFO_ENABLED == 1
-#define CSTINFO(message, ...) logOutput(LOG_LEVEL_INFO, message, ##__VA_ARGS__);
+#define SGSINFO(message, ...) logOutput(LOG_LEVEL_INFO, message, ##__VA_ARGS__);
 #else
-#define CSTINFO(message, ...)
+#define SGSINFO(message, ...)
 #endif
 
 #if LOG_DEBUG_ENABLED == 1
-#define CSTDEBUG(message, ...) logOutput(LOG_LEVEL_DEBUG, message, ##__VA_ARGS__);
+#define SGSDEBUG(message, ...) logOutput(LOG_LEVEL_DEBUG, message, ##__VA_ARGS__);
 #else
-#define CSTDEBUG(message, ...)
+#define SGSDEBUG(message, ...)
 #endif
 
 #if LOG_TRACE_ENABLED == 1
-#define CSTTRACE(message, ...) logOutput(LOG_LEVEL_TRACE, message, ##__VA_ARGS__);
+#define SGSTRACE(message, ...) logOutput(LOG_LEVEL_TRACE, message, ##__VA_ARGS__);
 #else
-#define CSTTRACE(message, ...)
+#define SGSTRACE(message, ...)
 #endif
