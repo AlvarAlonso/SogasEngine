@@ -29,7 +29,12 @@ void Shader::unbind() const
 
 ShaderProgramSource Shader::parseShader(const std::string& filepath)
 {
+
 	std::ifstream stream(filepath);
+	if(stream.is_open() == false)
+	{
+		std::cout << "[ERROR]: Shader file not opened!" << std::endl;
+	}
 
 	enum class ShaderType
 	{
@@ -52,11 +57,12 @@ ShaderProgramSource Shader::parseShader(const std::string& filepath)
 		{
 			ss[(i32)type] << line << '\n';
 		}
-
-		return { ss[0].str(), ss[1].str() };
 	}
 
-	return ShaderProgramSource();
+	std::cout << "VERTEX SHADER: \n" + ss[0].str() << std::endl;
+	std::cout << "FRAGMENT SHADER: \n" + ss[1].str() << std::endl;
+
+	return { ss[0].str(), ss[1].str() };
 }
 
 bool Shader::compileShader(u32 type, const std::string& source)

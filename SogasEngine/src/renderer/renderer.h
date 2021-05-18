@@ -6,7 +6,7 @@
 #include "IndexBuffer.h"
 #include "shader.h"
 
-class renderer
+class Renderer
 {
 public:
 	void clear() const;

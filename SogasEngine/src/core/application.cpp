@@ -1,5 +1,7 @@
-#include "application.h"
 #include <iostream>
+
+#include "application.h"
+#include "../renderer/renderer.h"
 
 static Application* s_application = nullptr;
 
@@ -49,27 +51,47 @@ b8 Application::create()
 
 void Application::run()
 {
-	float positions[6] = {
+	// simple triangle program hardcoded using the opengl abstraction
+
+	f32 positions[6] = {
 		-0.5f, -0.5f,
 		0.0f, 0.5f,
 		0.5f, -0.5f
 	};
 
-	u32 vertexBuffer;
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(f32), positions, GL_STATIC_DRAW);
+	Renderer renderer;
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(f32) * 2, 0);
+	VertexArray vertexArray;
+	VertexBuffer vertexBuffer((const void*)positions, 6 * sizeof(f32));
+	VertexBufferLayout vertexBufferLayout;
+	vertexBufferLayout.push<f32>(2);
+	vertexArray.addBuffer(vertexBuffer, vertexBufferLayout);
+
+	u32 indices[3] = {
+		0, 1, 2
+	};
+
+	IndexBuffer indexBuffer(indices, 3);
+
+	// TODO: I don't know why it only works with absolute paths
+	std::string path("../../shaders/basic.shader");
+	Shader shader(path);
+
+	vertexArray.unbind();
+	vertexBuffer.unbind();
+	indexBuffer.unbind();
+	shader.unbind();
 
 	// main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		renderer.clear();
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		shader.bind();
+		vertexBuffer.bind();
+
+		renderer.draw(vertexArray, indexBuffer, shader);
 
 		glfwSwapBuffers(m_window);
 

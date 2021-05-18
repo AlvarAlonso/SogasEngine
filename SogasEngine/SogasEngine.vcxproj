@@ -94,23 +94,28 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="shader.h" />
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\logger.h" />
     <ClInclude Include="src\defines.h" />
-    <ClInclude Include="VertexArray.h" />
-    <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="VertexBufferLayout.h" />
+    <ClInclude Include="src\renderer\indexBuffer.h" />
+    <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\renderer\shader.h" />
+    <ClInclude Include="src\renderer\vertexArray.h" />
+    <ClInclude Include="src\renderer\vertexBuffer.h" />
+    <ClInclude Include="src\renderer\vertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="shader.cpp" />
     <ClCompile Include="src\core\application.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
-    <ClCompile Include="VertexArray.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="src\renderer\indexBuffer.cpp" />
+    <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\renderer\shader.cpp" />
+    <ClCompile Include="src\renderer\vertexArray.cpp" />
+    <ClCompile Include="src\renderer\vertexBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\basic.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

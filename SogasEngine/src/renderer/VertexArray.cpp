@@ -16,6 +16,11 @@ void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, const VertexBuffer
 {
 	bind();
 	vertexBuffer.bind();
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT), nullptr);
+	
+	/*
 	const auto& elements = layout.getElements();
 	u32 offset = 0;
 	for(u32 i = 0; i < elements.size(); i++)
@@ -26,6 +31,7 @@ void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, const VertexBuffer
 			element.normalized, layout.getStride(), (const void*)offset);
 		offset += element.count * VertexBufferElement::getTypeSize(element.type);
 	}
+	*/
 }
 
 void VertexArray::bind() const

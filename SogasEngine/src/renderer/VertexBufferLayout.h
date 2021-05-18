@@ -35,27 +35,27 @@ public:
 		: m_stride(0) {}
 
 	template<typename T>
-	void Push(int count)
+	void push(u32 count)
 	{
 		static_assert(false);
 	}
 
 	template<>
-	void Push<f32>(i32 count)
+	void push<f32>(u32 count)
 	{
 		m_elements.push_back({ GL_FLOAT, count, GL_FALSE });
 		m_stride += count * VertexBufferElement::getTypeSize(GL_FLOAT);
 	}
 
 	template<> 
-	void Push<u32>(i32 count)
+	void push<u32>(u32 count)
 	{
 		m_elements.push_back({ GL_UNSIGNED_INT, count, GL_FALSE });
 		m_stride += count * VertexBufferElement::getTypeSize(GL_UNSIGNED_INT);
 	}
 
 	template<>
-	void Push<u8>(i32 count)
+	void push<u8>(u32 count)
 	{
 		m_elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
 		m_stride += count * VertexBufferElement::getTypeSize(GL_UNSIGNED_BYTE);
