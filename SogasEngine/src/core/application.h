@@ -1,13 +1,14 @@
 #pragma once
 
 #include "defines.h"
-#include "../external/GLFW/glfw3.h"
+#include "GLEW/glew-2.1.0/include/GL/glew.h"
+#include "GLFW/glfw3.h"
 
 class SGS Application
 {
 public:
-	Application();
-	~Application();
+	Application() {};
+	~Application() {};
 
 	Application* getInstance();
 

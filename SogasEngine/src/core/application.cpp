@@ -1,11 +1,9 @@
 #include "application.h"
+
+#include "renderer/renderer.h"
 #include "logger.h"
 
 static Application* s_application = nullptr;
-
-Application::Application() {}
-
-Application::~Application() {}
 
 Application* Application::getInstance()
 {
@@ -15,7 +13,7 @@ Application* Application::getInstance()
 	}
 	else
 	{
-		// TODO: Add warning the constructor has been called twice
+		SGSWARN("Application constructor has been called twice!");
 		s_application = this;
 	}
 	return s_application;
@@ -25,7 +23,7 @@ b8 Application::create()
 {
 	if (!glfwInit())
 	{
-		// TODO: return a fatal error because glfw could not be initialised
+		SGSFATAL("GLFW could not be initialised!");
 		return -1;
 	}
 
@@ -33,7 +31,7 @@ b8 Application::create()
 	if (!m_window)
 	{
 		glfwTerminate();
-		// TODO: return a fatal error because window was not created properly
+		SGSFATAL("Window was not properly created!");
 		return -1;
 	}
 
@@ -46,13 +44,60 @@ b8 Application::create()
 	SGSDEBUG("A test message: %f", 3.14f);
 	SGSTRACE("A test message: %f", 3.14f);
 
+	if(glewInit() != GLEW_OK)
+	{
+		SGSFATAL("Failed to link GLEW against OpenGL context!");
+	}
+
 	return true;
 }
 
 void Application::run()
 {
+	// simple triangle program hardcoded using the opengl abstraction
+
+	f32 positions[6] = {
+		-0.5f, -0.5f,
+		0.0f, 0.5f,
+		0.5f, -0.5f
+	};
+
+	Renderer renderer;
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	VertexArray vertexArray;
+	VertexBuffer vertexBuffer((const void*)positions, 6 * sizeof(f32));
+	VertexBufferLayout vertexBufferLayout;
+	vertexBufferLayout.push<f32>(2);
+	vertexArray.addBuffer(vertexBuffer, vertexBufferLayout);
+
+	u32 indices[3] = {
+		0, 1, 2
+	};
+
+	IndexBuffer indexBuffer(indices, 3);
+
+	// TODO: I don't know why it only works with absolute paths
+	std::string path("../../shaders/basic.shader");
+	Shader shader(path);
+
+	vertexArray.unbind();
+	vertexBuffer.unbind();
+	indexBuffer.unbind();
+	shader.unbind();
+
+	// main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
+		renderer.clear();
+
+		shader.bind();
+		vertexBuffer.bind();
+
+		renderer.draw(vertexArray, indexBuffer, shader);
+
+		glfwSwapBuffers(m_window);
+
 		glfwPollEvents();
 	}
 }
