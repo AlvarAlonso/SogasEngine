@@ -1,6 +1,7 @@
 #include "logger.h"
 #include "assertions.h"
 
+#include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -29,9 +30,21 @@ SGS void logOutput(e_logLevel level, const char* message, ...)
 
 	if (isError)
 	{
-
+		HANDLE consoleHandle = GetStdHandle(STD_ERROR_HANDLE);
+		static u8 levels[6] = { 64, 4, 6, 2, 1, 8 };
+		SetConsoleTextAttribute(consoleHandle, levels[level]);
+		OutputDebugStringA(outputMessage);
+		u64 length = strlen(outputMessage);
+		LPDWORD number_written = 0;
+		WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), outputMessage, (DWORD)length, number_written, 0);
 	}
 	else {
-
+		HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+		static u8 levels[6] = { 64, 4, 6, 2, 1, 8 };
+		SetConsoleTextAttribute(console_handle, levels[level]);
+		OutputDebugStringA(outputMessage);
+		u64 length = strlen(outputMessage);
+		LPDWORD number_written = 0;
+		WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), outputMessage, (DWORD)length, number_written, 0);
 	}
 }

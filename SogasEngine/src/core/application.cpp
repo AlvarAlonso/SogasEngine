@@ -1,4 +1,5 @@
 #include "application.h"
+#include "logger.h"
 
 static Application* s_application = nullptr;
 
@@ -37,6 +38,13 @@ b8 Application::create()
 	}
 
 	glfwMakeContextCurrent(m_window);
+
+	SGSFATAL("A test message: %f", 3.14f);
+	SGSERROR("A test message: %f", 3.14f);
+	SGSWARN("A test message: %f", 3.14f);
+	SGSINFO("A test message: %f", 3.14f);
+	SGSDEBUG("A test message: %f", 3.14f);
+	SGSTRACE("A test message: %f", 3.14f);
 
 	return true;
 }
