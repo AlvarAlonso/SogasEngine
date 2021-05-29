@@ -1,16 +1,22 @@
 
 #include <iostream>
-#include "core/application.h"
+#include "sogas.h"
 
-int main()
+class Sandbox : public Application
 {
+public:
+	Sandbox()
+	{
+		create();
+	}
 
-	Application* application = new Application();
+	~Sandbox()
+	{
 
-	application->create();
-	application->run();
-	application->shutdown();
+	}
+};
 
-	std::cin.get();
-	return 0;
+Application* createApplication()
+{
+	return new Sandbox();
 }

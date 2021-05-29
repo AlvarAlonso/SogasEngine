@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
+    <ClInclude Include="src\core\entryPoint.h" />
     <ClInclude Include="src\core\logger.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\renderer\indexBuffer.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="src\renderer\vertexArray.h" />
     <ClInclude Include="src\renderer\vertexBuffer.h" />
     <ClInclude Include="src\renderer\vertexBufferLayout.h" />
+    <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\application.cpp" />

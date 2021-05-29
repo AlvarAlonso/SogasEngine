@@ -22,3 +22,5 @@ public:
 	void run();
 	void shutdown();
 };
+
+Application* createApplication();
