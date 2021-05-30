@@ -1,9 +1,18 @@
 #include "application.h"
+#include <memory>
 
 #include "renderer/renderer.h"
 #include "logger.h"
 
+// Pass function X with the event as parameter in arg position _1
+#define BIND_EVENT_FUNC(x) std::bind(&Application::x, this, std::placeholders::_1)
+
 static Application* s_application = nullptr;
+
+Application::Application()
+{
+	
+}
 
 Application* Application::getInstance()
 {
@@ -14,35 +23,16 @@ Application* Application::getInstance()
 	else
 	{
 		SGSWARN("Application constructor has been called twice!");
-		s_application = this;
+ 		s_application = this;
 	}
 	return s_application;
 }
 
 b8 Application::create()
 {
-	if (!glfwInit())
-	{
-		SGSFATAL("GLFW could not be initialised!");
-		return -1;
-	}
-
-	m_window = glfwCreateWindow(640, 480, "Sogas Engine", NULL, NULL);
-	if (!m_window)
-	{
-		glfwTerminate();
-		SGSFATAL("Window was not properly created!");
-		return -1;
-	}
-
-	glfwMakeContextCurrent(m_window);
-
-	SGSFATAL("A test message: %f", 3.14f);
-	SGSERROR("A test message: %f", 3.14f);
-	SGSWARN("A test message: %f", 3.14f);
-	SGSINFO("A test message: %f", 3.14f);
-	SGSDEBUG("A test message: %f", 3.14f);
-	SGSTRACE("A test message: %f", 3.14f);
+	
+	m_window = std::unique_ptr<Window>(Window::create());
+	m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
 
 	if(glewInit() != GLEW_OK)
 	{
@@ -87,18 +77,54 @@ void Application::run()
 	indexBuffer.unbind();
 	shader.unbind();
 
+	windowResizeEvent e(1280, 720);
+	if (e.isInCategory(EventCategoryApplication)) {
+		SGSTRACE("%s", e.toString().c_str());
+	}
+	else if (e.isInCategory(EventCategoryInput))
+	{
+		SGSTRACE("%s", e.toString().c_str());
+	}
+
 	// main loop
-	while (!glfwWindowShouldClose(m_window))
+	while (m_running)
 	{
 		renderer.clear();
 
 		shader.setUniform("u_color", 1.0f);
 		renderer.draw(vertexArray, indexBuffer, shader);
 
-		glfwSwapBuffers(m_window);
-
-		glfwPollEvents();
+		m_window->onUpdate();
 	}
+}
+
+void Application::onEvent(Event& e)
+{
+	EventDispatcher dispatcher(e);
+	dispatcher.dispatch<windowCloseEvent>(BIND_EVENT_FUNC(onWindowClosed));
+	dispatcher.dispatch<windowResizeEvent>(BIND_EVENT_FUNC(onWindowResize));
+
+	SGSINFO(e.toString().c_str());
+}
+
+b8 Application::onWindowClosed(windowCloseEvent& e)
+{
+	m_running = false;
+	return true;
+}
+
+b8 Application::onWindowResize(windowResizeEvent& e)
+{
+
+	if (e.getWidth() == 0 || e.getHeight() == 0)
+	{
+		m_minimized = true;
+		return false;
+	}
+
+	m_minimized = false;
+	glViewport(0, 0, e.getWidth(), e.getHeight());
+	return false;
 }
 
 void Application::shutdown()

@@ -37,6 +37,8 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 byte.");
 
 STATIC_ASSERT(sizeof(b8) == 1, "Expected b8 to be 8 byte.");
 
+#define BIT(x) (1 << x)
+
 #ifdef SGSEXPORT
 #ifdef _MSC_VER
 #define SGS __declspec(dllexport)
