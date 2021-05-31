@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "window.h"
+#include "layerStack.h"
 #include "events/appEvent.h"
 #include "events/keyEvent.h"
 
@@ -22,10 +23,12 @@ public:
 	i16 m_width;
 	i16 m_height;
 
-	b8 create();
 	void run();
-	void onEvent(Event& e);
 	void shutdown();
+
+	void onEvent(Event& e);
+	void pushLayer(Layer* layer);
+	void pushOverlay(Layer* overlay);
 
 private:
 	b8 onWindowClosed(windowCloseEvent& e);
@@ -34,6 +37,8 @@ private:
 	std::unique_ptr<Window> m_window;
 	b8 m_running = true;
 	b8 m_minimized = false;
+
+	LayerStack m_layerStack;
 };
 
 Application* createApplication();

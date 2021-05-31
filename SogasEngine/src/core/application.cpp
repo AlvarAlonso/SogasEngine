@@ -11,7 +11,13 @@ static Application* s_application = nullptr;
 
 Application::Application()
 {
-	
+	m_window = std::unique_ptr<Window>(Window::create());
+	m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+
+	if(glewInit() != GLEW_OK)
+	{
+		SGSFATAL("Failed to link GLEW against OpenGL context!");
+	}
 }
 
 Application* Application::getInstance()
@@ -26,20 +32,6 @@ Application* Application::getInstance()
  		s_application = this;
 	}
 	return s_application;
-}
-
-b8 Application::create()
-{
-	
-	m_window = std::unique_ptr<Window>(Window::create());
-	m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
-
-	if(glewInit() != GLEW_OK)
-	{
-		SGSFATAL("Failed to link GLEW against OpenGL context!");
-	}
-
-	return true;
 }
 
 void Application::run()
@@ -77,15 +69,6 @@ void Application::run()
 	indexBuffer.unbind();
 	shader.unbind();
 
-	windowResizeEvent e(1280, 720);
-	if (e.isInCategory(EventCategoryApplication)) {
-		SGSTRACE("%s", e.toString().c_str());
-	}
-	else if (e.isInCategory(EventCategoryInput))
-	{
-		SGSTRACE("%s", e.toString().c_str());
-	}
-
 	// main loop
 	while (m_running)
 	{
@@ -93,6 +76,11 @@ void Application::run()
 
 		shader.setUniform("u_color", 1.0f);
 		renderer.draw(vertexArray, indexBuffer, shader);
+
+		for (Layer* layer : m_layerStack)
+		{
+			layer->onUpdate();
+		}
 
 		m_window->onUpdate();
 	}
@@ -104,7 +92,25 @@ void Application::onEvent(Event& e)
 	dispatcher.dispatch<windowCloseEvent>(BIND_EVENT_FUNC(onWindowClosed));
 	dispatcher.dispatch<windowResizeEvent>(BIND_EVENT_FUNC(onWindowResize));
 
+	// Loop in reverse since most top layer has the most priority in the queue
+	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
+	{
+		if (e.handled)
+			break;
+		(*it)->onEvent(e);
+	}
+
 	SGSINFO(e.toString().c_str());
+}
+
+void Application::pushLayer(Layer* layer)
+{
+	m_layerStack.pushLayer(layer);
+}
+
+void Application::pushOverlay(Layer* overlay)
+{
+	m_layerStack.pushOverlay(overlay);
 }
 
 b8 Application::onWindowClosed(windowCloseEvent& e)

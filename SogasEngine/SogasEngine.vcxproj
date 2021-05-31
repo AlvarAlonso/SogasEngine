@@ -97,6 +97,8 @@
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\entryPoint.h" />
+    <ClInclude Include="src\core\layer.h" />
+    <ClInclude Include="src\core\layerStack.h" />
     <ClInclude Include="src\core\logger.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\defines.h" />
@@ -113,6 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\application.cpp" />
+    <ClCompile Include="src\core\layer.cpp" />
+    <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
     <ClCompile Include="src\core\window.cpp" />
     <ClCompile Include="src\renderer\indexBuffer.cpp" />
