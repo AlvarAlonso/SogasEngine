@@ -1,0 +1,3 @@
+[submodule "SogasEngine/external/imgui"]
+	path = SogasEngine/external/imgui
+	url = https://github.com/ocornut/imgui.git
