@@ -4,20 +4,19 @@
 #include "renderer/renderer.h"
 #include "logger.h"
 
-// Pass function X with the event as parameter in arg position _1
-#define BIND_EVENT_FUNC(x) std::bind(&Application::x, this, std::placeholders::_1)
-
 static Application* s_application = nullptr;
 
 Application::Application()
 {
 	m_window = std::unique_ptr<Window>(Window::create());
-	m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+	m_window->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
 
 	if(glewInit() != GLEW_OK)
 	{
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
+
+	s_application = this;
 }
 
 Application* Application::getInstance()
@@ -26,11 +25,7 @@ Application* Application::getInstance()
 	{
 		s_application = new Application();
 	}
-	else
-	{
-		SGSWARN("Application constructor has been called twice!");
- 		s_application = this;
-	}
+
 	return s_application;
 }
 
@@ -89,8 +84,8 @@ void Application::run()
 void Application::onEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.dispatch<windowCloseEvent>(BIND_EVENT_FUNC(onWindowClosed));
-	dispatcher.dispatch<windowResizeEvent>(BIND_EVENT_FUNC(onWindowResize));
+	dispatcher.dispatch<windowCloseEvent>(BIND_EVENT_FUNC(Application::onWindowClosed));
+	dispatcher.dispatch<windowResizeEvent>(BIND_EVENT_FUNC(Application::onWindowResize));
 
 	// Loop in reverse since most top layer has the most priority in the queue
 	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
@@ -106,11 +101,13 @@ void Application::onEvent(Event& e)
 void Application::pushLayer(Layer* layer)
 {
 	m_layerStack.pushLayer(layer);
+	layer->onAttach();
 }
 
-void Application::pushOverlay(Layer* overlay)
+void Application::pushOverlay(Layer* layer)
 {
-	m_layerStack.pushOverlay(overlay);
+	m_layerStack.pushOverlay(layer);
+	layer->onAttach();
 }
 
 b8 Application::onWindowClosed(windowCloseEvent& e)

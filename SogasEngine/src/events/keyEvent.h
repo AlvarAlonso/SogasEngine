@@ -2,7 +2,6 @@
 
 #include "event.h"
 #include "defines.h"
-#include <sstream>
 
 class KeyEvent : public Event
 {
@@ -53,5 +52,22 @@ public:
 		return ss.str();
 	}
 
-	EVENT_CLASS_TYPE(KeyReleased);
+	EVENT_CLASS_TYPE(KeyReleased)
+};
+
+
+class KeyTypedEvent : public KeyEvent
+{
+public:
+	KeyTypedEvent(u32 keycode)
+		: KeyEvent(keycode) {}
+
+	std::string toString() const override
+	{
+		std::stringstream ss;
+		ss << "KeyTypedEvent " << m_keyCode;
+		return ss.str();
+	}
+
+	EVENT_CLASS_TYPE(KeyTyped)
 };

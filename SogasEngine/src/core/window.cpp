@@ -5,6 +5,7 @@
 
 #include "events/appEvent.h"
 #include "events/keyEvent.h"
+#include "events/mouseEvent.h"
 
 static b8 s_glfwInitialized = false;
 
@@ -89,6 +90,48 @@ b8 Window::init(const windowProperties& properties)
 		}
 	});
 
+	glfwSetCharCallback(m_glfwWindow, [](GLFWwindow* window, u32 keycode)
+	{
+		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+		KeyTypedEvent event(keycode);
+		data.eventCallback(event);
+	});
+
+	glfwSetMouseButtonCallback(m_glfwWindow, [](GLFWwindow* window, i32 button, i32 action, i32 mods)
+	{
+		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+		switch (action)
+		{
+			case GLFW_PRESS:
+			{
+				MouseButtonPressedEvent event(button);
+				data.eventCallback(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				MouseButtonReleasedEvent event(button);
+				data.eventCallback(event);
+				break;
+			}
+		}
+	});
+
+	glfwSetScrollCallback(m_glfwWindow, [](GLFWwindow* window, f64 offsetX, f64 offsetY) {
+		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+		MouseScrolledEvent event((f32)offsetX, (f32)offsetY);
+		data.eventCallback(event);
+	});
+
+	glfwSetCursorPosCallback(m_glfwWindow, [](GLFWwindow* window, f64 posX, f64 posY) {
+		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+		MouseMoveEvent event((f32)posX, (f32)posY);
+		data.eventCallback(event);
+	});
 
 	return true;
 }

@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +94,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="external\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\entryPoint.h" />
@@ -105,6 +107,8 @@
     <ClInclude Include="src\events\appEvent.h" />
     <ClInclude Include="src\events\event.h" />
     <ClInclude Include="src\events\keyEvent.h" />
+    <ClInclude Include="src\events\mouseEvent.h" />
+    <ClInclude Include="src\imgui\imguiLayer.h" />
     <ClInclude Include="src\renderer\indexBuffer.h" />
     <ClInclude Include="src\renderer\renderer.h" />
     <ClInclude Include="src\renderer\shader.h" />
@@ -114,11 +118,14 @@
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\core\application.cpp" />
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
     <ClCompile Include="src\core\window.cpp" />
+    <ClCompile Include="src\imgui\imguiLayer.cpp" />
     <ClCompile Include="src\renderer\indexBuffer.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
     <ClCompile Include="src\renderer\shader.cpp" />
@@ -127,6 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\basic.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui\ImGui.vcxproj">
+      <Project>{1ea7c047-3cd1-4677-9011-53f5ba3111ec}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

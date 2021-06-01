@@ -17,7 +17,7 @@ public:
 	Application();
 	~Application() {};
 
-	Application* getInstance();
+	static Application* getInstance();
 
 	b8 m_isSuspended;
 	i16 m_width;
@@ -28,7 +28,9 @@ public:
 
 	void onEvent(Event& e);
 	void pushLayer(Layer* layer);
-	void pushOverlay(Layer* overlay);
+	void pushOverlay(Layer* layer);
+
+	inline Window& getWindow() { return *m_window; }
 
 private:
 	b8 onWindowClosed(windowCloseEvent& e);
