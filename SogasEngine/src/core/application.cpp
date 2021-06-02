@@ -1,4 +1,5 @@
 #include "application.h"
+#include <memory>
 
 #include "renderer/renderer.h"
 #include "renderer/vertexArray.h"
@@ -8,57 +9,23 @@
 
 static Application* s_application = nullptr;
 
-Application* Application::getInstance()
+Application::Application()
 {
-	if (s_application == nullptr)
-	{
-		s_application = new Application();
-	}
-	else
-	{
-		SGSWARN("Application constructor has been called twice!");
-		s_application = this;
-	}
-	return s_application;
-}
-
-b8 Application::create()
-{
-	if (!glfwInit())
-	{
-		SGSFATAL("GLFW could not be initialised!");
-		return -1;
-	}
-
-	m_window = glfwCreateWindow(640, 480, "Sogas Engine", NULL, NULL);
-	if (!m_window)
-	{
-		glfwTerminate();
-		SGSFATAL("Window was not properly created!");
-		return -1;
-	}
-
-	glfwMakeContextCurrent(m_window);
-
-	SGSFATAL("A test message: %f", 3.14f);
-	SGSERROR("A test message: %f", 3.14f);
-	SGSWARN("A test message: %f", 3.14f);
-	SGSINFO("A test message: %f", 3.14f);
-	SGSDEBUG("A test message: %f", 3.14f);
-	SGSTRACE("A test message: %f", 3.14f);
+	m_window = std::unique_ptr<Window>(Window::create());
+	m_window->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
 
 	if(glewInit() != GLEW_OK)
 	{
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
-	// creation of example render primitives
+	// renderer example primitive usage
 	m_vertexArray.reset(VertexArray::create());
 
 	f32 positions[9] = {
-	-0.5f, -0.5f, 0.0f,
-	0.0f, 0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f
+		-0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f
 	};
 
 	u32 indices[3] = {
@@ -79,7 +46,17 @@ b8 Application::create()
 
 	m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
-	return true;
+	s_application = this;
+}
+
+Application* Application::getInstance()
+{
+	if (s_application == nullptr)
+	{
+		s_application = new Application();
+	}
+
+	return s_application;
 }
 
 void Application::run()
@@ -90,7 +67,7 @@ void Application::run()
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	// main loop
-	while (!glfwWindowShouldClose(m_window))
+	while (m_running)
 	{
 		Renderer::clear();
 
@@ -99,10 +76,62 @@ void Application::run()
 
 		Renderer::drawIndexed(m_vertexArray);
 
-		glfwSwapBuffers(m_window);
+		for (Layer* layer : m_layerStack)
+		{
+			layer->onUpdate();
+		}
 
-		glfwPollEvents();
+		m_window->onUpdate();
 	}
+}
+
+void Application::onEvent(Event& e)
+{
+	EventDispatcher dispatcher(e);
+	dispatcher.dispatch<windowCloseEvent>(BIND_EVENT_FUNC(Application::onWindowClosed));
+	dispatcher.dispatch<windowResizeEvent>(BIND_EVENT_FUNC(Application::onWindowResize));
+
+	// Loop in reverse since most top layer has the most priority in the queue
+	for (auto it = m_layerStack.rbegin(); it != m_layerStack.rend(); it++)
+	{
+		if (e.handled)
+			break;
+		(*it)->onEvent(e);
+	}
+
+	SGSINFO(e.toString().c_str());
+}
+
+void Application::pushLayer(Layer* layer)
+{
+	m_layerStack.pushLayer(layer);
+	layer->onAttach();
+}
+
+void Application::pushOverlay(Layer* layer)
+{
+	m_layerStack.pushOverlay(layer);
+	layer->onAttach();
+}
+
+bool Application::onWindowClosed(windowCloseEvent& e)
+{
+	m_running = false;
+	return true;
+}
+
+bool Application::onWindowResize(windowResizeEvent& e)
+{
+
+	if (e.getWidth() == 0 || e.getHeight() == 0)
+	{
+		m_minimized = true;
+		return false;
+	}
+
+	m_minimized = false;
+	glViewport(0, 0, e.getWidth(), e.getHeight());
+	return false;
 }
 
 void Application::shutdown()

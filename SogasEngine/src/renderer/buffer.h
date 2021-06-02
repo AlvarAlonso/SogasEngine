@@ -36,11 +36,11 @@ struct VertexBufferAttribute
 	ShaderDataType type;
 	u32 size;
 	u32 offset;
-	b8 normalized;
+	bool normalized;
 
 	VertexBufferAttribute(){}
 
-	VertexBufferAttribute(ShaderDataType _type, const std::string& _name, b8 _normalized = false)
+	VertexBufferAttribute(ShaderDataType _type, const std::string& _name, bool _normalized = false)
 		: name(_name), type(_type), size(ShaderDataTypeSize(_type)), offset(0), normalized(_normalized)
 	{
 	}

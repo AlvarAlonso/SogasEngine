@@ -14,7 +14,7 @@ void report_assertion_failure(const char* expression, const char* message, const
 SGS void logOutput(e_logLevel level, const char* message, ...)
 {
 	const char* levelString[6] = { "[FATAL]: ", "[ERROR]: ", "[WARN]: ", "[INFO]: ", "[DEBUG]: ", "[TRACE]: " };
-	b8 isError = level < LOG_LEVEL_WARN;
+	bool isError = level < LOG_LEVEL_WARN;
 
 	const i32 msgLength = 32000;
 	char outMessage[msgLength];
