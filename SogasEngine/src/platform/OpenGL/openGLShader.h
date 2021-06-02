@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
+#include "GL/glew.h"
 #include "core/assertions.h"
 #include <string>
 #include <unordered_map>

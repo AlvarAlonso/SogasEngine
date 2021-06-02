@@ -74,7 +74,8 @@ void Application::run()
 		m_shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 
-		Renderer::drawIndexed(m_vertexArray);
+		Renderer::draw(m_vertexArray);
+		//Renderer::drawIndexed(m_vertexArray);
 
 		for (Layer* layer : m_layerStack)
 		{

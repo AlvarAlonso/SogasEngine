@@ -3,7 +3,7 @@
 #include "renderer.h"
 #include "platform/OpenGL/openGLBuffer.h"
 
-#include "../core/assertions.h"
+#include "core/assertions.h"
 
 VertexBuffer* VertexBuffer::create(f32* vertices, u32 size)
 {

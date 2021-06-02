@@ -1,9 +1,9 @@
-#include "../../renderer/vertexArray.h"
+#include "renderer/vertexArray.h"
 
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
+#include "GL/glew.h"
 #include "openGLVertexArray.h"
 
-#include "../../core/assertions.h"
+#include "core/assertions.h"
 
 static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 {

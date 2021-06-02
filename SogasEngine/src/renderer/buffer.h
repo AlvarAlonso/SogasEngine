@@ -113,6 +113,8 @@ public:
 	virtual const VertexBufferLayout& getLayout() const = 0;
 	virtual void setLayout(const VertexBufferLayout& layout) = 0;
 
+	virtual u32 getSize() const = 0;
+
 	static VertexBuffer* create(f32* vertices, u32 size);
 };
 

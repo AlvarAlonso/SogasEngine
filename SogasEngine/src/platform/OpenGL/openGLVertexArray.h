@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../renderer/vertexArray.h"
+#include "renderer/vertexArray.h"
 
 #include <vector>
 #include <memory>
