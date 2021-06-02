@@ -1,15 +1,28 @@
 #pragma once
 
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
-
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "shader.h"
+#include "rendererAPI.h"
 
 class Renderer
 {
 public:
-	void clear() const;
-	void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const;
-};
+	enum class API 
+	{
+		None = 0, OpenGL = 1
+	};
+public:
+	inline static API getAPI() { return s_API; }
 
+	inline static void clear()
+	{
+		s_RendererAPI->clear();
+	}
+
+	inline static void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+	{
+		s_RendererAPI->drawIndexed(vertexArray);
+	}
+
+private:
+	static API s_API; // TODO: Hide the API to the rest of the application
+	static RendererAPI* s_RendererAPI;
+};

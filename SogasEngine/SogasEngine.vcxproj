@@ -99,22 +99,29 @@
     <ClInclude Include="src\core\entryPoint.h" />
     <ClInclude Include="src\core\logger.h" />
     <ClInclude Include="src\defines.h" />
-    <ClInclude Include="src\renderer\indexBuffer.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLBuffer.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLRendererAPI.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLShader.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLVertexArray.h" />
+    <ClInclude Include="src\renderer\buffer.h" />
     <ClInclude Include="src\renderer\renderer.h" />
+    <ClInclude Include="src\renderer\rendererAPI.h" />
     <ClInclude Include="src\renderer\shader.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
-    <ClInclude Include="src\renderer\vertexBuffer.h" />
-    <ClInclude Include="src\renderer\vertexBufferLayout.h" />
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\core\application.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
-    <ClCompile Include="src\renderer\indexBuffer.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLBuffer.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLRendererAPI.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLShader.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLVertexArray.cpp" />
+    <ClCompile Include="src\renderer\buffer.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
+    <ClCompile Include="src\renderer\rendererAPI.cpp" />
     <ClCompile Include="src\renderer\shader.cpp" />
     <ClCompile Include="src\renderer\vertexArray.cpp" />
-    <ClCompile Include="src\renderer\vertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\basic.shader" />

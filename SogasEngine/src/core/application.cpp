@@ -1,6 +1,9 @@
 #include "application.h"
 
 #include "renderer/renderer.h"
+#include "renderer/vertexArray.h"
+#include "renderer/shader.h"
+#include "platform/OpenGL/openGLShader.h"
 #include "logger.h"
 
 static Application* s_application = nullptr;
@@ -49,6 +52,33 @@ b8 Application::create()
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
+	// creation of example render primitives
+	m_vertexArray.reset(VertexArray::create());
+
+	f32 positions[9] = {
+	-0.5f, -0.5f, 0.0f,
+	0.0f, 0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f
+	};
+
+	u32 indices[3] = {
+		0, 1, 2
+	};
+
+	std::shared_ptr<VertexBuffer> vertexBuffer;
+	vertexBuffer.reset(VertexBuffer::create(positions, sizeof(positions)));
+
+	VertexBufferLayout layout = { {ShaderDataType::Float3, "a_position"} };
+
+	vertexBuffer->setLayout(layout);
+	m_vertexArray->addVertexBuffer(vertexBuffer);
+
+	std::shared_ptr<IndexBuffer> indexBuffer;
+	indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u32)));
+	m_vertexArray->setIndexBuffer(indexBuffer);
+
+	m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
+
 	return true;
 }
 
@@ -57,43 +87,17 @@ void Application::run()
 	// TODO: There are openGL errors not being handled. We have to implement a generalized error checking method for openGL calls
 
 	// simple triangle program hardcoded using the opengl abstraction
-
-	f32 positions[6] = {
-		-0.5f, -0.5f,
-		0.0f, 0.5f,
-		0.5f, -0.5f
-	};
-
-	Renderer renderer;
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-	VertexArray vertexArray;
-	VertexBuffer vertexBuffer((const void*)positions, 6 * sizeof(f32));
-	VertexBufferLayout vertexBufferLayout;
-	vertexBufferLayout.push<f32>(2);
-	vertexArray.addBuffer(vertexBuffer, vertexBufferLayout);
-
-	u32 indices[3] = {
-		0, 1, 2
-	};
-
-	IndexBuffer indexBuffer(indices, 3);
-
-	std::string path("../SogasEngine/shaders/basic.shader");
-	Shader shader(path);
-
-	vertexArray.unbind();
-	vertexBuffer.unbind();
-	indexBuffer.unbind();
-	shader.unbind();
 
 	// main loop
 	while (!glfwWindowShouldClose(m_window))
 	{
-		renderer.clear();
+		Renderer::clear();
 
-		shader.setUniform("u_color", 1.0f);
-		renderer.draw(vertexArray, indexBuffer, shader);
+		m_shader->bind();
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
+
+		Renderer::drawIndexed(m_vertexArray);
 
 		glfwSwapBuffers(m_window);
 

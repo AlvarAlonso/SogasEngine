@@ -1,40 +1,15 @@
-#include "VertexArray.h"
+#include "vertexArray.h"
+#include "renderer.h"
+#include "platform/OpenGL/openGLVertexArray.h"
 
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
-
-VertexArray::VertexArray()
+VertexArray* VertexArray::create()
 {
-	glGenVertexArrays(1, &m_ID);
-}
-
-VertexArray::~VertexArray()
-{
-	glDeleteVertexArrays(1, &m_ID);
-}
-
-void VertexArray::addBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout)
-{
-	bind();
-	vertexBuffer.bind();
-	
-	const auto& elements = layout.getElements();
-	u32 offset = 0;
-	for(u32 i = 0; i < elements.size(); i++)
+	switch(Renderer::getAPI())
 	{
-		const auto& element = elements[i];
-		glEnableVertexAttribArray(i);
-		glVertexAttribPointer(i, element.count, element.type, 
-			element.normalized, layout.getStride(), (const void*)offset);
-		offset += element.count * VertexBufferElement::getTypeSize(element.type);
+		case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
+		case Renderer::API::OpenGL: return new OpenGLVertexArray();
 	}
-}
 
-void VertexArray::bind() const
-{
-	glBindVertexArray(m_ID);
-}
-
-void VertexArray::unbind() const
-{
-	glBindVertexArray(0);
+	SGSASSERT_MSG(false, "Unknown renderer API!");
+	return nullptr;
 }

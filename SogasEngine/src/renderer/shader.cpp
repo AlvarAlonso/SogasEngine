@@ -1,148 +1,29 @@
 #include "shader.h"
-#include "core/assertions.h"
 
-#include "GLEW/glew-2.1.0/include/GL/glew.h"
-#include <fstream>
-#include <sstream>
+#include "renderer.h"
 
-#include "core/logger.h"
+#include "platform/OpenGL/openGLShader.h"
 
-Shader::Shader(const std::string& filepath)
-	: m_filePath(filepath), m_ID(0)
+Shader* Shader::create(const std::string& vertexSource, const std::string& fragmentSource)
 {
-	ShaderProgramSource source = parseShader(filepath);
-	m_ID = createShader(source.vertexSource, source.fragmentSource);
-}
-
-Shader::~Shader()
-{
-	glDeleteProgram(m_ID);
-}
-
-void Shader::bind() const
-{
-	glUseProgram(m_ID);
-}
-
-void Shader::unbind() const
-{
-	glUseProgram(0);
-}
-
-void Shader::setUniform1(const char* varname, const bool input)
-{
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
-	glUniform1i(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
-}
-
-void Shader::setUniform1(const char* varname, const int input)
-{
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
-	glUniform1i(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
-}
-
-void Shader::setUniform1(const char* varname, const float input)
-{
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
-	glUniform1f(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
-}
-
-ShaderProgramSource Shader::parseShader(const std::string& filepath)
-{
-	std::ifstream stream(filepath);
-	if(stream.is_open() == false)
+	switch (Renderer::getAPI())
 	{
-		SGSERROR("Shader file not opened!");
+		case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
+		case Renderer::API::OpenGL: return new OpenGLShader(vertexSource, fragmentSource);
 	}
 
-	enum class ShaderType
-	{
-		NONE = -1, VERTEX = 0, FRAGMENT = 1
-	};
-
-	std::string line;
-	std::stringstream ss[2];
-	ShaderType type = ShaderType::NONE;
-	while(getline(stream, line))
-	{
-		if(line.find("#shader") != std::string::npos)
-		{
-			if (line.find("vertex") != std::string::npos)
-				type = ShaderType::VERTEX;
-			else if (line.find("fragment") != std::string::npos)
-				type = ShaderType::FRAGMENT;
-		}
-		else
-		{
-			ss[(i32)type] << line << '\n';
-		}
-	}
-	//TODO: output stringstreams in tracer
-	/*
-	SGSTRACE("VERTEX SHADER: \n" + ss[0]);
-	std::cout << "VERTEX SHADER: \n" + ss[0].str() << std::endl;
-	std::cout << "FRAGMENT SHADER: \n" + ss[1].str() << std::endl;
-	*/
-	return { ss[0].str(), ss[1].str() };
+	SGSASSERT_MSG(false, "Unknown renderer API!");
+	return nullptr;
 }
 
-u32 Shader::compileShader(u32 type, const std::string& source)
+Shader* Shader::create(const std::string& filepath)
 {
-	u32 id = glCreateShader(type);
-	// TODO: Solve the char to i8 issue
-	const char* src = source.c_str();
-	glShaderSource(id, 1, &src, nullptr);
-	glCompileShader(id);
-
-	i32 result;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-	if(result == GL_FALSE)
+	switch (Renderer::getAPI())
 	{
-		i32 length;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)alloca(length * sizeof(char));
-		glGetShaderInfoLog(id, length, &length, message);
-		glDeleteShader(id);
-		return 0;
+		case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
+		case Renderer::API::OpenGL: return new OpenGLShader(filepath);
 	}
 
-	return id;
-}
-
-u32 Shader::createShader(const std::string& vertexShader, const std::string& fragmentShader)
-{
-	u32 program = glCreateProgram();
-	u32 vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-	u32 fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	glDeleteShader(vs);
-	glDeleteShader(fs);
-
-	return program;
-}
-
-u32 Shader::getUniformLocation(const std::string& name)
-{
-	if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
-		return m_uniformLocationCache[name];
-
-	i32 location = glGetUniformLocation(m_ID, name.c_str());
-	if (location == -1) {
-		SGSWARN("Uniform %s doesn't exist", name);
-	}
-		//std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
-	
-	m_uniformLocationCache[name] = location;
-	return location;
+	SGSASSERT_MSG(false, "Unknown renderer API!");
+	return nullptr;
 }
