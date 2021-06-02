@@ -1,8 +1,8 @@
 #include "openGLShader.h"
-#include "../../renderer/shader.h"
+#include "renderer/shader.h"
 #include "core/assertions.h"
 
-#include "GLEW/glew-2.1.0/include/GL/glew.h"
+#include "GL/glew.h"
 #include <fstream>
 #include <sstream>
 

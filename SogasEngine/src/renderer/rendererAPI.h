@@ -7,10 +7,12 @@ class RendererAPI
 public:
 	enum class API
 	{
-		None = 0, OpenGL = 1
+		None = 0, OpenGL = 1, Vulkan = 2
 	};
 public:
 	virtual void clear() = 0;
+
+	virtual void draw(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 
 	virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 

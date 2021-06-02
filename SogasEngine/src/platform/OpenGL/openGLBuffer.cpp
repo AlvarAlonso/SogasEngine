@@ -1,8 +1,10 @@
-#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
-#include "..\..\renderer\buffer.h"
+
+#include "GL/glew.h"
+#include "renderer/buffer.h"
 #include "openGLBuffer.h"
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(f32* vertices, u32 size)
+	: m_size(size)
 {
 	glCreateBuffers(1, &m_ID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_ID);
