@@ -110,13 +110,13 @@ void Application::pushOverlay(Layer* layer)
 	layer->onAttach();
 }
 
-b8 Application::onWindowClosed(windowCloseEvent& e)
+bool Application::onWindowClosed(windowCloseEvent& e)
 {
 	m_running = false;
 	return true;
 }
 
-b8 Application::onWindowResize(windowResizeEvent& e)
+bool Application::onWindowResize(windowResizeEvent& e)
 {
 
 	if (e.getWidth() == 0 || e.getHeight() == 0)

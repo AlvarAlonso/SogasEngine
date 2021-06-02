@@ -19,7 +19,7 @@ public:
 
 	static Application* getInstance();
 
-	b8 m_isSuspended;
+	bool m_isSuspended;
 	i16 m_width;
 	i16 m_height;
 
@@ -33,12 +33,12 @@ public:
 	inline Window& getWindow() { return *m_window; }
 
 private:
-	b8 onWindowClosed(windowCloseEvent& e);
-	b8 onWindowResize(windowResizeEvent& e);
+	bool onWindowClosed(windowCloseEvent& e);
+	bool onWindowResize(windowResizeEvent& e);
 
 	std::unique_ptr<Window> m_window;
-	b8 m_running = true;
-	b8 m_minimized = false;
+	bool m_running = true;
+	bool m_minimized = false;
 
 	LayerStack m_layerStack;
 };

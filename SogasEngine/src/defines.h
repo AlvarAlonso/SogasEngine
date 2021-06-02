@@ -16,9 +16,6 @@ typedef signed long long i64;
 typedef float f32;
 typedef double f64;
 
-// Boolean type
-typedef bool b8;
-
 #define STATIC_ASSERT static_assert
 
 // Ensure all types are of the correct type
@@ -35,7 +32,7 @@ STATIC_ASSERT(sizeof(i64) == 8, "Expected i64 to be 8 byte.");
 STATIC_ASSERT(sizeof(f32) == 4, "Expected f32 to be 4 byte.");
 STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 byte.");
 
-STATIC_ASSERT(sizeof(b8) == 1, "Expected b8 to be 8 byte.");
+STATIC_ASSERT(sizeof(bool) == 1, "Expected b8 to be 8 byte.");
 
 #define BIT(x) (1 << x)
 

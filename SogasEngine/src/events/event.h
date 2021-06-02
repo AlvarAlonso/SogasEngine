@@ -32,14 +32,14 @@ enum e_eventCategory
 class Event
 {
 public:
-	b8 handled = false;
+	bool handled = false;
 
 	virtual e_eventType getEventType() const = 0;
 	virtual const char* getName() const = 0;
 	virtual u32 getCategoryFlags() const = 0;
 	virtual std::string toString() const { return getName(); }
 
-	b8 isInCategory(e_eventCategory category)
+	bool isInCategory(e_eventCategory category)
 	{
 		return getCategoryFlags() & category;
 	}
@@ -54,7 +54,7 @@ public:
 	}
 
 	template<typename T, typename F>
-	b8 dispatch(const F& func)
+	bool dispatch(const F& func)
 	{
 		if (m_event.getEventType() == T::getStaticType())
 		{

@@ -29,7 +29,7 @@ public:
 	Window(const windowProperties& properties);
 	~Window();
 
-	b8 init(const windowProperties& properties);
+	bool init(const windowProperties& properties);
 	void onUpdate();
 
 	inline u32 getWidth() const { return m_data.width; };

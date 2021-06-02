@@ -7,7 +7,7 @@
 #include "events/keyEvent.h"
 #include "events/mouseEvent.h"
 
-static b8 s_glfwInitialized = false;
+static bool s_glfwInitialized = false;
 
 Window* Window::create(const windowProperties& properties)
 {
@@ -21,7 +21,7 @@ Window::Window(const windowProperties& properties)
 
 Window::~Window() {}
 
-b8 Window::init(const windowProperties& properties)
+bool Window::init(const windowProperties& properties)
 {
 	m_data.title = properties.m_title;
 	m_data.width = properties.m_width;

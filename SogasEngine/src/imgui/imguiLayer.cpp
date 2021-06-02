@@ -8,7 +8,6 @@
 #include "imgui_impl_opengl3.h"
 #include <iostream>
 
-
 ImGuiLayer::ImGuiLayer()
 	: Layer("ImGuiLayer")
 {
@@ -50,7 +49,6 @@ void ImGuiLayer::onAttach()
 	io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
 	io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 	io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
-	//io.KeyMap[] = GLFW_KEY_LEFT_CONTROL
 
 	ImGui_ImplOpenGL3_Init();
 }
@@ -72,7 +70,7 @@ void ImGuiLayer::onUpdate()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
 
-	static b8 show = true;
+	static bool show = true;
 	ImGui::ShowDemoWindow(&show);
 
 	ImGui::Render();
@@ -92,7 +90,7 @@ void ImGuiLayer::onEvent(Event& event)
 	dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(ImGuiLayer::onKeyPressed));
 }
 
-b8 ImGuiLayer::onMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+bool ImGuiLayer::onMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.MouseDown[e.getMouseButton()] = true;
@@ -100,21 +98,21 @@ b8 ImGuiLayer::onMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	return false;
 }
 
-b8 ImGuiLayer::onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+bool ImGuiLayer::onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.MouseDown[e.getMouseButton()] = false;
 	return false;
 }
 
-b8 ImGuiLayer::onMouseMovedEvent(MouseMoveEvent& e)
+bool ImGuiLayer::onMouseMovedEvent(MouseMoveEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.MousePos = ImVec2(e.getX(), e.getY());
 	return false;
 }
 
-b8 ImGuiLayer::onMouseScrolledEvent(MouseScrolledEvent& e)
+bool ImGuiLayer::onMouseScrolledEvent(MouseScrolledEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.MouseWheelH += e.getOffsetX();
@@ -122,7 +120,7 @@ b8 ImGuiLayer::onMouseScrolledEvent(MouseScrolledEvent& e)
 	return false;
 }
 
-b8 ImGuiLayer::onWindowResized(windowResizeEvent& e)
+bool ImGuiLayer::onWindowResized(windowResizeEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(e.getWidth(), e.getHeight());
@@ -132,7 +130,7 @@ b8 ImGuiLayer::onWindowResized(windowResizeEvent& e)
 	return false;
 }
 
-b8 ImGuiLayer::onKeyTypedEvent(KeyTypedEvent& e)
+bool ImGuiLayer::onKeyTypedEvent(KeyTypedEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	i32 keycode = e.getKeyCode();
@@ -142,14 +140,14 @@ b8 ImGuiLayer::onKeyTypedEvent(KeyTypedEvent& e)
 	return false;
 }
 
-b8 ImGuiLayer::onKeyReleased(KeyReleasedEvent& e)
+bool ImGuiLayer::onKeyReleased(KeyReleasedEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	io.KeysDown[e.getKeyCode()] = false;
 	return false;
 }
 
-b8 ImGuiLayer::onKeyPressed(KeyPressedEvent& e)
+bool ImGuiLayer::onKeyPressed(KeyPressedEvent& e)
 {
 	ImGuiIO& io = ImGui::GetIO();
 

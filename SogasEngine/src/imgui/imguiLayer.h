@@ -20,14 +20,14 @@ public:
 	void onEvent(Event& event);
 
 private:
-	b8 onMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-	b8 onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-	b8 onMouseMovedEvent(MouseMoveEvent& e);
-	b8 onMouseScrolledEvent(MouseScrolledEvent& e);
-	b8 onWindowResized(windowResizeEvent& e);
-	b8 onKeyTypedEvent(KeyTypedEvent& e);
-	b8 onKeyReleased(KeyReleasedEvent& e);
-	b8 onKeyPressed(KeyPressedEvent& e);
+	bool onMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+	bool onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+	bool onMouseMovedEvent(MouseMoveEvent& e);
+	bool onMouseScrolledEvent(MouseScrolledEvent& e);
+	bool onWindowResized(windowResizeEvent& e);
+	bool onKeyTypedEvent(KeyTypedEvent& e);
+	bool onKeyReleased(KeyReleasedEvent& e);
+	bool onKeyPressed(KeyPressedEvent& e);
 
 	f32 m_time = 0.0f;
 };
