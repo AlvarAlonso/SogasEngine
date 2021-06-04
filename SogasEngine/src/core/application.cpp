@@ -25,8 +25,6 @@ Application::Application()
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
-
-
 	s_application = this;
 }
 
@@ -43,9 +41,6 @@ Application* Application::getInstance()
 void Application::run()
 {
 	// TODO: There are openGL errors not being handled. We have to implement a generalized error checking method for openGL calls
-
-	// simple triangle program hardcoded using the opengl abstraction
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	// main loop
 	while (m_running)
