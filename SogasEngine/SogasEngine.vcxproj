@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -94,6 +94,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="external\glm\glm\common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_vector_relational.hpp" />
@@ -385,9 +386,13 @@
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\entryPoint.h" />
+    <ClInclude Include="src\core\input.h" />
+    <ClInclude Include="src\core\keyCodes.h" />
     <ClInclude Include="src\core\layer.h" />
     <ClInclude Include="src\core\layerStack.h" />
     <ClInclude Include="src\core\logger.h" />
+    <ClInclude Include="src\core\mouseButtonCodes.h" />
+    <ClInclude Include="src\core\time.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\platform\OpenGL\openGLBuffer.h" />
@@ -407,6 +412,7 @@
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
@@ -414,10 +420,12 @@
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
+    <ClCompile Include="src\core\time.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLBuffer.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLRendererAPI.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLShader.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLVertexArray.cpp" />
+    <ClCompile Include="src\platform\windows\windowsInput.cpp" />
     <ClCompile Include="src\renderer\buffer.cpp" />
     <ClCompile Include="src\core\window.cpp" />
     <ClCompile Include="src\imgui\imguiLayer.cpp" />

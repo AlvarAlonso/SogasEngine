@@ -2,7 +2,6 @@
 #include "renderer/shader.h"
 #include "core/assertions.h"
 
-#include "GL/glew.h"
 #include <fstream>
 #include <sstream>
 
@@ -37,26 +36,30 @@ void OpenGLShader::unbind() const
 
 void OpenGLShader::setUniform1(const char* varname, const bool input)
 {
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
+	GLint location = getUniformLocation(varname);
 	glUniform1i(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 void OpenGLShader::setUniform1(const char* varname, const int input)
 {
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
+	GLint location = getUniformLocation(varname);
 	glUniform1i(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 void OpenGLShader::setUniform1(const char* varname, const float input)
 {
-	GLint location = glGetUniformLocation(m_ID, varname);
-	SGSASSERT(location != -1, "Invalid uniform location");
-	glUniform1f(location, input);
-	//SGSASSERT(glGetError() == GL_NO_ERROR);
+	GLint location = getUniformLocation(varname);
+	glProgramUniform1f(m_ID, location, input);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
+}
+
+void OpenGLShader::setMatrix44(const char* varname, const glm::mat4 input)
+{
+	GLint location = getUniformLocation(varname);
+	glUniformMatrix4fv(location, 1, GL_FALSE, &input[0][0]);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 ShaderProgramSource OpenGLShader::parseShader(const std::string& filepath)
@@ -114,6 +117,7 @@ u32 OpenGLShader::compileShader(u32 type, const std::string& source)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 		char* message = (char*)alloca(length * sizeof(char));
 		glGetShaderInfoLog(id, length, &length, message);
+		SGSERROR("Shader failed to compile: %s", message);
 		glDeleteShader(id);
 		return 0;
 	}
@@ -126,6 +130,11 @@ u32 OpenGLShader::createShader(const std::string& vertexSource, const std::strin
 	u32 program = glCreateProgram();
 	u32 vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
 	u32 fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+	// Let us know they compiled
+	if (vertexShader != 0 && fragmentShader != 0){
+		SGSDEBUG("Shader %s compiled!", m_filePath.c_str());
+	}
 
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, fragmentShader);
@@ -166,9 +175,8 @@ u32 OpenGLShader::getUniformLocation(const std::string& name)
 
 	i32 location = glGetUniformLocation(m_ID, name.c_str());
 	if (location == -1) {
-		SGSWARN("Uniform %s doesn't exist", name);
+		SGSWARN("Uniform %s is not being used!", name);
 	}
-		//std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 	
 	m_uniformLocationCache[name] = location;
 	return location;

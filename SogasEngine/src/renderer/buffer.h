@@ -102,7 +102,7 @@ private:
 	}
 };
 
-class VertexBuffer
+class SGS VertexBuffer
 {
 public:
 	virtual ~VertexBuffer() = default;
@@ -118,7 +118,7 @@ public:
 	static VertexBuffer* create(f32* vertices, u32 size);
 };
 
-class IndexBuffer
+class SGS IndexBuffer
 {
 public:
 	virtual ~IndexBuffer() = default;

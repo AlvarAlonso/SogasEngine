@@ -6,8 +6,14 @@
 #include "renderer/shader.h"
 #include "platform/OpenGL/openGLShader.h"
 #include "logger.h"
+#include "time.h"
+#include "camera.h"
+
+#include "input.h"
 
 static Application* s_application = nullptr;
+
+static Camera* s_camera = nullptr;
 
 Application::Application()
 {
@@ -19,32 +25,7 @@ Application::Application()
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
-	// renderer example primitive usage
-	m_vertexArray.reset(VertexArray::create());
 
-	f32 positions[9] = {
-		-0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f
-	};
-
-	u32 indices[3] = {
-		0, 1, 2
-	};
-
-	std::shared_ptr<VertexBuffer> vertexBuffer;
-	vertexBuffer.reset(VertexBuffer::create(positions, sizeof(positions)));
-
-	VertexBufferLayout layout = { {ShaderDataType::Float3, "a_position"} };
-
-	vertexBuffer->setLayout(layout);
-	m_vertexArray->addVertexBuffer(vertexBuffer);
-
-	std::shared_ptr<IndexBuffer> indexBuffer;
-	indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u32)));
-	m_vertexArray->setIndexBuffer(indexBuffer);
-
-	m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
 	s_application = this;
 }
@@ -69,17 +50,12 @@ void Application::run()
 	// main loop
 	while (m_running)
 	{
-		Renderer::clear();
-
-		m_shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
-
-		Renderer::draw(m_vertexArray);
-		//Renderer::drawIndexed(m_vertexArray);
+		Time::deltaTime = (f32)glfwGetTime() - (f32)Time::time;
+		Time::time = glfwGetTime();
 
 		for (Layer* layer : m_layerStack)
 		{
-			layer->onUpdate();
+			layer->onUpdate(Time::deltaTime);
 		}
 
 		m_window->onUpdate();
@@ -99,8 +75,6 @@ void Application::onEvent(Event& e)
 			break;
 		(*it)->onEvent(e);
 	}
-
-	SGSINFO(e.toString().c_str());
 }
 
 void Application::pushLayer(Layer* layer)
