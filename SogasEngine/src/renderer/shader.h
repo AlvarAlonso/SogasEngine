@@ -1,8 +1,9 @@
 #pragma once
 
+#include "defines.h"
 #include <string>
 
-class Shader
+class SGS Shader
 {
 public:
 	virtual ~Shader() = default;

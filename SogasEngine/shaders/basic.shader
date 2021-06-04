@@ -3,9 +3,14 @@
 
 layout(location = 0) in vec4 position;
 
+uniform float offset;
+uniform mat4 view;
+uniform mat4 projection;
+
 void main()
 {
-	gl_Position = position;
+	mat4 modelView = projection * view;
+	gl_Position = modelView * vec4(position + vec4(offset, 0, 0, 1));
 };
 
 #shader fragment

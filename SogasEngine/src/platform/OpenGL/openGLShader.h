@@ -1,11 +1,12 @@
 #pragma once
 
-#include "GL/glew.h"
 #include "core/assertions.h"
 #include <string>
 #include <unordered_map>
 
+#include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 #include "renderer/shader.h"
+#include "../external/glm/glm/glm.hpp"
 
 struct ShaderProgramSource
 {
@@ -32,10 +33,12 @@ public:
 	void setUniform(const char* varname, bool input) { setUniform1(varname, input); }
 	void setUniform(const char* varname, int input) { setUniform1(varname, input); }
 	void setUniform(const char* varname, float input) { setUniform1(varname, input); }
+	void setUniform(const char* varname, glm::mat4 input) { setMatrix44(varname, input); }
 
 	virtual void setUniform1(const char* varname, const bool input1);
 	virtual void setUniform1(const char* varname, const int input1);
 	virtual void setUniform1(const char* varname, const float input);
+	virtual void setMatrix44(const char* varname, const glm::mat4 input);
 
 private:
 	ShaderProgramSource parseShader(const std::string& filepath);

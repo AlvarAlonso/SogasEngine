@@ -4,7 +4,7 @@
 #include <vector>
 #include "buffer.h"
 
-class VertexArray
+class SGS VertexArray
 {
 public:
 	virtual ~VertexArray(){}

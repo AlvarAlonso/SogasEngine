@@ -2,7 +2,7 @@
 
 #include "rendererAPI.h"
 
-class Renderer
+class SGS Renderer
 {
 public:
 	enum class API 
@@ -15,6 +15,11 @@ public:
 	inline static void clear()
 	{
 		s_RendererAPI->clear();
+	}
+
+	inline static void setClearColor(const glm::vec4& color)
+	{
+		s_RendererAPI->setClearColor(color);
 	}
 
 	inline static void draw(const std::shared_ptr<VertexArray>& vertexArray)

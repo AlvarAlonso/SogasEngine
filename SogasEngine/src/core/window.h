@@ -37,6 +37,8 @@ public:
 
 	inline void setEventCallback(const eventCallbackFunc& callback) { m_data.eventCallback = callback; }
 
+	inline GLFWwindow* getNativeWindow() { return m_glfwWindow; }
+
 	static Window* create(const windowProperties& properties = windowProperties());
 
 private:

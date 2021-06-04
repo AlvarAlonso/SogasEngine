@@ -1,8 +1,9 @@
 #pragma once
 
 #include "vertexArray.h"
+#include "../external/glm/glm/glm.hpp"
 
-class RendererAPI
+class SGS RendererAPI
 {
 public:
 	enum class API
@@ -11,6 +12,8 @@ public:
 	};
 public:
 	virtual void clear() = 0;
+
+	virtual void setClearColor(const glm::vec4& colour) = 0;
 
 	virtual void draw(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 

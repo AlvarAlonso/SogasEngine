@@ -27,11 +27,6 @@ public:
 	i16 m_width;
 	i16 m_height;
 
-	// render primitives
-
-	std::shared_ptr<Shader> m_shader;
-	std::shared_ptr<VertexArray> m_vertexArray;
-
 	// functions
 	void run();
 	void shutdown();
