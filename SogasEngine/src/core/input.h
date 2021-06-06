@@ -12,5 +12,6 @@ public:
 
 	// Mouse
 	static bool isMouseButtonPressed(i32 button);
+	static bool isMouseButtonReleased(i32 button);
 	static glm::vec2 getMousePosition();
 };
