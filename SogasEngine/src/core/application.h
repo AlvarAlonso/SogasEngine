@@ -37,6 +37,9 @@ public:
 
 	inline Window& getWindow() { return *m_window; }
 
+	inline void showCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+	inline void hideCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN); }
+
 private:
 	bool onWindowClosed(windowCloseEvent& e);
 	bool onWindowResize(windowResizeEvent& e);

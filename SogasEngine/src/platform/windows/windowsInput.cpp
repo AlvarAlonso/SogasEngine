@@ -16,6 +16,13 @@ bool Input::isMouseButtonPressed(i32 button)
 	return state == GLFW_PRESS;
 }
 
+bool Input::isMouseButtonReleased(i32 button)
+{
+	GLFWwindow* window = Application::getInstance()->getWindow().getNativeWindow();
+	auto state = glfwGetMouseButton(window, button);
+	return state == GLFW_PRESS;
+}
+
 glm::vec2 Input::getMousePosition()
 {
 	GLFWwindow* window = Application::getInstance()->getWindow().getNativeWindow();
