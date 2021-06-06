@@ -57,7 +57,7 @@ void ImGuiLayer::onDetach()
 {
 }
 
-void ImGuiLayer::onUpdate()
+void ImGuiLayer::onUpdate(f32 dt)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	Application* app = Application::getInstance();

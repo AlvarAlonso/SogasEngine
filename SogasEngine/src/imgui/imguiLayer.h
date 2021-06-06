@@ -16,7 +16,7 @@ public:
 	void onAttach();
 	void onDetach();
 
-	void onUpdate();
+	void onUpdate(f32 dt);
 	void onEvent(Event& event);
 
 private:
