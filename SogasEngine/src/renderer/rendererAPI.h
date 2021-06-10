@@ -15,6 +15,8 @@ public:
 
 	virtual void setClearColor(const glm::vec4& colour) = 0;
 
+	virtual void setDepthBuffer(const bool& setOn) = 0;
+
 	virtual void draw(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 
 	virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;

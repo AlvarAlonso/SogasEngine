@@ -31,3 +31,14 @@ glm::vec2 Input::getMousePosition()
 	return glm::vec2(xpos, ypos);
 }
 
+void Input::setMousePosition(f32 x, f32 y)
+{
+	GLFWwindow* window = Application::getInstance()->getWindow().getNativeWindow();
+	glfwSetCursorPos(window, x, y);
+}
+
+void Input::centerMouse()
+{
+	GLFWwindow* window = Application::getInstance()->getWindow().getNativeWindow();
+	setMousePosition((Application::getInstance()->getWindow().getWidth() / 2.0), (Application::getInstance()->getWindow().getHeight() / 2.0));
+}

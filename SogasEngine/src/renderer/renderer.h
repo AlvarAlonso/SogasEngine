@@ -22,6 +22,11 @@ public:
 		s_RendererAPI->setClearColor(color);
 	}
 
+	inline static void setDepthBuffer(const bool& setOn)
+	{
+		s_RendererAPI->setDepthBuffer(setOn);
+	}
+
 	inline static void draw(const std::shared_ptr<VertexArray>& vertexArray)
 	{
 		s_RendererAPI->draw(vertexArray);

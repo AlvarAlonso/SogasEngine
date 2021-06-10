@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="external\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\actors\mesh.cpp" />
+    <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
@@ -8,26 +11,28 @@
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
+    <ClCompile Include="src\core\time.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLBuffer.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLRendererAPI.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLShader.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLTexture.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLVertexArray.cpp" />
+    <ClCompile Include="src\platform\windows\windowsInput.cpp" />
     <ClCompile Include="src\renderer\buffer.cpp" />
     <ClCompile Include="src\core\window.cpp" />
     <ClCompile Include="src\imgui\imguiLayer.cpp" />
+    <ClCompile Include="src\renderer\material.cpp" />
     <ClCompile Include="src\renderer\renderer.cpp" />
     <ClCompile Include="src\renderer\rendererAPI.cpp" />
     <ClCompile Include="src\renderer\shader.cpp" />
-    <ClCompile Include="src\renderer\vertexArray.cpp" />
-    <ClCompile Include="src\core\time.cpp" />
-    <ClCompile Include="src\core\camera.cpp" />
-    <ClCompile Include="src\platform\windows\windowsInput.cpp" />
-    <ClCompile Include="src\platform\OpenGL\openGLTexture.cpp" />
     <ClCompile Include="src\renderer\texture.cpp" />
-    <ClCompile Include="external\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\renderer\material.cpp" />
+    <ClCompile Include="src\renderer\vertexArray.cpp" />
+    <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\stb_image\stb_image.h" />
+    <ClInclude Include="src\actors\mesh.h" />
+    <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="external\glm\glm\common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_vector_relational.hpp" />
@@ -319,14 +324,19 @@
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\entryPoint.h" />
+    <ClInclude Include="src\core\input.h" />
+    <ClInclude Include="src\core\keyCodes.h" />
     <ClInclude Include="src\core\layer.h" />
     <ClInclude Include="src\core\layerStack.h" />
     <ClInclude Include="src\core\logger.h" />
+    <ClInclude Include="src\core\mouseButtonCodes.h" />
+    <ClInclude Include="src\core\time.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\platform\OpenGL\openGLBuffer.h" />
     <ClInclude Include="src\platform\OpenGL\openGLRendererAPI.h" />
     <ClInclude Include="src\platform\OpenGL\openGLShader.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLTexture.h" />
     <ClInclude Include="src\platform\OpenGL\openGLVertexArray.h" />
     <ClInclude Include="src\renderer\buffer.h" />
     <ClInclude Include="src\events\appEvent.h" />
@@ -334,20 +344,14 @@
     <ClInclude Include="src\events\keyEvent.h" />
     <ClInclude Include="src\events\mouseEvent.h" />
     <ClInclude Include="src\imgui\imguiLayer.h" />
+    <ClInclude Include="src\renderer\material.h" />
     <ClInclude Include="src\renderer\renderer.h" />
     <ClInclude Include="src\renderer\rendererAPI.h" />
     <ClInclude Include="src\renderer\shader.h" />
+    <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
     <ClInclude Include="src\sogas.h" />
-    <ClInclude Include="src\core\time.h" />
-    <ClInclude Include="src\core\camera.h" />
-    <ClInclude Include="src\core\input.h" />
-    <ClInclude Include="src\core\keyCodes.h" />
-    <ClInclude Include="src\core\mouseButtonCodes.h" />
-    <ClInclude Include="src\platform\OpenGL\openGLTexture.h" />
-    <ClInclude Include="src\renderer\texture.h" />
-    <ClInclude Include="external\stb_image\stb_image.h" />
-    <ClInclude Include="src\renderer\material.h" />
+    <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

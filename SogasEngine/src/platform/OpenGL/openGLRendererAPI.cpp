@@ -12,6 +12,11 @@ void OpenGLRendererAPI::setClearColor(const glm::vec4& colour)
 	glClearColor(colour.r, colour.g, colour.b, colour.a);
 }
 
+void OpenGLRendererAPI::setDepthBuffer(const bool& setOn)
+{
+	setOn ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+}
+
 void OpenGLRendererAPI::draw(const std::shared_ptr<VertexArray>& vertexArray)
 {
 	for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())
