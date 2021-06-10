@@ -4,6 +4,8 @@
 layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec2 a_texCoord;
 
+out vec2 texCoord;
+
 uniform float u_offset;
 uniform mat4 u_view;
 uniform mat4 u_projection;
@@ -20,9 +22,13 @@ void main()
 
 layout(location = 0) out vec4 color;
 
+in vec2 texCoord;
+
 uniform float u_color;
+uniform sampler2D u_texture;
 
 void main() 
 {
-	color = vec4(u_color, 0.0, 1.0, 1.0);
+	//color = vec4(u_color, 0.0, 1.0, 1.0);
+	color = texture(u_texture, texCoord) * u_color;
 };

@@ -4,7 +4,7 @@
 
 #include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 
-class OpenGLTexture2D : Texture2D
+class OpenGLTexture2D : public Texture2D
 {
 public:
 	OpenGLTexture2D(u32 width, u32 height);

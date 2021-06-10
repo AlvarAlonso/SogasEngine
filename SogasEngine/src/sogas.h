@@ -15,8 +15,9 @@
 
 // Renderer includes
 #include "renderer/shader.h"
-#include "renderer/VertexArray.h"
+#include "renderer/vertexArray.h"
 #include "renderer/renderer.h"
+#include "renderer/texture.h"
 // TODO: platform specific should be done in engine
 #include "platform/openGL/openGLShader.h"
 

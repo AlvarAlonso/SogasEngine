@@ -18,7 +18,7 @@ public:
 
 };
 
-class Texture2D : public Texture
+class SGS Texture2D : public Texture
 {
 public:
 	static std::shared_ptr<Texture2D> create(u32 width, u32 height);

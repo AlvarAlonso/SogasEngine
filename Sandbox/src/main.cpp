@@ -10,6 +10,9 @@ public:
 	ExampleLayer()
 		: Layer("Example")
 	{
+		// load texture
+		m_texture = Texture2D::create("../../Assets/brick_wall_2k.jpg");
+
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
 
@@ -122,12 +125,14 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
 		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
 		
+		m_texture->bind();
 		m_shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
 		//Renderer::draw(m_vertexArray);
 		Renderer::drawIndexed(m_vertexArray);
@@ -186,6 +191,8 @@ private:
 	Camera* m_camera;
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<VertexArray> m_vertexArray;
+
+	std::shared_ptr<Texture2D> m_texture;
 
 	// TODO: erase them, provisional at the moment
 	float x = 0.0f;
