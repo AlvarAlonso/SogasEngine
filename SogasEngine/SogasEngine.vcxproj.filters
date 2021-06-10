@@ -25,6 +25,7 @@
     <ClCompile Include="src\platform\OpenGL\openGLTexture.cpp" />
     <ClCompile Include="src\renderer\texture.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\renderer\material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\glm\glm\common.hpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="src\platform\OpenGL\openGLTexture.h" />
     <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="external\stb_image\stb_image.h" />
+    <ClInclude Include="src\renderer\material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />
