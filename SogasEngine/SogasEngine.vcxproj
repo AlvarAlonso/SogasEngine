@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,7 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +94,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="external\glm\glm\common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_common.hpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="src\platform\OpenGL\openGLBuffer.h" />
     <ClInclude Include="src\platform\OpenGL\openGLRendererAPI.h" />
     <ClInclude Include="src\platform\OpenGL\openGLShader.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLTexture.h" />
     <ClInclude Include="src\platform\OpenGL\openGLVertexArray.h" />
     <ClInclude Include="src\renderer\buffer.h" />
     <ClInclude Include="src\events\appEvent.h" />
@@ -408,10 +410,12 @@
     <ClInclude Include="src\renderer\renderer.h" />
     <ClInclude Include="src\renderer\rendererAPI.h" />
     <ClInclude Include="src\renderer\shader.h" />
+    <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
@@ -424,6 +428,7 @@
     <ClCompile Include="src\platform\OpenGL\openGLBuffer.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLRendererAPI.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLShader.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLTexture.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLVertexArray.cpp" />
     <ClCompile Include="src\platform\windows\windowsInput.cpp" />
     <ClCompile Include="src\renderer\buffer.cpp" />
@@ -432,6 +437,7 @@
     <ClCompile Include="src\renderer\renderer.cpp" />
     <ClCompile Include="src\renderer\rendererAPI.cpp" />
     <ClCompile Include="src\renderer\shader.cpp" />
+    <ClCompile Include="src\renderer\texture.cpp" />
     <ClCompile Include="src\renderer\vertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>

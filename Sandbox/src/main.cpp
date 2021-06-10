@@ -13,16 +13,15 @@ public:
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
 
-		//f32 positions[9] = {
-		//	-0.5f, -0.5f, 1.0f,
-		//	 0.0f,  0.5f, 1.0f,
-		//	 0.5f, -0.5f, 1.0f
-		//};
-		//
-		//u32 indices[3] = {
-		//	0, 1, 2
-		//};
-
+		f32 quadVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+		};
+		
+		u32 quadIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		/*
 		f32 positions[72] = {
 			 1.0,  1.0, -1.0,
 			-1.0,  1.0, -1.0,
@@ -63,17 +62,20 @@ public:
 			16, 17, 18, 18, 19, 16,
 			20, 21, 22, 22, 23, 20
 		};
-
+		*/
 		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::create(positions, sizeof(positions)));
+		vertexBuffer.reset(VertexBuffer::create(quadVertices, sizeof(quadVertices)));
 
-		VertexBufferLayout layout = { {ShaderDataType::Float3, "a_position"} };
+		VertexBufferLayout layout = { 
+			{ShaderDataType::Float3, "a_position"},
+			{ShaderDataType::Float2, "a_texCoord"}
+		};
 
 		vertexBuffer->setLayout(layout);
 		m_vertexArray->addVertexBuffer(vertexBuffer);
 
 		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u32)));
+		indexBuffer.reset(IndexBuffer::create(quadIndices, sizeof(quadIndices) / sizeof(u32)));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
@@ -88,13 +90,13 @@ public:
 	{
 		Renderer::setClearColor(glm::vec4( 0.2 ));
 		Renderer::clear();
-
+		/*
 		if (x < -1.0f || x > 1.0f) {
 			inc *= -1;
 		}
 
 		x += inc;
-
+		*/
 		// Should dt be stored as a class variable and used in the events through the dispatcher???
 		if (Input::isKeyPressed(SGS_KEY_A)){
 			m_camera->move(LEFT, dt);
@@ -117,14 +119,15 @@ public:
 			m_camera->rotate(deltaMouse.x, deltaMouse.y);
 		}
 
-		glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
+		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
+		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
 		
 		m_shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("view", m_camera->getView());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("offset", x);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 
 		//Renderer::draw(m_vertexArray);
 		Renderer::drawIndexed(m_vertexArray);
