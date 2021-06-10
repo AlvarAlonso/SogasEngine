@@ -41,6 +41,9 @@ public:
 		indexBuffer.reset(IndexBuffer::create(quadIndices, sizeof(quadIndices) / sizeof(u32)));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
+		mesh = new Mesh();
+		mesh->load("data/viking-room.obj");
+
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
 		m_camera = new Camera();
@@ -79,7 +82,6 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
 		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
 		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
-		//glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
 		
 		m_shader->bind();
 		m_texture->bind();
@@ -91,6 +93,7 @@ public:
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
 
+		//Renderer::drawIndexed(m_vertexArray);
 		Renderer::drawIndexed(mesh->m_vertexArray);
 	}
 
