@@ -12,6 +12,9 @@ public:
 	{
 		// load texture
 		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
+		m_defaultTexture = Texture2D::create(1, 1);
+		uint32_t defaultTextureData = 0xffffffff;
+		m_defaultTexture->setData(&defaultTextureData, sizeof(uint32_t));
 
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
@@ -127,6 +130,7 @@ public:
 		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
 		
 		m_texture->bind();
+		//m_defaultTexture->bind();
 		m_shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
@@ -194,6 +198,7 @@ private:
 	std::shared_ptr<VertexArray> m_vertexArray;
 
 	std::shared_ptr<Texture2D> m_texture;
+	std::shared_ptr<Texture2D> m_defaultTexture;
 
 	// TODO: erase them, provisional at the moment
 	float x = 0.0f;
