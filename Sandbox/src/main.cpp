@@ -54,7 +54,13 @@ public:
 		Renderer::setClearColor(glm::vec4( 0.2 ));
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
+		
+		if (x < -1.0f || x > 1.0f) {
+			inc *= -1;
+		}
 
+		x += inc;
+		
 		// Should dt be stored as a class variable and used in the events through the dispatcher???
 		if (Input::isKeyPressed(SGS_KEY_A)){
 			m_camera->move(LEFT, dt);
@@ -75,6 +81,7 @@ public:
 		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
 		//glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
 		
+		m_shader->bind();
 		m_texture->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
@@ -84,7 +91,6 @@ public:
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
 
-		//Renderer::draw(mesh->m_vertexArray);
 		Renderer::drawIndexed(mesh->m_vertexArray);
 	}
 
@@ -122,7 +128,6 @@ public:
 
 	bool onMouseMoved(MouseMoveEvent& event)
 	{
-		//glm::vec2 mousePosition = Input::getMousePosition();
 		glm::vec2 deltaMouse = mouse_pos - Input::getMousePosition();
 		if (m_camera->m_locked) {
 			Input::centerMouse();
