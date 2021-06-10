@@ -11,7 +11,7 @@ public:
 		: Layer("Example")
 	{
 		// load texture
-		m_texture = Texture2D::create("../../Assets/brick_wall_2k.jpg");
+		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
 
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
@@ -124,6 +124,7 @@ public:
 
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
 		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
+		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
 		
 		m_texture->bind();
 		m_shader->bind();

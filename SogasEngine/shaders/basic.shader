@@ -13,6 +13,7 @@ uniform mat4 u_model;
 
 void main()
 {
+	texCoord = a_texCoord;
 	mat4 modelView = u_projection * u_view;
 	gl_Position = modelView * u_model * vec4(a_position, 1.0);
 };
@@ -30,5 +31,6 @@ uniform sampler2D u_texture;
 void main() 
 {
 	//color = vec4(u_color, 0.0, 1.0, 1.0);
-	color = texture(u_texture, texCoord) * u_color;
+	float flat_color = u_color;
+	color = texture(u_texture, texCoord);
 };
