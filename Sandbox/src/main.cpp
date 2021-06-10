@@ -11,11 +11,36 @@ public:
 	ExampleLayer()
 		: Layer("Example")
 	{
+		// load texture
+		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
+
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
 
-		mesh = new Mesh();
-		mesh->load("data/viking-room.obj");
+		f32 quadVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+		};
+		
+		u32 quadIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::create(quadVertices, sizeof(quadVertices)));
+
+		VertexBufferLayout layout = { 
+			{ShaderDataType::Float3, "a_position"},
+			{ShaderDataType::Float2, "a_texCoord"}
+		};
+
+		vertexBuffer->setLayout(layout);
+		m_vertexArray->addVertexBuffer(vertexBuffer);
+
+		std::shared_ptr<IndexBuffer> indexBuffer;
+		indexBuffer.reset(IndexBuffer::create(quadIndices, sizeof(quadIndices) / sizeof(u32)));
+		m_vertexArray->setIndexBuffer(indexBuffer);
+
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
@@ -30,13 +55,13 @@ public:
 		Renderer::setClearColor(glm::vec4( 0.2 ));
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
-
+		/*
 		if (x < -1.0f || x > 1.0f) {
 			inc *= -1;
 		}
 
 		x += inc;
-
+		*/
 		// Should dt be stored as a class variable and used in the events through the dispatcher???
 		if (Input::isKeyPressed(SGS_KEY_A)){
 			m_camera->move(LEFT, dt);
@@ -52,14 +77,19 @@ public:
 			m_camera->move(BACKWARD, dt);
 		}
 
+		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
+		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
+		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
 		glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
 		
-		m_shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 0.0f);
+		m_texture->bind();
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
 
 		//Renderer::draw(mesh->m_vertexArray);
 		Renderer::drawIndexed(mesh->m_vertexArray);
@@ -131,6 +161,8 @@ private:
 	Camera* m_camera;
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<VertexArray> m_vertexArray;
+
+	std::shared_ptr<Texture2D> m_texture;
 
 	// TODO: erase them, provisional at the moment
 	float x = 0.0f;
