@@ -41,7 +41,6 @@ public:
 		indexBuffer.reset(IndexBuffer::create(quadIndices, sizeof(quadIndices) / sizeof(u32)));
 		m_vertexArray->setIndexBuffer(indexBuffer);
 
-
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
 		m_camera = new Camera();
@@ -55,13 +54,7 @@ public:
 		Renderer::setClearColor(glm::vec4( 0.2 ));
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
-		/*
-		if (x < -1.0f || x > 1.0f) {
-			inc *= -1;
-		}
 
-		x += inc;
-		*/
 		// Should dt be stored as a class variable and used in the events through the dispatcher???
 		if (Input::isKeyPressed(SGS_KEY_A)){
 			m_camera->move(LEFT, dt);
@@ -80,7 +73,7 @@ public:
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
 		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
 		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
-		glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
+		//glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
 		
 		m_texture->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
@@ -106,24 +99,6 @@ public:
 
 	bool onKeyPressed(KeyPressedEvent& event)
 	{
-		/*
-		if (event.getKeyCode() == SGS_KEY_A)
-		{
-			m_camera->setPosition(m_camera->getPosition() + glm::vec3(-1.0, 0.0, 0.0));
-		}
-		if (event.getKeyCode() == SGS_KEY_D)
-		{
-			m_camera->setPosition(m_camera->getPosition() + glm::vec3(1.0, 0.0, 0.0));
-		}
-		if (event.getKeyCode() == SGS_KEY_W)
-		{
-			m_camera->setPosition(m_camera->getPosition() + glm::vec3(0.0, -1.0, 0.0));
-		}
-		if (event.getKeyCode() == SGS_KEY_S)
-		{
-			m_camera->setPosition(m_camera->getPosition() + glm::vec3(0.0, 1.0, 0.0));
-		}
-		*/
 		return false;
 	}
 
