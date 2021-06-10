@@ -3,6 +3,7 @@
 #include "sogas.h"
 
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "actors/mesh.h"
 
 class ExampleLayer : public Layer
 {
@@ -13,68 +14,8 @@ public:
 		// renderer example primitive usage
 		m_vertexArray.reset(VertexArray::create());
 
-		//f32 positions[9] = {
-		//	-0.5f, -0.5f, 1.0f,
-		//	 0.0f,  0.5f, 1.0f,
-		//	 0.5f, -0.5f, 1.0f
-		//};
-		//
-		//u32 indices[3] = {
-		//	0, 1, 2
-		//};
-
-		f32 positions[72] = {
-			 1.0,  1.0, -1.0,
-			-1.0,  1.0, -1.0,
-			-1.0, -1.0, -1.0,
-			 1.0, -1.0, -1.0,
-
-			 1.0,  1.0,  1.0,
-			-1.0,  1.0,  1.0,
-			-1.0, -1.0,  1.0,
-			 1.0, -1.0,  1.0,
-
-			 1.0,  1.0,  1.0,
-			-1.0,  1.0,  1.0,
-			-1.0,  1.0, -1.0,
-			 1.0,  1.0, -1.0,
-
-			 1.0, -1.0,  1.0,
-			-1.0, -1.0,  1.0,
-			-1.0, -1.0, -1.0,
-			 1.0, -1.0, -1.0,
-
-			-1.0,  1.0,  1.0,
-			-1.0, -1.0,  1.0,
-			-1.0, -1.0, -1.0,
-			-1.0,  1.0, -1.0,
-
-			 1.0,  1.0,  1.0,
-			 1.0, -1.0,  1.0,
-			 1.0, -1.0, -1.0,
-			 1.0,  1.0, -1.0
-		};
-
-		u32 indices[36] = {
-			0, 1, 2, 2, 3, 0,
-			4, 5, 6, 6, 7, 4,
-			8, 9, 10, 10, 11, 8,
-			12, 13, 14, 14, 15, 12,
-			16, 17, 18, 18, 19, 16,
-			20, 21, 22, 22, 23, 20
-		};
-
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::create(positions, sizeof(positions)));
-
-		VertexBufferLayout layout = { {ShaderDataType::Float3, "a_position"} };
-
-		vertexBuffer->setLayout(layout);
-		m_vertexArray->addVertexBuffer(vertexBuffer);
-
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::create(indices, sizeof(indices) / sizeof(u32)));
-		m_vertexArray->setIndexBuffer(indexBuffer);
+		mesh = new Mesh();
+		mesh->load("data/viking-room.obj");
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
@@ -87,6 +28,7 @@ public:
 	void onUpdate(f32 dt) override
 	{
 		Renderer::setClearColor(glm::vec4( 0.2 ));
+		Renderer::setDepthBuffer(true);
 		Renderer::clear();
 
 		if (x < -1.0f || x > 1.0f) {
@@ -110,24 +52,17 @@ public:
 			m_camera->move(BACKWARD, dt);
 		}
 
-		glm::vec2 mousePosition = Input::getMousePosition();
-		glm::vec2 deltaMouse = mouse_pos - mousePosition;
-		mouse_pos = mousePosition;
-		if (m_camera->m_locked) {
-			m_camera->rotate(deltaMouse.x, deltaMouse.y);
-		}
-
 		glm::mat4 model = glm::rotate(glm::mat4(1), glm::radians(45.0f), glm::vec3(0, 1, 0));
 		
 		m_shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("view", m_camera->getView());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("offset", x);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 0.0f);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 
-		//Renderer::draw(m_vertexArray);
-		Renderer::drawIndexed(m_vertexArray);
+		//Renderer::draw(mesh->m_vertexArray);
+		Renderer::drawIndexed(mesh->m_vertexArray);
 	}
 
 	void onEvent(Event& event) override
@@ -136,6 +71,7 @@ public:
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onKeyPressed));
 		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonPressed));
 		dispatcher.dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonReleased));
+		dispatcher.dispatch<MouseMoveEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseMoved));
 	}
 
 	bool onKeyPressed(KeyPressedEvent& event)
@@ -179,6 +115,18 @@ public:
 		}
 	}
 
+	bool onMouseMoved(MouseMoveEvent& event)
+	{
+		//glm::vec2 mousePosition = Input::getMousePosition();
+		glm::vec2 deltaMouse = mouse_pos - Input::getMousePosition();
+		if (m_camera->m_locked) {
+			Input::centerMouse();
+			m_camera->rotate(deltaMouse.x, deltaMouse.y);
+		}
+		mouse_pos = Input::getMousePosition();
+		return false;
+	}
+
 private:
 	Camera* m_camera;
 	std::shared_ptr<Shader> m_shader;
@@ -188,6 +136,7 @@ private:
 	float x = 0.0f;
 	float inc = 0.01f;
 	glm::vec2 mouse_pos;
+	Mesh* mesh;
 };
 
 class Sandbox : public Application
