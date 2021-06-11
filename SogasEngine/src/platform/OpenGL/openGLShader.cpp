@@ -156,7 +156,7 @@ u32 OpenGLShader::createShader(const std::string& vertexSource, const std::strin
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
-		SGSERROR("{0}", infoLog.data());
+		SGSERROR("%s", infoLog.data());
 		SGSASSERT_MSG(false, "Shader link error!");
 
 		return 0;

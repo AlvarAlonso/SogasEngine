@@ -12,34 +12,7 @@ public:
 		: Layer("Example")
 	{
 		// load texture
-		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
-
-		// renderer example primitive usage
-		m_vertexArray.reset(VertexArray::create());
-
-		f32 quadVertices[5 * 4] = {
-			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
-		};
-		
-		u32 quadIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(VertexBuffer::create(quadVertices, sizeof(quadVertices)));
-
-		VertexBufferLayout layout = { 
-			{ShaderDataType::Float3, "a_position"},
-			{ShaderDataType::Float2, "a_texCoord"}
-		};
-
-		vertexBuffer->setLayout(layout);
-		m_vertexArray->addVertexBuffer(vertexBuffer);
-
-		std::shared_ptr<IndexBuffer> indexBuffer;
-		indexBuffer.reset(IndexBuffer::create(quadIndices, sizeof(quadIndices) / sizeof(u32)));
-		m_vertexArray->setIndexBuffer(indexBuffer);
+		m_texture = Texture2D::create("../Assets/texture.png");
 
 		mesh = new Mesh();
 		mesh->load("data/viking-room.obj");
@@ -47,7 +20,7 @@ public:
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
 		m_camera = new Camera();
-		m_camera->setPosition({ 0, 0, -2 });
+		m_camera->setPosition({ 0, 15, 50 });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 	}
@@ -80,20 +53,17 @@ public:
 		}
 
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
-		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(0, 1, 0));
-		model = glm::scale(glm::mat4(model), glm::vec3(2.0f, 2.0f, 1.0f));
+		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(1, 0, 0));
+		//model = glm::scale(glm::mat4(model), glm::vec3(1.0f, 2.0f, 1.0f));
 		
 		m_shader->bind();
 		m_texture->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_color", 1.0f);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("model", model);
 
-		//Renderer::drawIndexed(m_vertexArray);
 		Renderer::drawIndexed(mesh->m_vertexArray);
 	}
 
