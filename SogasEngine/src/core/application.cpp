@@ -11,31 +11,26 @@
 
 #include "input.h"
 
-static Application* s_application = nullptr;
+Application* Application::s_application = nullptr;
+ImGuiContext* Application::s_imguiContext = nullptr;
 
 static Camera* s_camera = nullptr;
 
 Application::Application()
 {
+	SGSASSERT(!s_application);
+	s_application = this;
 	m_window = std::unique_ptr<Window>(Window::create());
 	m_window->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
+
+	m_imguiLayer = new ImGuiLayer();
+	m_layerStack.pushOverlay(m_imguiLayer);
 
 	if(glewInit() != GLEW_OK)
 	{
 		SGSFATAL("Failed to link GLEW against OpenGL context!");
 	}
 
-	s_application = this;
-}
-
-Application* Application::getInstance()
-{
-	if (s_application == nullptr)
-	{
-		s_application = new Application();
-	}
-
-	return s_application;
 }
 
 void Application::run()
@@ -53,8 +48,20 @@ void Application::run()
 			layer->onUpdate(Time::deltaTime);
 		}
 
+		m_imguiLayer->begin();
+		for (Layer* layer : m_layerStack)
+		{
+			layer->onImguiRender();
+		}
+		m_imguiLayer->end();
+
 		m_window->onUpdate();
 	}
+}
+
+void Application::close()
+{
+	m_running = false;
 }
 
 void Application::onEvent(Event& e)

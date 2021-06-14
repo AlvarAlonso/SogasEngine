@@ -3,6 +3,7 @@
 #include "defines.h"
 
 #include "core/layer.h"
+
 #include "events/appEvent.h"
 #include "events/keyEvent.h"
 #include "events/mouseEvent.h"
@@ -13,21 +14,14 @@ public:
 	ImGuiLayer();
 	~ImGuiLayer();
 
-	void onAttach();
-	void onDetach();
+	virtual void onAttach() override;
+	virtual void onDetach() override;
+	virtual void onImguiRender() override;
 
-	void onUpdate(f32 dt);
-	void onEvent(Event& event);
+	void begin();
+	void end();
 
 private:
-	bool onMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-	bool onMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-	bool onMouseMovedEvent(MouseMoveEvent& e);
-	bool onMouseScrolledEvent(MouseScrolledEvent& e);
-	bool onWindowResized(windowResizeEvent& e);
-	bool onKeyTypedEvent(KeyTypedEvent& e);
-	bool onKeyReleased(KeyReleasedEvent& e);
-	bool onKeyPressed(KeyPressedEvent& e);
 
 	f32 m_time = 0.0f;
 };

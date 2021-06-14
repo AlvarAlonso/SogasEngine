@@ -77,4 +77,5 @@ void OpenGLTexture2D::setData(void* data, u32 size)
 void OpenGLTexture2D::bind(u32 slot) const
 {
 	glBindTextureUnit(slot, m_ID);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }

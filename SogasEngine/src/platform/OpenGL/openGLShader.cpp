@@ -17,6 +17,7 @@ OpenGLShader::OpenGLShader(const std::string& filepath)
 {
 	ShaderProgramSource source = parseShader(filepath);
 	m_ID = createShader(source.vertexSource, source.fragmentSource);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 OpenGLShader::~OpenGLShader()
@@ -27,11 +28,14 @@ OpenGLShader::~OpenGLShader()
 void OpenGLShader::bind() const
 {
 	glUseProgram(m_ID);
+	GLenum err = glGetError();
+	SGSASSERT(err == GL_NO_ERROR);
 }
 
 void OpenGLShader::unbind() const
 {
 	glUseProgram(0);
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 }
 
 void OpenGLShader::setUniform1(const char* varname, const bool input)
@@ -121,6 +125,8 @@ u32 OpenGLShader::compileShader(u32 type, const std::string& source)
 		glDeleteShader(id);
 		return 0;
 	}
+
+	SGSASSERT(glGetError() == GL_NO_ERROR);
 
 	return id;
 }

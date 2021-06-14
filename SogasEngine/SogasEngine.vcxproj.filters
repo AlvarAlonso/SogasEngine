@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
-    <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\core\application.cpp" />
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
@@ -26,6 +24,11 @@
     <ClCompile Include="src\renderer\texture.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="src\actors\mesh.cpp" />
+    <ClCompile Include="src\imgui\imGuiBuild.cpp" />
+    <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\renderer\framebuffer.cpp" />
+    <ClCompile Include="src\platform\openGL\openGLFramebuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\glm\glm\common.hpp" />
@@ -348,6 +351,8 @@
     <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="src\actors\mesh.h" />
+    <ClInclude Include="src\renderer\framebuffer.h" />
+    <ClInclude Include="src\platform\openGL\openGLFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />
