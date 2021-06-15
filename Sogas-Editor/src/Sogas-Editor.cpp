@@ -2,7 +2,6 @@
 
 #include "EditorLayer.h"
 #include "core/entryPoint.h"
-#include "core/application.h"
 
 class Editor : public Application
 {

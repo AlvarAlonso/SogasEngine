@@ -12,10 +12,19 @@ OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecs& specs)
 OpenGLFramebuffer::~OpenGLFramebuffer()
 {
 	glDeleteFramebuffers(1, &m_ID);
+	glDeleteTextures(1, &m_colorAttachment);
+	glDeleteTextures(1, &m_depthAttachment);
 }
 
 void OpenGLFramebuffer::invalidate()
 {
+	if (m_ID)
+	{
+		glDeleteFramebuffers(1, &m_ID);
+		glDeleteTextures(1, &m_colorAttachment);
+		glDeleteTextures(1, &m_depthAttachment);
+	}
+
 	glCreateFramebuffers(1, &m_ID);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
 
@@ -43,9 +52,17 @@ void OpenGLFramebuffer::invalidate()
 void OpenGLFramebuffer::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+	glViewport(0, 0, m_specs.width, m_specs.height);
 }
 
 void OpenGLFramebuffer::unbind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGLFramebuffer::resize(u32 width, u32 height)
+{
+	m_specs.width = width;
+	m_specs.height = height;
+	invalidate();
 }

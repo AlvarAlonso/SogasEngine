@@ -18,6 +18,7 @@ public:
 
 	virtual u32 getColorAttachment() const = 0;
 	virtual const FramebufferSpecs& getSpecification() const = 0;
+	virtual void resize(u32 width, u32 height) = 0;
 
 	static Framebuffer* create(const FramebufferSpecs& specs);
 
