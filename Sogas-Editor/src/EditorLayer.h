@@ -31,7 +31,9 @@ private:
 	std::shared_ptr<Texture2D> m_texture;
 	std::shared_ptr<Shader> m_shader;
 
-	glm::vec2 m_viewportSize;
+	glm::vec2 m_viewportSize{0, 0};
+
+	bool m_viewportFocused = false;
 
 	Mesh* mesh;
 	glm::vec2 mouse_pos;

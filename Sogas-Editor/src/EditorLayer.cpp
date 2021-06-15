@@ -40,19 +40,23 @@ void EditorLayer::onDetach()
 
 void EditorLayer::onUpdate(f32 dt)
 {
-	// Should dt be stored as a class variable and used in the events through the dispatcher???
-	if (Input::isKeyPressed(SGS_KEY_A)) {
-		m_camera->move(LEFT, dt);
-	}
-	else if (Input::isKeyPressed(SGS_KEY_D)) {
-		m_camera->move(RIGHT, dt);
-	}
 
-	if (Input::isKeyPressed(SGS_KEY_W)) {
-		m_camera->move(FORWARD, dt);
-	}
-	else if (Input::isKeyPressed(SGS_KEY_S)) {
-		m_camera->move(BACKWARD, dt);
+	if (m_viewportFocused)
+	{
+		// TODO: Camera controller
+		if (Input::isKeyPressed(SGS_KEY_A)) {
+			m_camera->move(LEFT, dt);
+		}
+		else if (Input::isKeyPressed(SGS_KEY_D)) {
+			m_camera->move(RIGHT, dt);
+		}
+
+		if (Input::isKeyPressed(SGS_KEY_W)) {
+			m_camera->move(FORWARD, dt);
+		}
+		else if (Input::isKeyPressed(SGS_KEY_S)) {
+			m_camera->move(BACKWARD, dt);
+		}
 	}
 
 	glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
@@ -144,9 +148,6 @@ void EditorLayer::onImguiRender()
 		ImGui::EndMenuBar();
 	}
 
-	//static bool show = true;
-	//ImGui::ShowDemoWindow(&show);
-
 	// Stats panel
 	ImGui::Begin("Stats");
 	ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
@@ -154,9 +155,12 @@ void EditorLayer::onImguiRender()
 	ImGui::Text("Framerate %.2f fps", io.Framerate);
 	ImGui::End();
 
+
 	// Viewport panel
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 	ImGui::Begin("Viewport");
+
+	m_viewportFocused = ImGui::IsWindowFocused();
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	if (m_viewportSize != *((glm::vec2*)&viewportPanelSize))
 	{
@@ -165,6 +169,7 @@ void EditorLayer::onImguiRender()
 	}
 	u32 textureId = m_framebuffer->getColorAttachment();
 	ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
 	ImGui::End();
 	ImGui::PopStyleVar();
 
