@@ -3,7 +3,7 @@
 //#include "sogas.h"
 #include "core/application.h"
 #include "core/layer.h"
-#include "core/camera.h"
+#include "core/cameraController.h"
 #include "actors/mesh.h"
 
 #include "renderer/texture.h"
@@ -25,7 +25,8 @@ public:
 
 private:
 	Framebuffer* m_framebuffer;
-	Camera* m_camera;
+	std::unique_ptr<CameraController> m_cameraController;
+	std::shared_ptr<Camera> m_camera;
 
 	std::shared_ptr<VertexArray> m_vertexArray;
 	std::shared_ptr<Texture2D> m_texture;
@@ -34,6 +35,7 @@ private:
 	glm::vec2 m_viewportSize{0, 0};
 
 	bool m_viewportFocused = false;
+	bool m_viewportHovered = false;
 
 	Mesh* mesh;
 	glm::vec2 mouse_pos;

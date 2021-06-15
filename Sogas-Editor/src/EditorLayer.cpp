@@ -3,6 +3,7 @@
 #include "renderer/renderer.h"
 #include "core/input.h"
 #include "core/keyCodes.h"
+#include "core/logger.h"
 #include "platform/openGL/openGLShader.h"
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 
@@ -27,8 +28,10 @@ void EditorLayer::onAttach()
 
 	m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
-	m_camera = new Camera();
+	m_camera.reset(new Camera());
 	m_camera->setPosition({ 0, 15, -50 });
+
+	m_cameraController.reset(new CameraController(m_camera));
 
 	mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
@@ -43,25 +46,11 @@ void EditorLayer::onUpdate(f32 dt)
 
 	if (m_viewportFocused)
 	{
-		// TODO: Camera controller
-		if (Input::isKeyPressed(SGS_KEY_A)) {
-			m_camera->move(LEFT, dt);
-		}
-		else if (Input::isKeyPressed(SGS_KEY_D)) {
-			m_camera->move(RIGHT, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_W)) {
-			m_camera->move(FORWARD, dt);
-		}
-		else if (Input::isKeyPressed(SGS_KEY_S)) {
-			m_camera->move(BACKWARD, dt);
-		}
+		m_cameraController->onUpdate(dt);
 	}
 
 	glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
 	model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(1, 0, 0));
-	//model = glm::scale(glm::mat4(model), glm::vec3(1.0f, 2.0f, 1.0f));
 
 	m_framebuffer->bind();
 
@@ -155,17 +144,21 @@ void EditorLayer::onImguiRender()
 	ImGui::Text("Framerate %.2f fps", io.Framerate);
 	ImGui::End();
 
-
 	// Viewport panel
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 	ImGui::Begin("Viewport");
 
 	m_viewportFocused = ImGui::IsWindowFocused();
+	m_viewportHovered = ImGui::IsWindowHovered();
+	Application::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
+
+	// TODO: Should also resize the aspect ratio of the camera
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	if (m_viewportSize != *((glm::vec2*)&viewportPanelSize))
 	{
 		m_framebuffer->resize((u32)viewportPanelSize.x, (u32)viewportPanelSize.y);
 		m_viewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+		m_cameraController.get()->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 	}
 	u32 textureId = m_framebuffer->getColorAttachment();
 	ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -178,4 +171,7 @@ void EditorLayer::onImguiRender()
 
 void EditorLayer::onEvent(Event& event)
 {
+	if (m_viewportFocused) {
+		m_cameraController.get()->onEvent(event);
+	}
 }

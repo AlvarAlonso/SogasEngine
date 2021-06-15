@@ -387,6 +387,7 @@
     <ClInclude Include="external\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
+    <ClInclude Include="src\core\cameraController.h" />
     <ClInclude Include="src\core\entryPoint.h" />
     <ClInclude Include="src\core\input.h" />
     <ClInclude Include="src\core\keyCodes.h" />
@@ -425,6 +426,7 @@
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="src\core\application.cpp" />
+    <ClCompile Include="src\core\cameraController.cpp" />
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />

@@ -29,6 +29,7 @@
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\renderer\framebuffer.cpp" />
     <ClCompile Include="src\platform\openGL\openGLFramebuffer.cpp" />
+    <ClCompile Include="src\core\cameraController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\glm\glm\common.hpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="src\actors\mesh.h" />
     <ClInclude Include="src\renderer\framebuffer.h" />
     <ClInclude Include="src\platform\openGL\openGLFramebuffer.h" />
+    <ClInclude Include="src\core\cameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

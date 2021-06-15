@@ -40,6 +40,8 @@ public:
 	void pushLayer(Layer* layer);
 	void pushOverlay(Layer* layer);
 
+	ImGuiLayer* getImGuiLayer() { return m_imguiLayer; }
+
 	inline Window& getWindow() { return *m_window; }
 
 	inline void showCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); }

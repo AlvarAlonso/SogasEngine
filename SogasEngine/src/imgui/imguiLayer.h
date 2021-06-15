@@ -16,12 +16,14 @@ public:
 
 	virtual void onAttach() override;
 	virtual void onDetach() override;
-	virtual void onImguiRender() override;
+	virtual void onEvent(Event& e) override;
+
+	void blockEvents(bool block) { m_blockEvents = block; }
 
 	void begin();
 	void end();
 
 private:
-
+	bool m_blockEvents;
 	f32 m_time = 0.0f;
 };
