@@ -3,9 +3,9 @@
 #include "../external/tinyobj/tiny_obj_loader.h"
 
 #include "core/logger.h"
+#include "../external/glm/glm/glm.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/glm.hpp"
-#include <glm/gtx/hash.hpp>
+#include <../external/glm/glm/gtx/hash.hpp>
 #include <unordered_map>
 
 struct Vertex
@@ -119,7 +119,7 @@ void Mesh::load(const std::string& filename)
         aux.push_back(vert.uv.y);
     }
 
-    m_vertexBuffer.reset(VertexBuffer::create(aux.data(), static_cast<u32>(aux.size() * sizeof(f32))));
+    m_vertexBuffer.reset(VertexBuffer::create(aux.data(), aux.size() * sizeof(f32)));
     VertexBufferLayout layout = { 
         {ShaderDataType::Float3, "a_position"},
         {ShaderDataType::Float3, "a_normal"},
@@ -129,6 +129,6 @@ void Mesh::load(const std::string& filename)
     m_vertexBuffer->setLayout(layout);
     m_vertexArray->addVertexBuffer(m_vertexBuffer);
 
-    m_indexBuffer.reset(IndexBuffer::create(indices.data(), static_cast<u32>(indices.size())));
+    m_indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
     m_vertexArray->setIndexBuffer(m_indexBuffer);
 }

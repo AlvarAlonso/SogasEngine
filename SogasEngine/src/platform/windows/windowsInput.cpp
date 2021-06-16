@@ -40,5 +40,5 @@ void Input::setMousePosition(f32 x, f32 y)
 void Input::centerMouse()
 {
 	GLFWwindow* window = Application::getInstance()->getWindow().getNativeWindow();
-	setMousePosition((Application::getInstance()->getWindow().getWidth() / 2.0f), (Application::getInstance()->getWindow().getHeight() / 2.0f));
+	setMousePosition((Application::getInstance()->getWindow().getWidth() / 2.0), (Application::getInstance()->getWindow().getHeight() / 2.0));
 }
