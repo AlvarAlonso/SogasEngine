@@ -1,7 +1,6 @@
 #pragma once
 
 #include "defines.h"
-//#include "glm/glm.hpp"
 #include "../external/glm/glm/glm.hpp"
 
 class SGS Input

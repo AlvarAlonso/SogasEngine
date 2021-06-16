@@ -13,6 +13,7 @@ public:
 	virtual u32 getHeight() const = 0;
 
 	virtual void setData(void* data, u32 size) = 0;
+	virtual u32 getID() const = 0;
 
 	virtual void bind(u32 slot = 0) const = 0;
 

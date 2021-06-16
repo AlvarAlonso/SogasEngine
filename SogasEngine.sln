@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SogasEngine", "SogasEngine\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "ImGui\ImGui.vcxproj", "{1EA7C047-3CD1-4677-9011-53F5BA3111EC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sogas-Editor", "Sogas-Editor\Sogas-Editor.vcxproj", "{C229B6A9-BD5E-4D71-9B69-1F383D05154F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,10 @@ Global
 		{1EA7C047-3CD1-4677-9011-53F5BA3111EC}.Debug|x64.Build.0 = Debug|x64
 		{1EA7C047-3CD1-4677-9011-53F5BA3111EC}.Release|x64.ActiveCfg = Release|x64
 		{1EA7C047-3CD1-4677-9011-53F5BA3111EC}.Release|x64.Build.0 = Release|x64
+		{C229B6A9-BD5E-4D71-9B69-1F383D05154F}.Debug|x64.ActiveCfg = Debug|x64
+		{C229B6A9-BD5E-4D71-9B69-1F383D05154F}.Debug|x64.Build.0 = Debug|x64
+		{C229B6A9-BD5E-4D71-9B69-1F383D05154F}.Release|x64.ActiveCfg = Release|x64
+		{C229B6A9-BD5E-4D71-9B69-1F383D05154F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
