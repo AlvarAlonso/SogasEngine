@@ -32,19 +32,30 @@ glm::mat4 Node::getGlobalMatrix(bool fast)
 	return m_globalModel;
 }
 
-Prefab::Prefab()
-{
-}
-
 Prefab::~Prefab()
 {
+	SGSASSERT(m_name.size());
+
+	auto it = s_prefabsLoaded.find(m_name);
+	if (it != s_prefabsLoaded.end());
+	s_prefabsLoaded.erase(it);
 }
 
-std::shared_ptr<Prefab> Prefab::get(const std::string& filename)
+std::shared_ptr<Prefab> Prefab::get(const std::string& name)
 {
-	return std::shared_ptr<Prefab>();
+	SGSASSERT(name.size());
+	
+	std::map<std::string, std::shared_ptr<Prefab>>::iterator it = s_prefabsLoaded.find(name);
+	if (it != s_prefabsLoaded.end())
+		return it->second;
+
+	// TODO: else, load the prefab file
+
+	return nullptr;
 }
 
 void Prefab::registerPrefab(const std::string& name)
 {
+	m_name = name;
+	s_prefabsLoaded[name].reset(this);
 }

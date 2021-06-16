@@ -40,11 +40,11 @@ public:
 
 	std::vector<std::weak_ptr<Node>> m_roots;
 
-	Prefab();
+	Prefab() = default;
 	virtual ~Prefab();
 
 	// manager to cache loaded prefabs
 	static std::map<std::string, std::shared_ptr<Prefab>> s_prefabsLoaded;
-	static std::shared_ptr<Prefab> get(const std::string& filename);
+	static std::shared_ptr<Prefab> get(const std::string& name);
 	void registerPrefab(const std::string& name);
 };
