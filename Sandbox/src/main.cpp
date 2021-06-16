@@ -3,7 +3,7 @@
 #include "sogas.h"
 
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
-#include "actors/mesh.h"
+#include "renderer/resources/mesh.h"
 
 class ExampleLayer : public Layer
 {

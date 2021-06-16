@@ -1,6 +1,6 @@
 #include "texture.h"
 
-#include "renderer.h"
+#include "renderer/renderer.h"
 #include "platform/OpenGL/openGLTexture.h"
 
 std::shared_ptr<Texture2D> Texture2D::create(u32 width, u32 height)

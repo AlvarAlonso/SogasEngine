@@ -1,6 +1,6 @@
 #pragma once
 
-#include "renderer/texture.h"
+#include "renderer/resources/texture.h"
 
 #include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 

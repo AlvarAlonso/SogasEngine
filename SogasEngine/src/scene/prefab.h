@@ -11,6 +11,7 @@ class Mesh;
 
 class Node
 {
+public:
 	std::string m_name;
 	bool m_visible;
 	
@@ -19,8 +20,8 @@ class Node
 	glm::mat4 m_globalModel;
 
 	// TODO: not sure about the type of the pointer
-	std::unique_ptr<Node> m_parent;
-	std::vector<std::unique_ptr<Node>> m_children;
+	std::shared_ptr<Node> m_parent;
+	std::vector<std::shared_ptr<Node>> m_children;
 
 	Node();
 
