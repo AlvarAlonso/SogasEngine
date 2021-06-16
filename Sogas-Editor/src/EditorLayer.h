@@ -4,9 +4,9 @@
 #include "core/application.h"
 #include "core/layer.h"
 #include "core/cameraController.h"
-#include "actors/mesh.h"
+#include "renderer/resources/mesh.h"
 
-#include "renderer/texture.h"
+#include "renderer/resources/texture.h"
 #include "renderer/framebuffer.h"
 #include "renderer/shader.h"
 

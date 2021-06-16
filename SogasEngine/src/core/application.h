@@ -41,7 +41,6 @@ public:
 	void pushOverlay(Layer* layer);
 
 	ImGuiLayer* getImGuiLayer() { return m_imguiLayer; }
-
 	inline Window& getWindow() { return *m_window; }
 
 	inline void showCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
@@ -53,7 +52,6 @@ private:
 	bool onWindowResize(windowResizeEvent& e);
 
 	static Application* s_application;
-
 	std::unique_ptr<Window> m_window;
 	ImGuiLayer* m_imguiLayer;
 	bool m_running = true;

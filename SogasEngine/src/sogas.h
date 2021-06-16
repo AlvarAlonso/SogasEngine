@@ -16,14 +16,14 @@
 #include "../external/glm/glm/glm.hpp"
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 
-#include "actors/mesh.h"
-
 // Renderer includes
 #include "renderer/shader.h"
 #include "renderer/vertexArray.h"
 #include "renderer/renderer.h"
-#include "renderer/texture.h"
 #include "renderer/framebuffer.h"
+
+#include "renderer/resources/texture.h"
+#include "renderer/resources/mesh.h"
 // TODO: platform specific should be done in engine
 #include "platform/openGL/openGLShader.h"
 

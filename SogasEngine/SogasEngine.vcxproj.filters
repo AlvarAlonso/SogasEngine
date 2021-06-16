@@ -1,15 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="external\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
     <ClCompile Include="src\core\application.cpp" />
     <ClCompile Include="src\core\layer.cpp" />
     <ClCompile Include="src\core\layerStack.cpp" />
     <ClCompile Include="src\core\logger.cpp" />
+    <ClCompile Include="src\core\time.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLBuffer.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLRendererAPI.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLShader.cpp" />
+    <ClCompile Include="src\platform\OpenGL\openGLTexture.cpp" />
     <ClCompile Include="src\platform\OpenGL\openGLVertexArray.cpp" />
+    <ClCompile Include="src\platform\windows\windowsInput.cpp" />
     <ClCompile Include="src\renderer\buffer.cpp" />
     <ClCompile Include="src\core\window.cpp" />
     <ClCompile Include="src\imgui\imguiLayer.cpp" />
@@ -30,8 +35,16 @@
     <ClCompile Include="src\renderer\framebuffer.cpp" />
     <ClCompile Include="src\platform\openGL\openGLFramebuffer.cpp" />
     <ClCompile Include="src\core\cameraController.cpp" />
+    <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
+    <ClCompile Include="src\renderer\resources\mesh.cpp" />
+    <ClCompile Include="src\renderer\resources\texture.cpp" />
+    <ClCompile Include="src\renderer\resources\material.cpp" />
+    <ClCompile Include="src\scene\entity.cpp" />
+    <ClCompile Include="src\scene\prefab.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\stb_image\stb_image.h" />
+    <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="external\glm\glm\common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_common.hpp" />
     <ClInclude Include="external\glm\glm\detail\compute_vector_relational.hpp" />
@@ -323,14 +336,19 @@
     <ClInclude Include="src\core\application.h" />
     <ClInclude Include="src\core\assertions.h" />
     <ClInclude Include="src\core\entryPoint.h" />
+    <ClInclude Include="src\core\input.h" />
+    <ClInclude Include="src\core\keyCodes.h" />
     <ClInclude Include="src\core\layer.h" />
     <ClInclude Include="src\core\layerStack.h" />
     <ClInclude Include="src\core\logger.h" />
+    <ClInclude Include="src\core\mouseButtonCodes.h" />
+    <ClInclude Include="src\core\time.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\platform\OpenGL\openGLBuffer.h" />
     <ClInclude Include="src\platform\OpenGL\openGLRendererAPI.h" />
     <ClInclude Include="src\platform\OpenGL\openGLShader.h" />
+    <ClInclude Include="src\platform\OpenGL\openGLTexture.h" />
     <ClInclude Include="src\platform\OpenGL\openGLVertexArray.h" />
     <ClInclude Include="src\renderer\buffer.h" />
     <ClInclude Include="src\events\appEvent.h" />
@@ -355,6 +373,12 @@
     <ClInclude Include="src\renderer\framebuffer.h" />
     <ClInclude Include="src\platform\openGL\openGLFramebuffer.h" />
     <ClInclude Include="src\core\cameraController.h" />
+    <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
+    <ClInclude Include="src\renderer\resources\mesh.h" />
+    <ClInclude Include="src\renderer\resources\texture.h" />
+    <ClInclude Include="src\renderer\resources\material.h" />
+    <ClInclude Include="src\scene\prefab.h" />
+    <ClInclude Include="src\scene\entity.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

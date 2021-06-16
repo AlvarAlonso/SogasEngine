@@ -2,6 +2,9 @@
 #include <iostream>
 #include "sogas.h"
 
+#include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "renderer/resources/mesh.h"
+
 class ExampleLayer : public Layer
 {
 public:
@@ -10,9 +13,13 @@ public:
 	{
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
+		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
+		m_defaultTexture = Texture2D::create(1, 1);
+		uint32_t defaultTextureData = 0xffffffff;
+		m_defaultTexture->setData(&defaultTextureData, sizeof(uint32_t));
 
 		mesh = new Mesh();
-		mesh->load("data/viking-room.obj");
+		mesh->load("../Assets/viking_room.obj");
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
@@ -214,6 +221,7 @@ private:
 	std::shared_ptr<Shader> m_shader;
 	std::shared_ptr<VertexArray> m_vertexArray;
 	std::shared_ptr<Texture2D> m_texture;
+	std::shared_ptr<Texture2D> m_defaultTexture;
 
 	// TODO: erase them, provisional at the moment
 	float x = 0.0f;

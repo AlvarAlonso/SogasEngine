@@ -24,7 +24,7 @@ void EditorLayer::onAttach()
 	m_texture = Texture2D::create("../Assets/texture.png");
 
 	mesh = new Mesh();
-	mesh->load("../Assets/viking-room.obj");
+	mesh->load("../Assets/viking_room.obj");
 
 	m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
