@@ -93,7 +93,6 @@ bool CameraController::onMouseMoved(MouseMoveEvent& e)
 	glm::vec2 deltaMouse = m_mousePosition - Input::getMousePosition();
 	if (m_camera->m_locked) {
 		Input::centerMouse();
-		//Input::setMousePosition(m_viewportSize.x / 2.0f, m_viewportSize.y / 2.0f);
 		m_camera->rotate(deltaMouse.x, deltaMouse.y);
 	}
 	m_mousePosition = Input::getMousePosition();

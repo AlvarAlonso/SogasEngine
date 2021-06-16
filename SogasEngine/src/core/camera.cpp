@@ -37,8 +37,8 @@ void Camera::rotate(f32 xoffset, f32 yoffset, bool constrainPitch)
     front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
     m_front     = glm::normalize(front);
-    m_right     = glm::normalize(glm::cross(m_front, glm::vec3(0, 1, 0)));
-    m_up        = glm::normalize(glm::cross(m_right, m_front));
+    m_right     = glm::normalize(glm::cross(glm::vec3(0, 1, 0), m_front));
+    m_up        = glm::normalize(glm::cross(m_front, m_right));
 }
 
 void Camera::move(e_cameraMovement dir, f32 dt)
@@ -52,10 +52,10 @@ void Camera::move(e_cameraMovement dir, f32 dt)
         setPosition(m_position - m_front * dt);
         break;
     case LEFT:
-        setPosition(m_position + m_right * dt);
+        setPosition(m_position - m_right * dt);
         break;
     case RIGHT:
-        setPosition(m_position - m_right * dt);
+        setPosition(m_position + m_right * dt);
         break;
     case UP:
         setPosition(m_position + m_up * dt);
