@@ -3,71 +3,74 @@
 #include "event.h"
 #include "defines.h"
 
-class KeyEvent : public Event
+namespace Sogas 
 {
-public:
-
-	inline u32 getKeyCode() const { return m_keyCode; }
-
-	EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
-
-protected:
-	KeyEvent(u32 keycode)
-		: m_keyCode(keycode) {}
-
-	u32 m_keyCode;
-};
-
-class KeyPressedEvent : public KeyEvent
-{
-public:
-	KeyPressedEvent(u32 keycode, u32 repeatCount)
-		: KeyEvent(keycode), m_repeatCount(repeatCount) {}
-
-	inline u32 getRepeatCount() const { return m_repeatCount; }
-
-	std::string toString() const override
+	class KeyEvent : public Event
 	{
-		std::stringstream ss;
-		ss << "KeyPressedEvent: " << m_keyCode << " (" << m_repeatCount << " repeats).";
-		return ss.str();
-	}
+	public:
 
-	EVENT_CLASS_TYPE(KeyPressed)
+		inline u32 getKeyCode() const { return m_keyCode; }
 
-private:
-	u32 m_repeatCount;
-};
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
-class KeyReleasedEvent : public KeyEvent
-{
-public:
-	KeyReleasedEvent(u32 keycode)
-		: KeyEvent(keycode) {}
+	protected:
+		KeyEvent(u32 keycode)
+			: m_keyCode(keycode) {}
 
-	std::string toString() const override
+		u32 m_keyCode;
+	};
+
+	class KeyPressedEvent : public KeyEvent
 	{
-		std::stringstream ss;
-		ss << "KeyReleasedEvent " << m_keyCode;
-		return ss.str();
-	}
+	public:
+		KeyPressedEvent(u32 keycode, u32 repeatCount)
+			: KeyEvent(keycode), m_repeatCount(repeatCount) {}
 
-	EVENT_CLASS_TYPE(KeyReleased)
-};
+		inline u32 getRepeatCount() const { return m_repeatCount; }
 
+		std::string toString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyPressedEvent: " << m_keyCode << " (" << m_repeatCount << " repeats).";
+			return ss.str();
+		}
 
-class KeyTypedEvent : public KeyEvent
-{
-public:
-	KeyTypedEvent(u32 keycode)
-		: KeyEvent(keycode) {}
+		EVENT_CLASS_TYPE(KeyPressed)
 
-	std::string toString() const override
+	private:
+		u32 m_repeatCount;
+	};
+
+	class KeyReleasedEvent : public KeyEvent
 	{
-		std::stringstream ss;
-		ss << "KeyTypedEvent " << m_keyCode;
-		return ss.str();
-	}
+	public:
+		KeyReleasedEvent(u32 keycode)
+			: KeyEvent(keycode) {}
 
-	EVENT_CLASS_TYPE(KeyTyped)
-};
+		std::string toString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyReleasedEvent " << m_keyCode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyReleased)
+	};
+
+
+	class KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(u32 keycode)
+			: KeyEvent(keycode) {}
+
+		std::string toString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent " << m_keyCode;
+			return ss.str();
+		}
+
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
+}

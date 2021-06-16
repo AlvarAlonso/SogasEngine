@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "window.h"
 
 #include "core/logger.h"
@@ -7,142 +9,145 @@
 #include "events/keyEvent.h"
 #include "events/mouseEvent.h"
 
-static bool s_glfwInitialized = false;
-
-Window* Window::create(const windowProperties& properties)
+namespace Sogas 
 {
-	return new Window(properties);
-}
+	static bool s_glfwInitialized = false;
 
-Window::Window(const windowProperties& properties)
-{
-	init(properties);
-}
-
-Window::~Window() {}
-
-bool Window::init(const windowProperties& properties)
-{
-	m_data.title = properties.m_title;
-	m_data.width = properties.m_width;
-	m_data.height = properties.m_height;
-
-	SGSINFO("Creating window %s [%i, %i].", properties.m_title, properties.m_width, properties.m_height);
-
-	if (!s_glfwInitialized)
+	Window* Window::create(const windowProperties& properties)
 	{
-		i32 success = glfwInit();
-		SGSASSERT(success);
-
-		s_glfwInitialized = true;
+		return new Window(properties);
 	}
 
-	m_glfwWindow = glfwCreateWindow((u32)properties.m_width, (u32)properties.m_height, properties.m_title, NULL, NULL);
-	if (!m_glfwWindow)
+	Window::Window(const windowProperties& properties)
 	{
-		glfwTerminate();
-		return false;
+		init(properties);
 	}
 
-	glfwMakeContextCurrent(m_glfwWindow);
-	glfwSetWindowUserPointer(m_glfwWindow, &m_data);
-	glfwSetWindowSizeCallback(m_glfwWindow, [](GLFWwindow* window, i32 width, i32 height) 
-	{
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
-		data.width = width;
-		data.height = height;
+	Window::~Window() {}
 
-		windowResizeEvent event(width, height);
-		data.eventCallback(event);
-	});
-
-	glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window) 
+	bool Window::init(const windowProperties& properties)
 	{
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
-		windowCloseEvent event;
-		data.eventCallback(event);
-	});
+		m_data.title = properties.m_title;
+		m_data.width = properties.m_width;
+		m_data.height = properties.m_height;
 
-	glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* window, i32 keycode, i32 scancode, i32 action, i32 mods) 
-	{
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
-		
-		switch (action)
+		SGSINFO("Creating window %s [%i, %i].", properties.m_title, properties.m_width, properties.m_height);
+
+		if (!s_glfwInitialized)
 		{
-			case GLFW_PRESS: {
-				KeyPressedEvent event(keycode, 0);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				KeyReleasedEvent event(keycode);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_REPEAT:
-			{
-				//TODO: one repetition for now
-				KeyPressedEvent event(keycode, 1);
-				data.eventCallback(event);
-				break;
-			}
+			i32 success = glfwInit();
+			SGSASSERT(success);
+
+			s_glfwInitialized = true;
 		}
-	});
 
-	glfwSetCharCallback(m_glfwWindow, [](GLFWwindow* window, u32 keycode)
-	{
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
-
-		KeyTypedEvent event(keycode);
-		data.eventCallback(event);
-	});
-
-	glfwSetMouseButtonCallback(m_glfwWindow, [](GLFWwindow* window, i32 button, i32 action, i32 mods)
-	{
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
-
-		switch (action)
+		m_glfwWindow = glfwCreateWindow((u32)properties.m_width, (u32)properties.m_height, properties.m_title, NULL, NULL);
+		if (!m_glfwWindow)
 		{
-			case GLFW_PRESS:
-			{
-				MouseButtonPressedEvent event(button);
-				data.eventCallback(event);
-				break;
-			}
-			case GLFW_RELEASE:
-			{
-				MouseButtonReleasedEvent event(button);
-				data.eventCallback(event);
-				break;
-			}
+			glfwTerminate();
+			return false;
 		}
-	});
 
-	glfwSetScrollCallback(m_glfwWindow, [](GLFWwindow* window, f64 offsetX, f64 offsetY) {
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+		glfwMakeContextCurrent(m_glfwWindow);
+		glfwSetWindowUserPointer(m_glfwWindow, &m_data);
+		glfwSetWindowSizeCallback(m_glfwWindow, [](GLFWwindow* window, i32 width, i32 height)
+			{
+				windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+				data.width = width;
+				data.height = height;
 
-		MouseScrolledEvent event((f32)offsetX, (f32)offsetY);
-		data.eventCallback(event);
-	});
+				windowResizeEvent event(width, height);
+				data.eventCallback(event);
+			});
 
-	glfwSetCursorPosCallback(m_glfwWindow, [](GLFWwindow* window, f64 posX, f64 posY) {
-		windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+		glfwSetWindowCloseCallback(m_glfwWindow, [](GLFWwindow* window)
+			{
+				windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+				windowCloseEvent event;
+				data.eventCallback(event);
+			});
 
-		MouseMoveEvent event((f32)posX, (f32)posY);
-		data.eventCallback(event);
-	});
+		glfwSetKeyCallback(m_glfwWindow, [](GLFWwindow* window, i32 keycode, i32 scancode, i32 action, i32 mods)
+			{
+				windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
 
-	return true;
-}
+				switch (action)
+				{
+				case GLFW_PRESS: {
+					KeyPressedEvent event(keycode, 0);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(keycode);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_REPEAT:
+				{
+					//TODO: one repetition for now
+					KeyPressedEvent event(keycode, 1);
+					data.eventCallback(event);
+					break;
+				}
+				}
+			});
 
-void Window::shutdown()
-{
-	glfwDestroyWindow(m_glfwWindow);
-}
+		glfwSetCharCallback(m_glfwWindow, [](GLFWwindow* window, u32 keycode)
+			{
+				windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
 
-void Window::onUpdate()
-{
-	glfwPollEvents();
-	glfwSwapBuffers(m_glfwWindow);
+				KeyTypedEvent event(keycode);
+				data.eventCallback(event);
+			});
+
+		glfwSetMouseButtonCallback(m_glfwWindow, [](GLFWwindow* window, i32 button, i32 action, i32 mods)
+			{
+				windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.eventCallback(event);
+					break;
+				}
+				}
+			});
+
+		glfwSetScrollCallback(m_glfwWindow, [](GLFWwindow* window, f64 offsetX, f64 offsetY) {
+			windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+			MouseScrolledEvent event((f32)offsetX, (f32)offsetY);
+			data.eventCallback(event);
+			});
+
+		glfwSetCursorPosCallback(m_glfwWindow, [](GLFWwindow* window, f64 posX, f64 posY) {
+			windowData& data = *(windowData*)glfwGetWindowUserPointer(window);
+
+			MouseMoveEvent event((f32)posX, (f32)posY);
+			data.eventCallback(event);
+			});
+
+		return true;
+	}
+
+	void Window::shutdown()
+	{
+		glfwDestroyWindow(m_glfwWindow);
+	}
+
+	void Window::onUpdate()
+	{
+		glfwPollEvents();
+		glfwSwapBuffers(m_glfwWindow);
+	}
 }

@@ -1,63 +1,68 @@
+#include "sgspch.h"
+
 #include "prefab.h"
 
 #include "core/assertions.h"
 
-std::map<std::string, std::shared_ptr<Prefab>> Prefab::s_prefabsLoaded;
-
-Node::Node() : m_visible(true), m_parent(nullptr), m_mesh(nullptr)
+namespace Sogas 
 {
-}
+	std::map<std::string, std::shared_ptr<Prefab>> Prefab::s_prefabsLoaded;
 
-Node::~Node()
-{
-}
+	Node::Node() : m_visible(true), m_parent(nullptr), m_mesh(nullptr)
+	{
+	}
 
-void Node::addChild(Node* child)
-{
-	SGSASSERT(child->m_parent == nullptr);
-	
-	std::shared_ptr<Node> childToAdd;
-	childToAdd = std::make_shared<Node>();
-	childToAdd.reset(child);
-	
-	m_children.push_back(childToAdd);
+	Node::~Node()
+	{
+	}
 
-	child->m_parent.reset(this);
-}
+	void Node::addChild(Node* child)
+	{
+		SGSASSERT(child->m_parent == nullptr);
 
-glm::mat4 Node::getGlobalMatrix(bool fast)
-{
-	if (m_parent)
-		m_globalModel = m_model * (fast ? m_parent->m_globalModel : m_parent->getGlobalMatrix());
-	else
-		m_globalModel = m_model;
-	return m_globalModel;
-}
+		std::shared_ptr<Node> childToAdd;
+		childToAdd = std::make_shared<Node>();
+		childToAdd.reset(child);
 
-Prefab::~Prefab()
-{
-	SGSASSERT(m_name.size());
+		m_children.push_back(childToAdd);
 
-	auto it = s_prefabsLoaded.find(m_name);
-	if (it != s_prefabsLoaded.end());
-	s_prefabsLoaded.erase(it);
-}
+		child->m_parent.reset(this);
+	}
 
-std::shared_ptr<Prefab> Prefab::get(const std::string& name)
-{
-	SGSASSERT(name.size());
-	
-	std::map<std::string, std::shared_ptr<Prefab>>::iterator it = s_prefabsLoaded.find(name);
-	if (it != s_prefabsLoaded.end())
-		return it->second;
+	glm::mat4 Node::getGlobalMatrix(bool fast)
+	{
+		if (m_parent)
+			m_globalModel = m_model * (fast ? m_parent->m_globalModel : m_parent->getGlobalMatrix());
+		else
+			m_globalModel = m_model;
+		return m_globalModel;
+	}
 
-	// TODO: else, load the prefab file
+	Prefab::~Prefab()
+	{
+		SGSASSERT(m_name.size());
 
-	return nullptr;
-}
+		auto it = s_prefabsLoaded.find(m_name);
+		if (it != s_prefabsLoaded.end());
+		s_prefabsLoaded.erase(it);
+	}
 
-void Prefab::registerPrefab(const std::string& name)
-{
-	m_name = name;
-	s_prefabsLoaded[name].reset(this);
+	std::shared_ptr<Prefab> Prefab::get(const std::string& name)
+	{
+		SGSASSERT(name.size());
+
+		std::map<std::string, std::shared_ptr<Prefab>>::iterator it = s_prefabsLoaded.find(name);
+		if (it != s_prefabsLoaded.end())
+			return it->second;
+
+		// TODO: else, load the prefab file
+
+		return nullptr;
+	}
+
+	void Prefab::registerPrefab(const std::string& name)
+	{
+		m_name = name;
+		s_prefabsLoaded[name].reset(this);
+	}
 }

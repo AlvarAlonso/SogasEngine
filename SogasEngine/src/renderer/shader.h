@@ -3,14 +3,17 @@
 #include "defines.h"
 #include <string>
 
-class SGS Shader
+namespace Sogas 
 {
-public:
-	virtual ~Shader() = default;
+	class SGS Shader
+	{
+	public:
+		virtual ~Shader() = default;
 
-	virtual void bind() const = 0;
-	virtual void unbind() const = 0;
+		virtual void bind() const = 0;
+		virtual void unbind() const = 0;
 
-	static Shader* create(const std::string& vertexSource, const std::string& fragmentSource);
-	static Shader* create(const std::string& filepath);
-};
+		static Shader* create(const std::string& vertexSource, const std::string& fragmentSource);
+		static Shader* create(const std::string& filepath);
+	};
+}

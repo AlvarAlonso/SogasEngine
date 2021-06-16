@@ -15,49 +15,52 @@
 
 #include "imgui.h"
 
-class Shader;
-class VertexArray;
-
-class SGS Application
+namespace Sogas 
 {
-public:
-	Application();
-	~Application() {};
+	class Shader;
+	class VertexArray;
 
-	static Application* getInstance() { return s_application; };
-	static ImGuiContext* getImguiContext() { return s_imguiContext; };
+	class SGS Application
+	{
+	public:
+		Application();
+		~Application() {};
 
-	bool m_isSuspended;
-	i16 m_width;
-	i16 m_height;
+		static Application* getInstance() { return s_application; };
+		static ImGuiContext* getImguiContext() { return s_imguiContext; };
 
-	// functions
-	void run();
-	void close();
-	void shutdown();
+		bool m_isSuspended;
+		i16 m_width;
+		i16 m_height;
 
-	void onEvent(Event& e);
-	void pushLayer(Layer* layer);
-	void pushOverlay(Layer* layer);
+		// functions
+		void run();
+		void close();
+		void shutdown();
 
-	ImGuiLayer* getImGuiLayer() { return m_imguiLayer; }
-	inline Window& getWindow() { return *m_window; }
+		void onEvent(Event& e);
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* layer);
 
-	inline void showCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
-	inline void hideCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN); }
+		ImGuiLayer* getImGuiLayer() { return m_imguiLayer; }
+		inline Window& getWindow() { return *m_window; }
 
-	static ImGuiContext* s_imguiContext;
-private:
-	bool onWindowClosed(windowCloseEvent& e);
-	bool onWindowResize(windowResizeEvent& e);
+		inline void showCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
+		inline void hideCursor() { glfwSetInputMode(m_window.get()->getNativeWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN); }
 
-	static Application* s_application;
-	std::unique_ptr<Window> m_window;
-	ImGuiLayer* m_imguiLayer;
-	bool m_running = true;
-	bool m_minimized = false;
+		static ImGuiContext* s_imguiContext;
+	private:
+		bool onWindowClosed(windowCloseEvent& e);
+		bool onWindowResize(windowResizeEvent& e);
 
-	LayerStack m_layerStack;
-};
+		static Application* s_application;
+		std::unique_ptr<Window> m_window;
+		ImGuiLayer* m_imguiLayer;
+		bool m_running = true;
+		bool m_minimized = false;
 
-Application* createApplication();
+		LayerStack m_layerStack;
+	};
+
+	Application* createApplication();
+}

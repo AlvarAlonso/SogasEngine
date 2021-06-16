@@ -1,22 +1,25 @@
 #pragma once
 
 #include "defines.h"
-#include <string>
 #include "renderer/VertexArray.h"
+#include <string>
 
-class SGS Mesh
+namespace Sogas 
 {
-public:
-	
-	Mesh();
+	class SGS Mesh
+	{
+	public:
 
-	void load(const std::string& filename);
+		Mesh();
 
-	std::shared_ptr<VertexArray> m_vertexArray;
-	std::shared_ptr<IndexBuffer> m_indexBuffer;
+		void load(const std::string& filename);
 
-private:
+		std::shared_ptr<VertexArray> m_vertexArray;
+		std::shared_ptr<IndexBuffer> m_indexBuffer;
 
-	std::shared_ptr<VertexBuffer> m_vertexBuffer;
-};
+	private:
+
+		std::shared_ptr<VertexBuffer> m_vertexBuffer;
+	};
+}
 

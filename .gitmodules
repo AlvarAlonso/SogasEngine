@@ -4,3 +4,5 @@
 [submodule "SogasEngine/external/glm"]
 	path = SogasEngine/external/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "imgui"]
+	branch = docking

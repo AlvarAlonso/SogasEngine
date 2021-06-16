@@ -1,81 +1,86 @@
+#include "sgspch.h"
+
 #include "openGLTexture.h"
 
 #include "stb_image/stb_image.h"
 
-OpenGLTexture2D::OpenGLTexture2D(u32 width, u32 height)
-	: m_width(width), m_height(height)
+namespace Sogas 
 {
-	m_internalFormat = GL_RGBA8;
-	m_dataFormat = GL_RGBA;
-
-	glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
-	glTextureStorage2D(m_ID, 1, m_internalFormat, m_width, m_height);
-
-	glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-}
-
-OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
-	: m_path(path)
-{
-	i32 width, height, channels;
-	stbi_set_flip_vertically_on_load(1);
-	stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-
-	SGSASSERT_MSG(data, "Failed to load image!");
-
-	m_width = width;
-	m_height = height;
-
-	GLenum internalFormat = 0, dataFormat = 0;
-
-	if(channels == 4)
+	OpenGLTexture2D::OpenGLTexture2D(u32 width, u32 height)
+		: m_width(width), m_height(height)
 	{
-		internalFormat = GL_RGBA8;
-		dataFormat = GL_RGBA;
-	}
-	else if(channels == 3)
-	{
-		internalFormat = GL_RGB8;
-		dataFormat = GL_RGB;
+		m_internalFormat = GL_RGBA8;
+		m_dataFormat = GL_RGBA;
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
+		glTextureStorage2D(m_ID, 1, m_internalFormat, m_width, m_height);
+
+		glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	m_internalFormat = internalFormat;
-	m_dataFormat = dataFormat;
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
+		: m_path(path)
+	{
+		i32 width, height, channels;
+		stbi_set_flip_vertically_on_load(1);
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
-	SGSASSERT_MSG(internalFormat & dataFormat, "Format not supported!");
+		SGSASSERT_MSG(data, "Failed to load image!");
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
-	glTextureStorage2D(m_ID, 1, internalFormat, m_width, m_height);
+		m_width = width;
+		m_height = height;
 
-	glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GLenum internalFormat = 0, dataFormat = 0;
 
-	glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		if (channels == 4)
+		{
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		else if (channels == 3)
+		{
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
 
-	glTextureSubImage2D(m_ID, 0, 0, 0, m_width, m_height, dataFormat, GL_UNSIGNED_BYTE, data);
+		m_internalFormat = internalFormat;
+		m_dataFormat = dataFormat;
 
-	stbi_image_free(data);
-}
+		SGSASSERT_MSG(internalFormat & dataFormat, "Format not supported!");
 
-OpenGLTexture2D::~OpenGLTexture2D()
-{
-	glDeleteTextures(1, &m_ID);
-}
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
+		glTextureStorage2D(m_ID, 1, internalFormat, m_width, m_height);
 
-void OpenGLTexture2D::setData(void* data, u32 size) 
-{
-	u32 pixelBytes = m_dataFormat == GL_RGBA ? 4 : 3;
-	SGSASSERT_MSG(size == m_width * m_height * pixelBytes, "Data must fill the entire texture!");
-	glTextureSubImage2D(m_ID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
-}
+		glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-void OpenGLTexture2D::bind(u32 slot) const
-{
-	glBindTextureUnit(slot, m_ID);
-	SGSASSERT(glGetError() == GL_NO_ERROR);
+		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTextureSubImage2D(m_ID, 0, 0, 0, m_width, m_height, dataFormat, GL_UNSIGNED_BYTE, data);
+
+		stbi_image_free(data);
+	}
+
+	OpenGLTexture2D::~OpenGLTexture2D()
+	{
+		glDeleteTextures(1, &m_ID);
+	}
+
+	void OpenGLTexture2D::setData(void* data, u32 size)
+	{
+		u32 pixelBytes = m_dataFormat == GL_RGBA ? 4 : 3;
+		SGSASSERT_MSG(size == m_width * m_height * pixelBytes, "Data must fill the entire texture!");
+		glTextureSubImage2D(m_ID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+	}
+
+	void OpenGLTexture2D::bind(u32 slot) const
+	{
+		glBindTextureUnit(slot, m_ID);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
+	}
 }
