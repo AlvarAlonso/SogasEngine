@@ -1,5 +1,7 @@
 #pragma once
 
+#include "defines.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <string>
@@ -9,7 +11,7 @@
 
 class Mesh;
 
-class Node
+class SGS Node
 {
 public:
 	std::string m_name;
@@ -32,7 +34,7 @@ public:
 	glm::mat4 getGlobalMatrix(bool fast = false);
 };
 
-class Prefab
+class SGS Prefab
 {
 public:
 	std::string m_name;

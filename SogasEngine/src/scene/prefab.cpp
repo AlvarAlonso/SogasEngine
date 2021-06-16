@@ -2,6 +2,8 @@
 
 #include "core/assertions.h"
 
+std::map<std::string, std::shared_ptr<Prefab>> Prefab::s_prefabsLoaded;
+
 Node::Node() : m_visible(true), m_parent(nullptr), m_mesh(nullptr)
 {
 }
