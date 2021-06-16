@@ -3,14 +3,17 @@
 #include "renderer/renderer.h"
 #include "platform/openGL/openGLFramebuffer.h"
 
-Framebuffer* Framebuffer::create(const FramebufferSpecs& specs)
+namespace Sogas 
 {
-	switch ((u16)Renderer::getAPI())
+	Framebuffer* Framebuffer::create(const FramebufferSpecs& specs)
 	{
-	case (u16)RendererAPI::API::None: SGSASSERT(false); return nullptr;
-	case (u16)RendererAPI::API::OpenGL: return new OpenGLFramebuffer(specs);
-	}
+		switch ((u16)Renderer::getAPI())
+		{
+		case (u16)RendererAPI::API::None: SGSASSERT(false); return nullptr;
+		case (u16)RendererAPI::API::OpenGL: return new OpenGLFramebuffer(specs);
+		}
 
-	SGSASSERT(false);
-	return nullptr;
+		SGSASSERT(false);
+		return nullptr;
+	}
 }

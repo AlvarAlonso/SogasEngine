@@ -1,11 +1,11 @@
 #pragma once
 #include "core/application.h"
 
-extern Application* createApplication();
+extern Sogas::Application* Sogas::createApplication();
 
 int main(int argc, char** argv)
 {
-	auto app = createApplication();
+	auto app = Sogas::createApplication();
 	app->run();
 	delete app;
 }

@@ -9,44 +9,47 @@
 #include <vector>
 #include <map>
 
-class Mesh;
-
-class SGS Node
+namespace Sogas 
 {
-public:
-	std::string m_name;
-	bool m_visible;
-	
-	std::shared_ptr<Mesh> m_mesh;
-	glm::mat4 m_model;
-	glm::mat4 m_globalModel;
+	class Mesh;
 
-	// TODO: not sure about the type of the pointer
-	std::shared_ptr<Node> m_parent;
-	std::vector<std::shared_ptr<Node>> m_children;
+	class SGS Node
+	{
+	public:
+		std::string m_name;
+		bool m_visible;
 
-	Node();
+		std::shared_ptr<Mesh> m_mesh;
+		glm::mat4 m_model;
+		glm::mat4 m_globalModel;
 
-	virtual ~Node();
+		// TODO: not sure about the type of the pointer
+		std::shared_ptr<Node> m_parent;
+		std::vector<std::shared_ptr<Node>> m_children;
 
-	// add node to children list
-	void addChild(Node* child);
-	glm::mat4 getGlobalMatrix(bool fast = false);
-};
+		Node();
 
-class SGS Prefab
-{
-public:
-	std::string m_name;
-	std::map<std::string, std::weak_ptr<Node>> m_nodesByName;
+		virtual ~Node();
 
-	std::vector<std::weak_ptr<Node>> m_roots;
+		// add node to children list
+		void addChild(Node* child);
+		glm::mat4 getGlobalMatrix(bool fast = false);
+	};
 
-	Prefab() = default;
-	virtual ~Prefab();
+	class SGS Prefab
+	{
+	public:
+		std::string m_name;
+		std::map<std::string, std::weak_ptr<Node>> m_nodesByName;
 
-	// manager to cache loaded prefabs
-	static std::map<std::string, std::shared_ptr<Prefab>> s_prefabsLoaded;
-	static std::shared_ptr<Prefab> get(const std::string& name);
-	void registerPrefab(const std::string& name);
-};
+		std::vector<std::weak_ptr<Node>> m_roots;
+
+		Prefab() = default;
+		virtual ~Prefab();
+
+		// manager to cache loaded prefabs
+		static std::map<std::string, std::shared_ptr<Prefab>> s_prefabsLoaded;
+		static std::shared_ptr<Prefab> get(const std::string& name);
+		void registerPrefab(const std::string& name);
+	};
+}

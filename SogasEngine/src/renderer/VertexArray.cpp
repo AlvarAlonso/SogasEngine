@@ -2,14 +2,17 @@
 #include "renderer.h"
 #include "platform/OpenGL/openGLVertexArray.h"
 
-VertexArray* VertexArray::create()
+namespace Sogas 
 {
-	switch(Renderer::getAPI())
+	VertexArray* VertexArray::create()
 	{
+		switch (Renderer::getAPI())
+		{
 		case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
 		case Renderer::API::OpenGL: return new OpenGLVertexArray();
-	}
+		}
 
-	SGSASSERT_MSG(false, "Unknown renderer API!");
-	return nullptr;
+		SGSASSERT_MSG(false, "Unknown renderer API!");
+		return nullptr;
+	}
 }

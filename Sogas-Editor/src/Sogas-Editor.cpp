@@ -3,21 +3,24 @@
 #include "EditorLayer.h"
 #include "core/entryPoint.h"
 
-class Editor : public Application
+namespace Sogas 
 {
-public:
-	Editor()
+	class Editor : public Application
 	{
-		pushLayer(new EditorLayer());
-	}
+	public:
+		Editor()
+		{
+			pushLayer(new EditorLayer());
+		}
 
-	~Editor()
+		~Editor()
+		{
+		}
+	};
+
+
+	Application* createApplication()
 	{
+		return new Editor();
 	}
-};
-
-
-Application* createApplication()
-{
-	return new Editor();
 }

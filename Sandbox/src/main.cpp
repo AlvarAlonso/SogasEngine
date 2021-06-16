@@ -5,47 +5,47 @@
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 #include "renderer/resources/mesh.h"
 
-class ExampleLayer : public Layer
+class ExampleLayer : public Sogas::Layer
 {
 public:
 	ExampleLayer()
 		: Layer("Example")
 	{
 		// load texture
-		m_texture = Texture2D::create("../Assets/texture.png");
-		m_texture = Texture2D::create("../Assets/brick_wall_2k.jpg");
-		m_defaultTexture = Texture2D::create(1, 1);
+		m_texture = Sogas::Texture2D::create("../Assets/texture.png");
+		m_texture = Sogas::Texture2D::create("../Assets/brick_wall_2k.jpg");
+		m_defaultTexture = Sogas::Texture2D::create(1, 1);
 		uint32_t defaultTextureData = 0xffffffff;
 		m_defaultTexture->setData(&defaultTextureData, sizeof(uint32_t));
 
-		mesh = new Mesh();
+		mesh = new Sogas::Mesh();
 		mesh->load("../Assets/viking_room.obj");
 
-		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
+		m_shader.reset(Sogas::Shader::create("../SogasEngine/shaders/basic.shader"));
 
-		m_camera = new Camera();
+		m_camera = new Sogas::Camera();
 		m_camera->setPosition({ 0, 15, -50 });
 
-		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
+		mouse_pos = { Sogas::Application::getInstance()->getWindow().getWidth(), Sogas::Application::getInstance()->getWindow().getHeight() };
 
 	}
 
 	void onAttach()
 	{
-		FramebufferSpecs specs;
+		Sogas::FramebufferSpecs specs;
 		specs.width = 1280; // Application::getInstance()->getWindow().getWidth();
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
-		m_framebuffer = Framebuffer::create(specs);
+		m_framebuffer = Sogas::Framebuffer::create(specs);
 	}
 
 	void onUpdate(f32 dt) override
 	{
 		m_framebuffer->bind();
 
-		Renderer::setClearColor(glm::vec4( 0.2 ));
-		Renderer::setDepthBuffer(true);
-		Renderer::clear();
+		Sogas::Renderer::setClearColor(glm::vec4( 0.2 ));
+		Sogas::Renderer::setDepthBuffer(true);
+		Sogas::Renderer::clear();
 		
 		if (x < -1.0f || x > 1.0f) {
 			inc *= -1;
@@ -54,18 +54,18 @@ public:
 		x += inc;
 		
 		// Should dt be stored as a class variable and used in the events through the dispatcher???
-		if (Input::isKeyPressed(SGS_KEY_A)){
-			m_camera->move(LEFT, dt);
+		if (Sogas::Input::isKeyPressed(SGS_KEY_A)){
+			m_camera->move(Sogas::LEFT, dt);
 		}
-		else if (Input::isKeyPressed(SGS_KEY_D)){
-			m_camera->move(RIGHT, dt);
+		else if (Sogas::Input::isKeyPressed(SGS_KEY_D)){
+			m_camera->move(Sogas::RIGHT, dt);
 		}
 
-		if (Input::isKeyPressed(SGS_KEY_W)){
-			m_camera->move(FORWARD, dt);
+		if (Sogas::Input::isKeyPressed(SGS_KEY_W)){
+			m_camera->move(Sogas::FORWARD, dt);
 		}
-		else if (Input::isKeyPressed(SGS_KEY_S)){
-			m_camera->move(BACKWARD, dt);
+		else if (Sogas::Input::isKeyPressed(SGS_KEY_S)){
+			m_camera->move(Sogas::BACKWARD, dt);
 		}
 
 		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
@@ -74,20 +74,20 @@ public:
 		
 		m_shader->bind();
 		m_texture->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_offset", x);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
+		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
+		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_offset", x);
+		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_model", model);
+		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		Renderer::drawIndexed(mesh->m_vertexArray);
+		Sogas::Renderer::drawIndexed(mesh->m_vertexArray);
 		
 		m_framebuffer->unbind();
 	}
 
 	void onImguiRender()
 	{
-		ImGui::SetCurrentContext(Application::getImguiContext());
+		ImGui::SetCurrentContext(Sogas::Application::getImguiContext());
 
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -151,7 +151,7 @@ public:
 				//ImGui::Separator();
 
 				if (ImGui::MenuItem("Close", NULL, false))
-					Application::getInstance()->close();
+					Sogas::Application::getInstance()->close();
 				ImGui::EndMenu();
 			}
 
@@ -173,65 +173,65 @@ public:
 		ImGui::End();
 	}
 
-	void onEvent(Event& event) override
+	void onEvent(Sogas::Event& event) override
 	{
-		EventDispatcher dispatcher(event);
-		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onKeyPressed));
-		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonPressed));
-		dispatcher.dispatch<MouseButtonReleasedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonReleased));
-		dispatcher.dispatch<MouseMoveEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseMoved));
+		Sogas::EventDispatcher dispatcher(event);
+		dispatcher.dispatch<Sogas::KeyPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onKeyPressed));
+		dispatcher.dispatch<Sogas::MouseButtonPressedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonPressed));
+		dispatcher.dispatch<Sogas::MouseButtonReleasedEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseButtonReleased));
+		dispatcher.dispatch<Sogas::MouseMoveEvent>(BIND_EVENT_FUNC(ExampleLayer::onMouseMoved));
 	}
 
-	bool onKeyPressed(KeyPressedEvent& event)
+	bool onKeyPressed(Sogas::KeyPressedEvent& event)
 	{
 		return false;
 	}
 
-	bool onMouseButtonPressed(MouseButtonPressedEvent& event) {
+	bool onMouseButtonPressed(Sogas::MouseButtonPressedEvent& event) {
 		return false;
 	}
 
-	bool onMouseButtonReleased(MouseButtonReleasedEvent& event)
+	bool onMouseButtonReleased(Sogas::MouseButtonReleasedEvent& event)
 	{
 		// Hide the cursor if using the camera
 		if (event.getMouseButton() == SGS_MOUSE_BUTTON_MIDDLE)
 		{
 			m_camera->m_locked = !m_camera->m_locked;
 			if (m_camera->m_locked)
-				Application::getInstance()->hideCursor();
+				Sogas::Application::getInstance()->hideCursor();
 			else
-				Application::getInstance()->showCursor();
+				Sogas::Application::getInstance()->showCursor();
 			return false;
 		}
 	}
 
-	bool onMouseMoved(MouseMoveEvent& event)
+	bool onMouseMoved(Sogas::MouseMoveEvent& event)
 	{
-		glm::vec2 deltaMouse = mouse_pos - Input::getMousePosition();
+		glm::vec2 deltaMouse = mouse_pos - Sogas::Input::getMousePosition();
 		if (m_camera->m_locked) {
-			Input::centerMouse();
+			Sogas::Input::centerMouse();
 			m_camera->rotate(deltaMouse.x, deltaMouse.y);
 		}
-		mouse_pos = Input::getMousePosition();
+		mouse_pos = Sogas::Input::getMousePosition();
 		return false;
 	}
 
 private:
-	Camera* m_camera;
-	std::shared_ptr<Shader> m_shader;
-	std::shared_ptr<VertexArray> m_vertexArray;
-	std::shared_ptr<Texture2D> m_texture;
-	std::shared_ptr<Texture2D> m_defaultTexture;
+	Sogas::Camera* m_camera;
+	std::shared_ptr<Sogas::Shader> m_shader;
+	std::shared_ptr<Sogas::VertexArray> m_vertexArray;
+	std::shared_ptr<Sogas::Texture2D> m_texture;
+	std::shared_ptr<Sogas::Texture2D> m_defaultTexture;
 
 	// TODO: erase them, provisional at the moment
-	float x = 0.0f;
-	float inc = 0.01f;
+	f32 x = 0.0f;
+	f32 inc = 0.01f;
 	glm::vec2 mouse_pos;
-	Mesh* mesh;
-	Framebuffer* m_framebuffer;
+	Sogas::Mesh* mesh;
+	Sogas::Framebuffer* m_framebuffer;
 };
 
-class Sandbox : public Application
+class Sandbox : public Sogas::Application
 {
 public:
 	Sandbox()
@@ -245,7 +245,7 @@ public:
 	}
 };
 
-Application* createApplication()
+Sogas::Application* Sogas::createApplication()
 {
 	return new Sandbox();
 }
