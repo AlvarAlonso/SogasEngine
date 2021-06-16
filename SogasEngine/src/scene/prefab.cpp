@@ -39,8 +39,8 @@ Prefab::~Prefab()
 	SGSASSERT(m_name.size());
 
 	auto it = s_prefabsLoaded.find(m_name);
-	if (it != s_prefabsLoaded.end());
-	s_prefabsLoaded.erase(it);
+	if (it != s_prefabsLoaded.end())
+		s_prefabsLoaded.erase(it);
 }
 
 std::shared_ptr<Prefab> Prefab::get(const std::string& name)

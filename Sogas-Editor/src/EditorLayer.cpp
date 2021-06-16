@@ -54,7 +54,7 @@ void EditorLayer::onUpdate(f32 dt)
 
 	m_framebuffer->bind();
 
-	Renderer::setClearColor(glm::vec4(0.2));
+	Renderer::setClearColor(glm::vec4(0.2f));
 	Renderer::setDepthBuffer(true);
 	Renderer::clear();
 
@@ -161,7 +161,7 @@ void EditorLayer::onImguiRender()
 		m_cameraController.get()->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 	}
 	u32 textureId = m_framebuffer->getColorAttachment();
-	ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+	ImGui::Image(&textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 	ImGui::End();
 	ImGui::PopStyleVar();
