@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "mesh.h"
 
 #include "../external/tinyobj/tiny_obj_loader.h"
@@ -6,7 +8,6 @@
 #include "../external/glm/glm/glm.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <../external/glm/glm/gtx/hash.hpp>
-#include <unordered_map>
 
 namespace Sogas 
 {

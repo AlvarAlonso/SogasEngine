@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "prefab.h"
 
 #include "core/assertions.h"

@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "cameraController.h"
 
 #include "input.h"

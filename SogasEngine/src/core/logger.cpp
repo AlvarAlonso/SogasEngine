@@ -1,10 +1,9 @@
+#include "sgspch.h"
+
 #include "logger.h"
 #include "assertions.h"
 
 #include <windows.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
 
 namespace Sogas 
 {

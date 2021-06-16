@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "texture.h"
 
 #include "renderer/renderer.h"

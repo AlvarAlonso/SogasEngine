@@ -1,5 +1,6 @@
+#include "sgspch.h"
+
 #include "application.h"
-#include <memory>
 
 #include "renderer/renderer.h"
 #include "renderer/vertexArray.h"

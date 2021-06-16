@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "window.h"
 
 #include "core/logger.h"

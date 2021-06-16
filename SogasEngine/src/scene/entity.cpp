@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "entity.h"
 
 namespace Sogas 

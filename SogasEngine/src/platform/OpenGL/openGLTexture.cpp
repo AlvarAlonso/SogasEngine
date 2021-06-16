@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "openGLTexture.h"
 
 #include "stb_image/stb_image.h"

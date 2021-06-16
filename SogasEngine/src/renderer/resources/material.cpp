@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "material.h"
 
 namespace Sogas 

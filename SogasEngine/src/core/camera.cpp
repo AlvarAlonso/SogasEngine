@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "camera.h"
 
 #include "application.h"

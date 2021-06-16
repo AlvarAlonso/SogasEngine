@@ -1,9 +1,8 @@
+#include "sgspch.h"
+
 #include "openGLShader.h"
 #include "renderer/shader.h"
 #include "core/assertions.h"
-
-#include <fstream>
-#include <sstream>
 
 #include "core/logger.h"
 

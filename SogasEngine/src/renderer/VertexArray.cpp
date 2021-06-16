@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "vertexArray.h"
 #include "renderer.h"
 #include "platform/OpenGL/openGLVertexArray.h"

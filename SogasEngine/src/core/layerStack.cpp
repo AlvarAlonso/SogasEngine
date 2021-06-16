@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "layerStack.h"
 
 namespace Sogas 

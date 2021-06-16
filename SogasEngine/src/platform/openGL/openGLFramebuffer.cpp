@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "openGLFramebuffer.h"
 
 #include "GLEW/glew-2.1.0/include/GL/glew.h"

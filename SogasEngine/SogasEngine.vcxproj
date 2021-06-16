@@ -60,6 +60,8 @@
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -80,6 +82,8 @@
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -420,6 +424,7 @@
     <ClInclude Include="src\renderer\vertexArray.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\scene\prefab.h" />
+    <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
@@ -456,6 +461,7 @@
     <ClCompile Include="src\renderer\vertexArray.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\prefab.cpp" />
+    <ClCompile Include="src\sgspch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

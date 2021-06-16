@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "core/input.h"
 
 #include "core/application.h"

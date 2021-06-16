@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "defines.h"
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLEW

@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "buffer.h"
 
 #include "renderer.h"

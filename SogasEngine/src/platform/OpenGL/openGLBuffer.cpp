@@ -1,3 +1,4 @@
+#include "sgspch.h"
 
 #include "GL/glew.h"
 #include "renderer/buffer.h"

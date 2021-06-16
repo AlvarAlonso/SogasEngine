@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "imguiLayer.h"
 
 #include "core/application.h"

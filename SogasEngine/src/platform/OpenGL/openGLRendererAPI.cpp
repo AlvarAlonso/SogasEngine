@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "openGLRendererAPI.h"
 
 #include "GL/glew.h"

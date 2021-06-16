@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "rendererAPI.h"
 
 namespace Sogas 

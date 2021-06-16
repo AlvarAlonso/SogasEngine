@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "time.h"
 
 namespace Sogas 

@@ -1,3 +1,5 @@
+#include "sgspch.h"
+
 #include "renderer/vertexArray.h"
 
 #include "GL/glew.h"

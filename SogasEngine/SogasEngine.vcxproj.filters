@@ -39,6 +39,7 @@
     <ClCompile Include="src\renderer\resources\material.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\prefab.cpp" />
+    <ClCompile Include="src\sgspch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -375,6 +376,7 @@
     <ClInclude Include="src\renderer\resources\material.h" />
     <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\entity.h" />
+    <ClInclude Include="src\sgspch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />
