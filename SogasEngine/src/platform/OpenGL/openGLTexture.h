@@ -15,6 +15,7 @@ public:
 	virtual u32 getHeight() const override { return m_height; }
 
 	virtual void setData(void* data, u32 size) override;
+	virtual u32 getID() const override { return m_ID; };
 
 	virtual void bind(u32 slot = 0) const override;
 private:
