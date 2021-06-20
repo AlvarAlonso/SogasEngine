@@ -377,6 +377,7 @@
     <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\sgspch.h" />
+    <ClInclude Include="src\scene\scene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />
