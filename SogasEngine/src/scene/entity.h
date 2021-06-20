@@ -27,9 +27,9 @@ namespace Sogas
 		std::string m_name;
 		glm::mat4 m_model;
 
-		Entity();
-
 		virtual void OnImguiRender() = 0;
+	protected:
+		Entity();
 	};
 
 	class SGS Renderable : public Entity

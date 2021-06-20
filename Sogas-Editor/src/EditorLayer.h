@@ -18,7 +18,7 @@ namespace Sogas
 	// Temporal
 	struct Scene
 	{
-		std::vector<Entity> entities;
+		std::vector<Entity*> entities;
 	};
 
 	class EditorLayer : public Layer

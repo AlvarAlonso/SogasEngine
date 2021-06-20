@@ -46,7 +46,11 @@ namespace Sogas
 		node->m_mesh.reset(mesh);
 		m_prefab.get()->m_roots.push_back(node);
 
-		//std::shared_ptr<Entity> entity = std::make_shared<Entity>();
+		Renderable* renderable = new Renderable();
+
+		renderable->m_prefab = m_prefab;
+
+		m_currentScene.get()->entities.push_back(renderable);
 	}
 
 	void EditorLayer::onDetach()
@@ -76,7 +80,7 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		// TODO: clean up the prefab and entity API
+		// TODO: clean up the prefab and entity API, pass the scene to be rendered to the renderer
 		Renderer::drawIndexed(m_prefab.get()->m_roots[0]->m_mesh->m_vertexArray);
 
 		m_framebuffer->unbind();
@@ -154,13 +158,16 @@ namespace Sogas
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
 		ImGui::Text("Delta time: %f ms", io.DeltaTime);
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
-		ImGui::End();
 
 		// Scene Hierarchy
+		ImGui::Separator;
+		ImGui::Text("Scene Hierarchy");
 		for(auto& entity : m_currentScene.get()->entities)
 		{
-			entity.OnImguiRender();
+			entity->OnImguiRender();
 		}
+		ImGui::Separator;
+		ImGui::End();
 
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
