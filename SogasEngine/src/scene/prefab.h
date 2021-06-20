@@ -2,7 +2,7 @@
 
 #include "defines.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <../external/glm/glm/gtc/matrix_transform.hpp>
 
 #include <string>
 #include <memory>
@@ -40,9 +40,9 @@ namespace Sogas
 	{
 	public:
 		std::string m_name;
-		std::map<std::string, std::weak_ptr<Node>> m_nodesByName;
+		std::map<std::string, Node*> m_nodesByName;
 
-		std::vector<std::weak_ptr<Node>> m_roots;
+		std::vector<Node*> m_roots;
 
 		Prefab() = default;
 		virtual ~Prefab();

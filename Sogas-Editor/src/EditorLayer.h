@@ -12,6 +12,15 @@
 
 namespace Sogas 
 {
+	class Entity;
+	class Prefab;
+
+	// Temporal
+	struct Scene
+	{
+		std::vector<Entity> entities;
+	};
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -34,12 +43,15 @@ namespace Sogas
 		std::shared_ptr<Texture2D> m_texture;
 		std::shared_ptr<Shader> m_shader;
 
+		std::shared_ptr<Prefab> m_prefab;
+
+		std::unique_ptr<Scene> m_currentScene;
+
 		glm::vec2 m_viewportSize{ 0, 0 };
 
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
 
-		Mesh* mesh;
 		glm::vec2 mouse_pos;
 	};
 }

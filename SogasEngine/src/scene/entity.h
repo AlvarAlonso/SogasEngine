@@ -2,8 +2,8 @@
 
 #include "defines.h"
 
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
+#include <../external/glm/glm/vec3.hpp>
+#include <../external/glm/glm/mat4x4.hpp>
 
 #include <string>
 #include <memory>
@@ -28,6 +28,8 @@ namespace Sogas
 		glm::mat4 m_model;
 
 		Entity();
+
+		virtual void OnImguiRender() = 0;
 	};
 
 	class SGS Renderable : public Entity
@@ -35,6 +37,8 @@ namespace Sogas
 	public:
 		Renderable();
 		Renderable(const std::string& name);
+
+		virtual void OnImguiRender() override;
 
 		std::shared_ptr<Prefab> m_prefab;
 	};
@@ -44,6 +48,8 @@ namespace Sogas
 	public:
 		Light();
 		Light(const std::string& name);
+
+		virtual void OnImguiRender() override;
 
 		glm::vec3 m_color;
 		f32 m_maxDist;

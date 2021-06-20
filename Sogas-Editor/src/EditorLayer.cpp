@@ -6,6 +6,8 @@
 #include "core/logger.h"
 #include "platform/openGL/openGLShader.h"
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "scene/entity.h"
+#include "scene/prefab.h"
 
 namespace Sogas 
 {
@@ -25,7 +27,7 @@ namespace Sogas
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
 
-		mesh = new Mesh();
+		Mesh* mesh = new Mesh();
 		mesh->load("../Assets/viking_room.obj");
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
@@ -37,6 +39,14 @@ namespace Sogas
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
+		m_currentScene = std::make_unique<Scene>();
+
+		m_prefab.reset(new Prefab());
+		Node* node = new Node();
+		node->m_mesh.reset(mesh);
+		m_prefab.get()->m_roots.push_back(node);
+
+		//std::shared_ptr<Entity> entity = std::make_shared<Entity>();
 	}
 
 	void EditorLayer::onDetach()
@@ -45,7 +55,6 @@ namespace Sogas
 
 	void EditorLayer::onUpdate(f32 dt)
 	{
-
 		if (m_viewportFocused)
 		{
 			m_cameraController->onUpdate(dt);
@@ -67,7 +76,8 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		Renderer::drawIndexed(mesh->m_vertexArray);
+		// TODO: clean up the prefab and entity API
+		Renderer::drawIndexed(m_prefab.get()->m_roots[0]->m_mesh->m_vertexArray);
 
 		m_framebuffer->unbind();
 	}
@@ -145,6 +155,12 @@ namespace Sogas
 		ImGui::Text("Delta time: %f ms", io.DeltaTime);
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
 		ImGui::End();
+
+		// Scene Hierarchy
+		for(auto& entity : m_currentScene.get()->entities)
+		{
+			entity.OnImguiRender();
+		}
 
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
