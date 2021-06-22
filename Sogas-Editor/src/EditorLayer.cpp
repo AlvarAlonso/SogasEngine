@@ -8,6 +8,8 @@
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 #include "scene/entity.h"
 #include "scene/prefab.h"
+#include <ImGuizmo.h>
+#include <../external/glm/glm/gtc/type_ptr.hpp>
 
 namespace Sogas 
 {
@@ -89,6 +91,8 @@ namespace Sogas
 	void EditorLayer::onImguiRender()
 	{
 		ImGui::SetCurrentContext(Application::getImguiContext());
+
+		onImGuizmoRender();
 
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -199,5 +203,71 @@ namespace Sogas
 		if (m_viewportFocused) {
 			m_cameraController.get()->onEvent(event);
 		}
+	}
+	void EditorLayer::onImGuizmoRender()
+	{
+		if (Application::m_guizmoEntity == nullptr)
+			return;
+
+		glm::mat4& transform = Application::m_guizmoEntity->m_model;
+
+		static ImGuizmo::OPERATION sCurrentGuizmoOperation(ImGuizmo::TRANSLATE);
+		static ImGuizmo::MODE sCurrentGuizmoMode(ImGuizmo::WORLD);
+
+		// TODO: Abstract the input
+		if (ImGui::IsKeyPressed(90))
+			sCurrentGuizmoOperation = ImGuizmo::TRANSLATE;
+		if (ImGui::IsKeyPressed(69))
+			sCurrentGuizmoOperation = ImGuizmo::ROTATE;
+		if (ImGui::IsKeyPressed(82))
+			sCurrentGuizmoOperation = ImGuizmo::SCALE;
+		if (ImGui::RadioButton("Translate", sCurrentGuizmoOperation == ImGuizmo::TRANSLATE))
+			sCurrentGuizmoOperation = ImGuizmo::TRANSLATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotate", sCurrentGuizmoOperation == ImGuizmo::ROTATE))
+			sCurrentGuizmoOperation = ImGuizmo::ROTATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", sCurrentGuizmoOperation == ImGuizmo::SCALE))
+			sCurrentGuizmoOperation = ImGuizmo::SCALE;
+
+		f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
+		ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
+		ImGui::InputFloat3("Tr", matrixTranslation, "%.3f");
+		ImGui::InputFloat3("Rt", matrixRotation, "%.3f");
+		ImGui::InputFloat3("Sc", matrixScale, "%.3f");
+		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(transform));
+
+		if(sCurrentGuizmoOperation != ImGuizmo::SCALE)
+		{
+			if (ImGui::RadioButton("Local", sCurrentGuizmoMode == ImGuizmo::LOCAL))
+				sCurrentGuizmoMode = ImGuizmo::LOCAL;
+			ImGui::SameLine();
+			if (ImGui::RadioButton("World", sCurrentGuizmoMode == ImGuizmo::WORLD))
+				sCurrentGuizmoMode = ImGuizmo::WORLD;
+		}
+
+		static bool useSnap(false);
+		if (ImGui::IsKeyPressed(83))
+			useSnap = !useSnap;
+		ImGui::Checkbox("", &useSnap);
+		ImGui::SameLine();
+		static glm::vec3 snap;
+		switch (sCurrentGuizmoOperation)
+		{
+		case ImGuizmo::TRANSLATE:
+			ImGui::InputFloat3("Snap", &snap.x);
+			break;
+		case ImGuizmo::ROTATE:
+			ImGui::InputFloat("Angle Snap", &snap.x);
+			break;
+		case ImGuizmo::SCALE:
+			ImGui::InputFloat("Scale Snap", &snap.x);
+			break;
+		}
+
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+		ImGuizmo::Manipulate(glm::value_ptr(m_camera.get()->getView()), glm::value_ptr(m_camera.get()->getProjection()), sCurrentGuizmoOperation,
+			sCurrentGuizmoMode, glm::value_ptr(transform), nullptr, useSnap ? &snap.x : nullptr);
 	}
 }

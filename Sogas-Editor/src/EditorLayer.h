@@ -53,5 +53,7 @@ namespace Sogas
 		bool m_viewportHovered = false;
 
 		glm::vec2 mouse_pos;
+	private:
+		void onImGuizmoRender();
 	};
 }

@@ -16,6 +16,7 @@ namespace Sogas
 {
 	Application* Application::s_application = nullptr;
 	ImGuiContext* Application::s_imguiContext = nullptr;
+	Entity* Application::m_guizmoEntity = nullptr;
 
 	static Camera* s_camera = nullptr;
 
@@ -33,7 +34,6 @@ namespace Sogas
 		{
 			SGSFATAL("Failed to link GLEW against OpenGL context!");
 		}
-
 	}
 
 	void Application::run()
