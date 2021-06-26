@@ -50,7 +50,6 @@ namespace Sogas
 			}
 		}
 
-		// TODO: Retrieve from const char* name
 		template<class ComponentType>
 		std::weak_ptr<ComponentType> getComponent(const char* name)
 		{
@@ -65,7 +64,7 @@ namespace Sogas
 				return pWeakSub;
 			}
 			else {
-				return std::weak_ptr<componentType>();
+				return std::weak_ptr<ComponentType>();
 			}
 		}
 

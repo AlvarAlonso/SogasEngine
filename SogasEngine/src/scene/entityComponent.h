@@ -25,6 +25,7 @@ namespace Sogas
 		virtual const char* getName() const = 0;
 
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
+		// It fails in the find func with const char*
 		static ComponentId getIdFromName(const char* componentStr)
 		{
 			std::unordered_map<const char*, u32>::iterator it = m_componentTypes.find(componentStr);

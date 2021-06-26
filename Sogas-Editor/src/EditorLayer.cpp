@@ -35,7 +35,7 @@ namespace Sogas
 		//StrongEntityComponentPtr pRenderComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 		//m_pEntity->addComponent(pRenderComponent);
 
-		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>("RenderComponent"));
+		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
 		pStrongRenderComponent->setMesh("../Assets/cube.obj");
 
 		//mesh = new Mesh();
@@ -82,7 +82,7 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(RenderComponent::getIdFromName("RenderComponent")));
+		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
 		Renderer::drawIndexed(pRenderComponent->getMesh()->m_vertexArray);
 		//m_renderSystem->render();
 
