@@ -5,7 +5,19 @@
 #include "core/keyCodes.h"
 #include "core/logger.h"
 #include "platform/openGL/openGLShader.h"
-#include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+
+// TODO: find a better place to define components
+//#include "scene/ecs/system.h"
+//#include "scene/ecs/coordinator.h"
+//#include "scene/ecs/components.h"
+//#include "scene/ecs/componentManager.h"
+#include "scene/entityFactory.h"
+#include "scene/entity.h"
+#include "scene/transformComponent.h"
+#include "scene/renderComponent.h"
+
+//std::unique_ptr<Sogas::Coordinator> p_coordinator;
 
 namespace Sogas 
 {
@@ -22,11 +34,15 @@ namespace Sogas
 
 		m_framebuffer = Framebuffer::create(specs);
 
+		m_pEntityFactory.reset(new EntityFactory);
+
+		m_pEntity = m_pEntityFactory->createEntity("Aux");
+		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr();
+		mesh = new Mesh();
+		mesh->load("../Assets/cube.obj");
+
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
-
-		mesh = new Mesh();
-		mesh->load("../Assets/viking_room.obj");
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
@@ -36,7 +52,6 @@ namespace Sogas
 		m_cameraController.reset(new CameraController(m_camera));
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
-
 	}
 
 	void EditorLayer::onDetach()
@@ -51,8 +66,8 @@ namespace Sogas
 			m_cameraController->onUpdate(dt);
 		}
 
-		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
-		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(1, 0, 0));
+		std::shared_ptr<TransformComponent> pTransformComponent = makeStrongPtr(m_pEntity->getComponent<TransformComponent>((ComponentId)0));
+		glm::mat4 model = pTransformComponent->getTransform();
 
 		m_framebuffer->bind();
 
@@ -68,6 +83,7 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
 		Renderer::drawIndexed(mesh->m_vertexArray);
+		//m_renderSystem->render();
 
 		m_framebuffer->unbind();
 	}

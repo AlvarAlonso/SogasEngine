@@ -2,7 +2,7 @@
 
 #include "defines.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <../external/glm/glm/gtc/matrix_transform.hpp>
 
 #include <string>
 #include <memory>
@@ -34,6 +34,9 @@ namespace Sogas
 		// add node to children list
 		void addChild(Node* child);
 		glm::mat4 getGlobalMatrix(bool fast = false);
+
+		// TODO: While no ECS user render func
+		void render();
 	};
 
 	class SGS Prefab
@@ -51,5 +54,8 @@ namespace Sogas
 		static std::map<std::string, std::shared_ptr<Prefab>> s_prefabsLoaded;
 		static std::shared_ptr<Prefab> get(const std::string& name);
 		void registerPrefab(const std::string& name);
+
+		// TODO: while no ECS, use render func
+		void render();
 	};
 }

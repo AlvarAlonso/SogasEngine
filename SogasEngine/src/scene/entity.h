@@ -2,52 +2,62 @@
 
 #include "defines.h"
 
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-
+#include "types.h"
 #include <string>
 #include <memory>
 
 namespace Sogas 
 {
-	enum class e_LightType
-	{
-		DIRECTIONAL = 0,
-		POINT,
-		SPOT
-	};
-
-	class Prefab;
-
 	// TODO: This is temporal until we implement an Entity Component System
 
-	class SGS Entity
-	{
+	class SGS Entity {
 	public:
-		std::string m_name;
-		glm::mat4 m_model;
 
-		Entity();
-	};
+		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponents;
 
-	class SGS Renderable : public Entity
-	{
+	private:
+		EntityId m_id;
+		EntityComponents m_components{};
+		std::string m_type;
+
 	public:
-		Renderable();
-		Renderable(const std::string& name);
+		explicit Entity(EntityId id);
+		~Entity(void);
 
-		std::shared_ptr<Prefab> m_prefab;
-	};
+		bool init();
+		void postInit();
+		void destroy();
+		void update(f32 dt);
 
-	class SGS Light : public Entity
-	{
-	public:
-		Light();
-		Light(const std::string& name);
+		EntityId getId() const { return m_id; }
+		std::string getType() const { return m_type; }
 
-		glm::vec3 m_color;
-		f32 m_maxDist;
-		f32 m_intensity;
-		e_LightType m_lightType;
+		template<class ComponentType>
+		std::weak_ptr<ComponentType> getComponent(ComponentId id)
+		{
+			EntityComponents::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+			{
+				StrongEntityComponentPtr pBase(findIt->second);
+				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+				std::weak_ptr<ComponentType> pWeakSub(pSub);
+				return pWeakSub;
+			}
+			else
+			{
+				return std::weak_ptr<ComponentType>();
+			}
+		}
+
+		// TODO: Retrieve from const char* name
+		template<class componentType>
+		std::weak_ptr<componentType> getComponent(const char* name)
+		{
+			//componentId id = actorComponents::getid
+			return std::weak_ptr<componentType>();
+		}
+
+		const EntityComponents* getComponents() { return &m_components; }
+		void addComponent(StrongEntityComponentPtr pComponent);
 	};
 }

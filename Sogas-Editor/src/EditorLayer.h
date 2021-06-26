@@ -10,8 +10,16 @@
 #include "renderer/framebuffer.h"
 #include "renderer/shader.h"
 
+#include "scene/types.h"
+//#include "scene/ecs/coordinator.h"
+//#include "scene/ecs/system.h"
+//#include "scene/ecs/components.h"
+
 namespace Sogas 
 {
+	class EntityFactory;
+	class Entity;
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -33,6 +41,10 @@ namespace Sogas
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<Texture2D> m_texture;
 		std::shared_ptr<Shader> m_shader;
+
+		// ECS
+		std::unique_ptr<EntityFactory> m_pEntityFactory;
+		StrongEntityPtr m_pEntity;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 

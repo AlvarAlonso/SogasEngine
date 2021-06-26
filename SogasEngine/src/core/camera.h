@@ -15,6 +15,8 @@ namespace Sogas
 		DOWN
 	};
 
+
+	// TODO: rethink using components
 	class SGS Camera
 	{
 	public:

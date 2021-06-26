@@ -4,6 +4,10 @@
 
 #include "core/assertions.h"
 
+// TODO: while no ECS use renderer API from prefab
+#include "renderer/renderer.h"
+#include "renderer/resources/mesh.h"
+
 namespace Sogas 
 {
 	std::map<std::string, std::shared_ptr<Prefab>> Prefab::s_prefabsLoaded;
@@ -38,6 +42,11 @@ namespace Sogas
 		return m_globalModel;
 	}
 
+	void Node::render()
+	{
+		Renderer::drawIndexed(m_mesh.get()->m_vertexArray);
+	}
+
 	Prefab::~Prefab()
 	{
 		SGSASSERT(m_name.size());
@@ -56,13 +65,25 @@ namespace Sogas
 			return it->second;
 
 		// TODO: else, load the prefab file
+		std::shared_ptr<Node> node = std::make_shared<Node>();
+		node->m_mesh.get()->load(name);
+		std::shared_ptr<Prefab> prefab = std::make_shared<Prefab>();
+		prefab.get()->m_roots.push_back(std::weak_ptr<Node>(node));
 
-		return nullptr;
+		return prefab;
 	}
 
 	void Prefab::registerPrefab(const std::string& name)
 	{
 		m_name = name;
 		s_prefabsLoaded[name].reset(this);
+	}
+
+	void Prefab::render()
+	{
+		for (std::weak_ptr<Node>& node : m_roots)
+		{
+			node.lock().get()->render();
+		}
 	}
 }

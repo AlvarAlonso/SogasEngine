@@ -14,9 +14,10 @@ namespace Sogas {
 		Entity createEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
-		std::vector<Entity>& getEntities() { return m_entities; }
+		//std::vector<Renderable*>& getEntities() { return m_entities; }
 
 	private:
-		std::vector<Entity> m_entities;
+		// TODO: add the moment just renderables
+		//std::vector<Renderable*> m_entities;
 	};
 }

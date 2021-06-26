@@ -18,10 +18,10 @@ namespace Sogas
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		for (auto& entity : m_context.get()->getEntities())
-		{
-
-		}
+		//for (auto& entity : m_context.get()->getEntities())
+		//{
+		//
+		//}
 
 		ImGui::End();
 	}

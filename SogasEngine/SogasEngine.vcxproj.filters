@@ -40,6 +40,9 @@
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\prefab.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
+    <ClCompile Include="src\scene\entityFactory.cpp" />
+    <ClCompile Include="src\scene\transformComponent.cpp" />
+    <ClCompile Include="src\scene\renderComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -378,6 +381,14 @@
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\scene\scene.h" />
+    <ClInclude Include="src\scene\types.h" />
+    <ClInclude Include="src\scene\entityComponent.h" />
+    <ClInclude Include="src\scene\entityFactory.h" />
+    <ClInclude Include="src\scene\pickupInterface.h" />
+    <ClInclude Include="src\scene\transformComponent.h" />
+    <ClInclude Include="src\scene\renderComponent.h" />
+    <ClInclude Include="src\scene\objectFactoryTemplate.h" />
+    <ClInclude Include="external\json\include\nlohmann\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

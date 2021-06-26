@@ -3,7 +3,6 @@
 #include "shader.h"
 
 #include "renderer.h"
-
 #include "platform/OpenGL/openGLShader.h"
 
 namespace Sogas 

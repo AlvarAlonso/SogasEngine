@@ -1,28 +1,56 @@
 #include "sgspch.h"
 
 #include "entity.h"
+#include "entityComponent.h"
+
+#include "core/logger.h"
+#include "core/assertions.h"
 
 namespace Sogas 
 {
-	Entity::Entity() : m_model(glm::mat4(1))
+	Entity::Entity(EntityId id)
 	{
+		m_id = id;
+		m_type = "unknown";
 	}
 
-	Renderable::Renderable() : Entity()
+	Entity::~Entity(void)
 	{
+		SGSINFO("Destroying actor %i", m_id);
+		SGSASSERT(m_components.empty());
 	}
 
-	Renderable::Renderable(const std::string& name) : Entity()
+	bool Entity::init()
 	{
-		m_name = name;
+		return true;
 	}
 
-	Light::Light() : Entity()
+	void Entity::postInit()
 	{
+		for (EntityComponents::iterator it = m_components.begin(); it != m_components.end(); it++)
+		{
+			it->second->postInit();
+		}
 	}
 
-	Light::Light(const std::string& name) : Entity()
+	void Entity::destroy()
 	{
-		m_name = name;
+		m_components.clear();
+	}
+
+	void Entity::update(f32 dt)
+	{
+		for (EntityComponents::iterator it = m_components.begin(); it != m_components.end(); it++)
+		{
+			it->second->update(dt);
+		}
+	}
+
+	void Entity::addComponent(StrongEntityComponentPtr pComponent)
+	{
+		std::pair<EntityComponents::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
+		//std::pair<ComponentId, StrongEntityComponentPtr> pair(pComponent->getId(), pComponent);
+		//std::pair<EntityComponents::iterator, bool> success = m_components.insert(pair);
+		SGSASSERT(success.second);
 	}
 }
