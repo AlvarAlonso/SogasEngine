@@ -13,7 +13,7 @@ namespace Sogas
 		EntityFactory(void);
 		StrongEntityPtr createEntity(const char* entityResource);
 
-		virtual StrongEntityComponentPtr createComponent();
+		virtual StrongEntityComponentPtr createComponent(const char* name);
 
 		//virtual ComponentId getId(void) const = 0;
 

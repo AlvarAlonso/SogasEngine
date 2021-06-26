@@ -10,11 +10,15 @@ namespace Sogas
 	class RenderComponent : public EntityComponent
 	{
 	public:
-		Mesh* getMesh(void) const { return m_pMesh; }
-		void setMesh(Mesh* newMesh) { m_pMesh = newMesh; }
-
 		static const char* s_name;
-		//virtual const char* getName() override { return s_name; }
+
+		RenderComponent() {}
+		virtual bool init() override;
+		virtual const char* getName() const override { return s_name; }
+
+		Mesh* getMesh(void) const { return m_pMesh; }
+		void setMesh(const char* filename) { m_pMesh = new Mesh; m_pMesh->load(filename); }
+
 	private:
 		Mesh* m_pMesh;
 	};

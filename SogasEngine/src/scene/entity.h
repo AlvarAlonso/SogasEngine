@@ -38,6 +38,7 @@ namespace Sogas
 			EntityComponents::iterator findIt = m_components.find(id);
 			if (findIt != m_components.end())
 			{
+				// Downcast and return value
 				StrongEntityComponentPtr pBase(findIt->second);
 				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
 				std::weak_ptr<ComponentType> pWeakSub(pSub);
@@ -50,11 +51,22 @@ namespace Sogas
 		}
 
 		// TODO: Retrieve from const char* name
-		template<class componentType>
-		std::weak_ptr<componentType> getComponent(const char* name)
+		template<class ComponentType>
+		std::weak_ptr<ComponentType> getComponent(const char* name)
 		{
-			//componentId id = actorComponents::getid
-			return std::weak_ptr<componentType>();
+			ComponentId id = EntityComponent::getIdFromName(name);
+			EntityComponents::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+			{
+				// Downcast and return value
+				StrongEntityComponentPtr pBase(findIt->second);
+				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+				std::weak_ptr<ComponentType> pWeakSub(pSub);
+				return pWeakSub;
+			}
+			else {
+				return std::weak_ptr<componentType>();
+			}
 		}
 
 		const EntityComponents* getComponents() { return &m_components; }

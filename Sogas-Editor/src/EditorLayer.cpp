@@ -8,16 +8,10 @@
 #include "glm/glm/gtc/matrix_transform.hpp"
 
 // TODO: find a better place to define components
-//#include "scene/ecs/system.h"
-//#include "scene/ecs/coordinator.h"
-//#include "scene/ecs/components.h"
-//#include "scene/ecs/componentManager.h"
 #include "scene/entityFactory.h"
 #include "scene/entity.h"
 #include "scene/transformComponent.h"
 #include "scene/renderComponent.h"
-
-//std::unique_ptr<Sogas::Coordinator> p_coordinator;
 
 namespace Sogas 
 {
@@ -38,8 +32,14 @@ namespace Sogas
 
 		m_pEntity = m_pEntityFactory->createEntity("Aux");
 		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr();
-		mesh = new Mesh();
-		mesh->load("../Assets/cube.obj");
+		//StrongEntityComponentPtr pRenderComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
+		//m_pEntity->addComponent(pRenderComponent);
+
+		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>("RenderComponent"));
+		pStrongRenderComponent->setMesh("../Assets/cube.obj");
+
+		//mesh = new Mesh();
+		//mesh->load("../Assets/cube.obj");
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
@@ -82,7 +82,8 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		Renderer::drawIndexed(mesh->m_vertexArray);
+		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(RenderComponent::getIdFromName("RenderComponent")));
+		Renderer::drawIndexed(pRenderComponent->getMesh()->m_vertexArray);
 		//m_renderSystem->render();
 
 		m_framebuffer->unbind();

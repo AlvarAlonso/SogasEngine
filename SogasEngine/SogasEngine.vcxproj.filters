@@ -388,7 +388,6 @@
     <ClInclude Include="src\scene\transformComponent.h" />
     <ClInclude Include="src\scene\renderComponent.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
-    <ClInclude Include="external\json\include\nlohmann\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

@@ -12,7 +12,7 @@ namespace Sogas
 	{
 	public:
 		static const char* s_name;
-		virtual const char* getName() const { return s_name; }
+		virtual const char* getName() const override { return s_name; }
 
 		TransformComponent(void) : m_transform(glm::mat4(1)) {};
 		virtual bool init() override;

@@ -11,14 +11,10 @@
 #include "renderer/shader.h"
 
 #include "scene/types.h"
-//#include "scene/ecs/coordinator.h"
-//#include "scene/ecs/system.h"
-//#include "scene/ecs/components.h"
 
 namespace Sogas 
 {
 	class EntityFactory;
-	class Entity;
 
 	class EditorLayer : public Layer
 	{

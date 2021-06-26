@@ -5,8 +5,8 @@
 #include "entity.h"
 #include "entityFactory.h"
 
-#include "transformComponent.h"
 #include "renderComponent.h"
+#include "transformComponent.h"
 //#include "../external/json/include/nlohmann/json.hpp"
 
 namespace Sogas
@@ -19,7 +19,7 @@ namespace Sogas
 		m_lastEntityId = 0;
 		
 		m_componentFactory.registerComponent<TransformComponent>(EntityComponent::getIdFromName(TransformComponent::s_name));
-		//m_componentFactory.registerComponent<RenderComponent>(EntityComponent::getIdFromName(RenderComponent::s_name));
+		m_componentFactory.registerComponent<RenderComponent>(EntityComponent::getIdFromName(RenderComponent::s_name));
 	}
 
 	StrongEntityPtr EntityFactory::createEntity(const char* entityResource)
@@ -33,22 +33,24 @@ namespace Sogas
 			return StrongEntityPtr();
 		}
 
+		// Transform component is added by default, all entities should have a Transform component
 		{
 			// At the moment load just the transform component hardcoded
-			StrongEntityComponentPtr pTransformComponent(createComponent());
+			StrongEntityComponentPtr pTransformComponent(createComponent(TransformComponent::s_name));
 			pEntity->addComponent(pTransformComponent);
+
+			StrongEntityComponentPtr pRenderComponent(createComponent(RenderComponent::s_name));
+			pEntity->addComponent(pRenderComponent);
 		}
-		// Transform component is added by default, all entities should have a Transform component
-		std::shared_ptr<TransformComponent> pTransformComponent = makeStrongPtr(pEntity->getComponent<TransformComponent>(TransformComponent::getIdFromName(TransformComponent::s_name)));
 		
 		pEntity->postInit();
 
 		return pEntity;
 	}
 
-	StrongEntityComponentPtr EntityFactory::createComponent()
+	StrongEntityComponentPtr EntityFactory::createComponent(const char* name)
 	{
-		StrongEntityComponentPtr pComponent(m_componentFactory.create(EntityComponent::getIdFromName("TransformComponent")));
+		StrongEntityComponentPtr pComponent(m_componentFactory.create(EntityComponent::getIdFromName(name)));
 
 		if (pComponent)
 		{
