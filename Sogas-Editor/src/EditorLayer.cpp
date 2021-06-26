@@ -35,7 +35,7 @@ namespace Sogas
 		//StrongEntityComponentPtr pRenderComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 		//m_pEntity->addComponent(pRenderComponent);
 
-		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
+		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(EntityComponent::getIdFromName("RenderComponent")));
 		pStrongRenderComponent->setMesh("../Assets/cube.obj");
 
 		//mesh = new Mesh();

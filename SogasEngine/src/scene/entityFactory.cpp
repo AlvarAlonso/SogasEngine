@@ -12,7 +12,7 @@
 namespace Sogas
 {
 	u32 EntityComponent::lastId = 0;
-	std::unordered_map<const char*, u32> EntityComponent::m_componentTypes{};
+	std::unordered_map<std::string, u32> EntityComponent::m_componentTypes{};
 
 	EntityFactory::EntityFactory(void)
 	{

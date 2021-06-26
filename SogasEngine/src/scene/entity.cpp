@@ -49,8 +49,6 @@ namespace Sogas
 	void Entity::addComponent(StrongEntityComponentPtr pComponent)
 	{
 		std::pair<EntityComponents::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
-		//std::pair<ComponentId, StrongEntityComponentPtr> pair(pComponent->getId(), pComponent);
-		//std::pair<EntityComponents::iterator, bool> success = m_components.insert(pair);
 		SGSASSERT(success.second);
 	}
 }

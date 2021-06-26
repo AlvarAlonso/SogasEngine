@@ -6,6 +6,16 @@
 
 namespace Sogas
 {
+
+	//TODO: find a better way to find a const char* in a map
+	struct cmp_str
+	{
+		bool operator()(char const* a, char const* b) const
+		{
+			return strcmp(a, b) < 0;
+		}
+	};
+
 	class SGS EntityComponent
 	{
 	protected:
@@ -28,10 +38,11 @@ namespace Sogas
 		// It fails in the find func with const char*
 		static ComponentId getIdFromName(const char* componentStr)
 		{
-			std::unordered_map<const char*, u32>::iterator it = m_componentTypes.find(componentStr);
+			std::string s = componentStr;
+			std::unordered_map<std::string, u32>::iterator it = m_componentTypes.find(s);
 			if (it == m_componentTypes.end())
 			{
-				m_componentTypes.insert(std::make_pair(componentStr, lastId));
+				m_componentTypes.insert(std::make_pair(s, lastId));
 				lastId++;
 				return static_cast<ComponentId>(lastId - 1);
 			}
@@ -42,7 +53,7 @@ namespace Sogas
 
 	private:
 		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
-		static std::unordered_map<const char*, u32> m_componentTypes;
+		static std::unordered_map<std::string, u32> m_componentTypes;
 		static u32 lastId;
 	};
 }
