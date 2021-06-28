@@ -8,7 +8,7 @@
 
 namespace Sogas
 {
-	class TransformComponent : public EntityComponent
+	class SGS TransformComponent : public EntityComponent
 	{
 	public:
 		static const char* s_name;

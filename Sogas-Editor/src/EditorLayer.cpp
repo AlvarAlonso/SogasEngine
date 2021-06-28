@@ -28,18 +28,22 @@ namespace Sogas
 
 		m_framebuffer = Framebuffer::create(specs);
 
-		m_pEntityFactory.reset(new EntityFactory);
+		m_pScene = std::make_shared<Scene>();
 
-		m_pEntity = m_pEntityFactory->createEntity("Aux");
+		auto entity = m_pScene->createEntity();
+		//m_pScene->addComponent(entity, RenderComponent::s_name);
+		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name));
+		pRenderComponent->setMesh("../Assets/cube.obj");
+
+		//m_pEntityFactory.reset(new EntityFactory);
+
+		//m_pEntity = m_pEntityFactory->createEntity("Aux");
 		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr();
 		//StrongEntityComponentPtr pRenderComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 		//m_pEntity->addComponent(pRenderComponent);
 
-		std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(EntityComponent::getIdFromName("RenderComponent")));
-		pStrongRenderComponent->setMesh("../Assets/cube.obj");
-
-		//mesh = new Mesh();
-		//mesh->load("../Assets/cube.obj");
+		//std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(EntityComponent::getIdFromName("RenderComponent")));
+		//pStrongRenderComponent->setMesh("../Assets/cube.obj");
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
@@ -66,8 +70,11 @@ namespace Sogas
 			m_cameraController->onUpdate(dt);
 		}
 
-		std::shared_ptr<TransformComponent> pTransformComponent = makeStrongPtr(m_pEntity->getComponent<TransformComponent>((ComponentId)0));
-		glm::mat4 model = pTransformComponent->getTransform();
+		// TODO: implement onUpdate func
+		m_pScene->onUpdate(dt);
+
+		//std::shared_ptr<TransformComponent> pTransformComponent = makeStrongPtr(m_pEntity->getComponent<TransformComponent>((ComponentId)0));
+		//glm::mat4 model = pTransformComponent->getTransform();
 
 		m_framebuffer->bind();
 
@@ -77,13 +84,25 @@ namespace Sogas
 
 		m_shader->bind();
 		m_texture->bind();
+
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
-		Renderer::drawIndexed(pRenderComponent->getMesh()->m_vertexArray);
+		for (auto& entity : m_pScene->getEntities())
+		{
+
+			glm::mat4 model = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+
+			Renderer::drawIndexed(makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+
+		}
+
+
+		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
+		//Renderer::drawIndexed(pRenderComponent->getMesh()->m_vertexArray);
 		//m_renderSystem->render();
 
 		m_framebuffer->unbind();

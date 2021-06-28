@@ -11,10 +11,12 @@ namespace Sogas
 	{
 	public:
 		EntityFactory(void);
-		StrongEntityPtr createEntity(const char* entityResource);
 
+		StrongEntityPtr createEntity(const char* entityResource);
 		virtual StrongEntityComponentPtr createComponent(const char* name);
 
+		// template<class T>
+		// bool has(Entity entity);
 		//virtual ComponentId getId(void) const = 0;
 
 	protected:

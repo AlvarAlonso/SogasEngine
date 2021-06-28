@@ -7,7 +7,7 @@
 
 namespace Sogas
 {
-	class RenderComponent : public EntityComponent
+	class SGS RenderComponent : public EntityComponent
 	{
 	public:
 		static const char* s_name;

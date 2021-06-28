@@ -4,11 +4,11 @@
 #include "core/application.h"
 #include "core/layer.h"
 #include "core/cameraController.h"
-#include "renderer/resources/mesh.h"
 
 #include "renderer/resources/texture.h"
 #include "renderer/framebuffer.h"
 #include "renderer/shader.h"
+#include "scene/scene.h"
 
 #include "scene/types.h"
 
@@ -39,15 +39,13 @@ namespace Sogas
 		std::shared_ptr<Shader> m_shader;
 
 		// ECS
-		std::unique_ptr<EntityFactory> m_pEntityFactory;
-		StrongEntityPtr m_pEntity;
+		std::shared_ptr<Scene> m_pScene;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
 
-		Mesh* mesh;
 		glm::vec2 mouse_pos;
 	};
 }

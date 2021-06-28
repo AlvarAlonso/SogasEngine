@@ -5,6 +5,7 @@
 #include "types.h"
 #include <string>
 #include <memory>
+#include <map>
 
 namespace Sogas 
 {
@@ -70,5 +71,6 @@ namespace Sogas
 
 		const EntityComponents* getComponents() { return &m_components; }
 		void addComponent(StrongEntityComponentPtr pComponent);
+
 	};
 }

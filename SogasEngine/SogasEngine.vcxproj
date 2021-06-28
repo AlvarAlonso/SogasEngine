@@ -427,7 +427,6 @@
     <ClInclude Include="src\scene\entityComponent.h" />
     <ClInclude Include="src\scene\entityFactory.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
-    <ClInclude Include="src\scene\pickupInterface.h" />
     <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\renderComponent.h" />
     <ClInclude Include="src\scene\scene.h" />
@@ -472,6 +471,7 @@
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\prefab.cpp" />
     <ClCompile Include="src\scene\renderComponent.cpp" />
+    <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\scene\transformComponent.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
   </ItemGroup>
