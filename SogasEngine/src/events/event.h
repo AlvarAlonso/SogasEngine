@@ -15,7 +15,7 @@ namespace Sogas
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
-	enum e_eventCategory
+	enum class e_eventCategory
 	{
 		None = 0,
 		EventCategoryApplication = BIT(0),
@@ -43,7 +43,7 @@ namespace Sogas
 
 		bool isInCategory(e_eventCategory category)
 		{
-			return getCategoryFlags() & category;
+			return getCategoryFlags() & static_cast<u32>(category);
 		}
 	};
 
