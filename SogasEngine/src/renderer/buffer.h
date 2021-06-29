@@ -35,10 +35,10 @@ namespace Sogas
 	struct VertexBufferAttribute
 	{
 		std::string name;
-		ShaderDataType type;
-		u32 size;
-		u32 offset;
-		bool normalized;
+		ShaderDataType type{ ShaderDataType::None };
+		u32 size{ 0 };
+		u32 offset{ 0 };
+		bool normalized{ false };
 
 		VertexBufferAttribute() {}
 

@@ -125,7 +125,7 @@ namespace Sogas
             aux.push_back(vert.uv.y);
         }
 
-        m_vertexBuffer.reset(VertexBuffer::create(aux.data(), aux.size() * sizeof(f32)));
+        m_vertexBuffer.reset(VertexBuffer::create(aux.data(), (u32)aux.size() * sizeof(f32)));
         VertexBufferLayout layout = {
             {ShaderDataType::Float3, "a_position"},
             {ShaderDataType::Float3, "a_normal"},
@@ -135,7 +135,7 @@ namespace Sogas
         m_vertexBuffer->setLayout(layout);
         m_vertexArray->addVertexBuffer(m_vertexBuffer);
 
-        m_indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
+        m_indexBuffer.reset(IndexBuffer::create(indices.data(), (u32)indices.size()));
         m_vertexArray->setIndexBuffer(m_indexBuffer);
     }
 }
