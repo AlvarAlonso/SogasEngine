@@ -3,18 +3,25 @@
 //#include "sogas.h"
 #include "core/application.h"
 #include "core/layer.h"
-#include "core/cameraController.h"
+//#include "core/cameraController.h"
 
-#include "renderer/resources/texture.h"
-#include "renderer/framebuffer.h"
-#include "renderer/shader.h"
-#include "scene/scene.h"
+#include "../external/glm/glm/glm.hpp"
+
+//#include "renderer/resources/texture.h"
+//#include "renderer/framebuffer.h"
+//#include "renderer/shader.h"
+//#include "scene/scene.h"
 
 #include "scene/types.h"
 
 namespace Sogas 
 {
+	class CameraController;
+	class Texture2D;
+	class Shader;
+	class Scene;
 	class EntityFactory;
+	class Framebuffer;
 
 	class EditorLayer : public Layer
 	{
@@ -30,9 +37,8 @@ namespace Sogas
 		virtual void onEvent(Event& event) override;
 
 	private:
-		Framebuffer* m_framebuffer;
+		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
-		//std::shared_ptr<Camera> m_camera;
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<Texture2D> m_texture;
@@ -48,6 +54,6 @@ namespace Sogas
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
 
-		glm::vec2 mouse_pos;
+		glm::vec2 mouse_pos{ 0, 0 };
 	};
 }

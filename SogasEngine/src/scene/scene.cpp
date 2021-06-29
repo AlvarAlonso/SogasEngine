@@ -30,6 +30,13 @@ namespace Sogas
 		entity->destroy();
 	}
 
+	void Scene::destroy()
+	{
+		for (auto& entity : m_entities)
+		{
+			DestroyEntity(entity);
+		}
+	}
 
 	// TODO: scene onUpdate should update and submit commands to the renderer, thus the renderer needs to have access to the shader
 	// and textures to bind them when updating/rendering

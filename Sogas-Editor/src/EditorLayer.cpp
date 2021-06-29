@@ -1,11 +1,16 @@
 #include "EditorLayer.h"
 
-#include "renderer/renderer.h"
 #include "core/input.h"
 #include "core/keyCodes.h"
 #include "core/logger.h"
+#include "core/cameraController.h"
 #include "platform/openGL/openGLShader.h"
 #include "glm/glm/gtc/matrix_transform.hpp"
+
+#include "renderer/renderer.h"
+#include "renderer/shader.h"
+#include "renderer/resources/texture.h"
+#include "renderer/framebuffer.h"
 
 // TODO: find a better place to define components
 #include "scene/entityFactory.h"
@@ -13,6 +18,7 @@
 #include "scene/transformComponent.h"
 #include "scene/renderComponent.h"
 #include "scene/cameraComponent.h"
+#include "scene/scene.h"
 
 namespace Sogas 
 {
@@ -55,6 +61,7 @@ namespace Sogas
 
 	void EditorLayer::onDetach()
 	{
+		m_pScene->destroy();
 	}
 
 	void EditorLayer::onUpdate(f32 dt)

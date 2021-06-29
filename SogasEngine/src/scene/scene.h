@@ -16,6 +16,8 @@ namespace Sogas {
 		StrongEntityPtr createEntity(const std::string& name = std::string());
 		void DestroyEntity(StrongEntityPtr entity);
 
+		void destroy();
+
 		void onUpdate(f32 dt);
 
 		void addComponent(StrongEntityPtr entity, const char* componentName);
