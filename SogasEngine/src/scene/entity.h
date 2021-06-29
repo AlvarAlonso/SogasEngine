@@ -3,6 +3,7 @@
 #include "defines.h"
 
 #include "types.h"
+#include "entityComponent.h"
 #include <string>
 #include <memory>
 #include <map>
@@ -14,11 +15,11 @@ namespace Sogas
 	class SGS Entity {
 	public:
 
-		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponents;
+		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
 
 	private:
 		EntityId m_id;
-		EntityComponents m_components{};
+		EntityComponentsMap m_components{};
 		std::string m_type;
 
 	public:
@@ -36,7 +37,7 @@ namespace Sogas
 		template<class ComponentType>
 		std::weak_ptr<ComponentType> getComponent(ComponentId id)
 		{
-			EntityComponents::iterator findIt = m_components.find(id);
+			EntityComponentsMap::iterator findIt = m_components.find(id);
 			if (findIt != m_components.end())
 			{
 				// Downcast and return value
@@ -55,7 +56,7 @@ namespace Sogas
 		std::weak_ptr<ComponentType> getComponent(const char* name)
 		{
 			ComponentId id = EntityComponent::getIdFromName(name);
-			EntityComponents::iterator findIt = m_components.find(id);
+			EntityComponentsMap::iterator findIt = m_components.find(id);
 			if (findIt != m_components.end())
 			{
 				// Downcast and return value
@@ -69,7 +70,24 @@ namespace Sogas
 			}
 		}
 
-		const EntityComponents* getComponents() { return &m_components; }
+		bool has(const char* componentName)
+		{
+			ComponentId id = EntityComponent::getIdFromName(componentName);
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+				return true;
+			return false;
+		}
+
+		bool has(ComponentId id)
+		{
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+				return true;
+			return false;
+		}
+
+		const EntityComponentsMap* getComponents() { return &m_components; }
 		void addComponent(StrongEntityComponentPtr pComponent);
 
 	};

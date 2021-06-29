@@ -32,7 +32,7 @@ namespace Sogas
 	private:
 		Framebuffer* m_framebuffer;
 		std::unique_ptr<CameraController> m_cameraController;
-		std::shared_ptr<Camera> m_camera;
+		//std::shared_ptr<Camera> m_camera;
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<Texture2D> m_texture;
@@ -40,6 +40,8 @@ namespace Sogas
 
 		// ECS
 		std::shared_ptr<Scene> m_pScene;
+
+		StrongEntityPtr m_cameraEntity;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 

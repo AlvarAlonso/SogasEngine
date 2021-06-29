@@ -27,7 +27,7 @@ namespace Sogas
 
 	void Entity::postInit()
 	{
-		for (EntityComponents::iterator it = m_components.begin(); it != m_components.end(); it++)
+		for (EntityComponentsMap::iterator it = m_components.begin(); it != m_components.end(); it++)
 		{
 			it->second->postInit();
 		}
@@ -40,7 +40,7 @@ namespace Sogas
 
 	void Entity::update(f32 dt)
 	{
-		for (EntityComponents::iterator it = m_components.begin(); it != m_components.end(); it++)
+		for (EntityComponentsMap::iterator it = m_components.begin(); it != m_components.end(); it++)
 		{
 			it->second->update(dt);
 		}
@@ -48,7 +48,7 @@ namespace Sogas
 
 	void Entity::addComponent(StrongEntityComponentPtr pComponent)
 	{
-		std::pair<EntityComponents::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
+		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
 		SGSASSERT(success.second);
 	}
 }

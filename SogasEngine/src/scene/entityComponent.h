@@ -3,6 +3,7 @@
 #include "defines.h"
 
 #include "types.h"
+#include <unordered_map>
 
 namespace Sogas
 {

@@ -23,7 +23,6 @@ namespace Sogas {
 		//std::vector<Renderable*>& getEntities() { return m_entities; }
 
 	private:
-
 		std::vector<StrongEntityPtr> m_entities;
 		std::unique_ptr<EntityFactory> m_pEntityFactory;
 	};

@@ -423,6 +423,7 @@
     <ClInclude Include="src\renderer\shader.h" />
     <ClInclude Include="src\renderer\resources\texture.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
+    <ClInclude Include="src\scene\cameraComponent.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\scene\entityComponent.h" />
     <ClInclude Include="src\scene\entityFactory.h" />
@@ -467,6 +468,7 @@
     <ClCompile Include="src\renderer\shader.cpp" />
     <ClCompile Include="src\renderer\resources\texture.cpp" />
     <ClCompile Include="src\renderer\vertexArray.cpp" />
+    <ClCompile Include="src\scene\cameraComponent.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\prefab.cpp" />

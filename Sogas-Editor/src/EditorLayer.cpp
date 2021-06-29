@@ -12,6 +12,7 @@
 #include "scene/entity.h"
 #include "scene/transformComponent.h"
 #include "scene/renderComponent.h"
+#include "scene/cameraComponent.h"
 
 namespace Sogas 
 {
@@ -30,30 +31,24 @@ namespace Sogas
 
 		m_pScene = std::make_shared<Scene>();
 
-		auto entity = m_pScene->createEntity();
-		//m_pScene->addComponent(entity, RenderComponent::s_name);
+		auto entity = m_pScene->createEntity("cube");
+		m_pScene->addComponent(entity, RenderComponent::s_name);
 		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name));
 		pRenderComponent->setMesh("../Assets/cube.obj");
 
-		//m_pEntityFactory.reset(new EntityFactory);
-
-		//m_pEntity = m_pEntityFactory->createEntity("Aux");
-		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr();
-		//StrongEntityComponentPtr pRenderComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
-		//m_pEntity->addComponent(pRenderComponent);
-
-		//std::shared_ptr<RenderComponent> pStrongRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>(EntityComponent::getIdFromName("RenderComponent")));
-		//pStrongRenderComponent->setMesh("../Assets/cube.obj");
+		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
+		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
 
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
-		m_camera.reset(new Camera());
-		m_camera->setPosition({ 0, 15, -50 });
+		m_cameraEntity = m_pScene->createEntity("Camera");
+		m_pScene->addComponent(m_cameraEntity, CameraComponent::s_name);
 
-		m_cameraController.reset(new CameraController(m_camera));
+		// TODO: add scripting for camera movement/behavior
+		m_cameraController.reset(new CameraController(makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name))->camera));
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 	}
@@ -73,9 +68,6 @@ namespace Sogas
 		// TODO: implement onUpdate func
 		m_pScene->onUpdate(dt);
 
-		//std::shared_ptr<TransformComponent> pTransformComponent = makeStrongPtr(m_pEntity->getComponent<TransformComponent>((ComponentId)0));
-		//glm::mat4 model = pTransformComponent->getTransform();
-
 		m_framebuffer->bind();
 
 		Renderer::setClearColor(glm::vec4(0.2));
@@ -85,8 +77,10 @@ namespace Sogas
 		m_shader->bind();
 		m_texture->bind();
 
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
+		std::shared_ptr<CameraComponent> camera = makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name));
+
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", camera->camera->getProjection());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", camera->camera->getView());
 
 		for (auto& entity : m_pScene->getEntities())
 		{
@@ -96,14 +90,10 @@ namespace Sogas
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-			Renderer::drawIndexed(makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+			if(entity->has(RenderComponent::s_name))
+				Renderer::drawIndexed(makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
 
 		}
-
-
-		//std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(m_pEntity->getComponent<RenderComponent>((ComponentId)1));
-		//Renderer::drawIndexed(pRenderComponent->getMesh()->m_vertexArray);
-		//m_renderSystem->render();
 
 		m_framebuffer->unbind();
 	}

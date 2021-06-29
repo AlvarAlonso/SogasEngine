@@ -7,6 +7,7 @@
 
 #include "renderComponent.h"
 #include "transformComponent.h"
+#include "cameraComponent.h"
 //#include "../external/json/include/nlohmann/json.hpp"
 
 namespace Sogas
@@ -20,6 +21,7 @@ namespace Sogas
 		
 		m_componentFactory.registerComponent<TransformComponent>(EntityComponent::getIdFromName(TransformComponent::s_name));
 		m_componentFactory.registerComponent<RenderComponent>(EntityComponent::getIdFromName(RenderComponent::s_name));
+		m_componentFactory.registerComponent<CameraComponent>(EntityComponent::getIdFromName(CameraComponent::s_name));
 	}
 
 	StrongEntityPtr EntityFactory::createEntity(const char* entityResource)
@@ -38,9 +40,6 @@ namespace Sogas
 			// At the moment load just the transform component hardcoded
 			StrongEntityComponentPtr pTransformComponent(createComponent(TransformComponent::s_name));
 			pEntity->addComponent(pTransformComponent);
-
-			StrongEntityComponentPtr pRenderComponent(createComponent(RenderComponent::s_name));
-			pEntity->addComponent(pRenderComponent);
 		}
 		
 		pEntity->postInit();
