@@ -15,7 +15,7 @@ namespace Sogas
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
-	enum class e_eventCategory
+	enum e_eventCategory
 	{
 		None = 0,
 		EventCategoryApplication = BIT(0),
@@ -29,7 +29,7 @@ namespace Sogas
 								virtual e_eventType getEventType() const override { return getStaticType(); }\
 								virtual const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual u32 getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual u32 getCategoryFlags() const override { return static_cast<u32>(category); }
 
 	class Event
 	{

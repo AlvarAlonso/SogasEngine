@@ -67,7 +67,7 @@ namespace Sogas
 				ShaderDataTypeToOpenGLBaseType(vertexAttribute.type),
 				vertexAttribute.normalized ? GL_TRUE : GL_FALSE,
 				layout.getStride(),
-				(const void*)vertexAttribute.offset);
+				(const void*)static_cast<uintptr_t>(vertexAttribute.offset));
 			index++;
 		}
 
