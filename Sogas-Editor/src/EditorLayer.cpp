@@ -77,7 +77,7 @@ namespace Sogas
 
 		m_framebuffer->bind();
 
-		Renderer::setClearColor(glm::vec4(0.2));
+		Renderer::setClearColor(glm::vec4(0.2f));
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
 
@@ -195,7 +195,7 @@ namespace Sogas
 			m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 			m_cameraController.get()->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 		}
-		u32 textureId = m_framebuffer->getColorAttachment();
+		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		ImGui::End();
