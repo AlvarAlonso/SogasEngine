@@ -45,6 +45,7 @@
     <ClCompile Include="src\scene\renderComponent.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\scene\cameraComponent.cpp" />
+    <ClCompile Include="src\scene\lightComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -390,6 +391,7 @@
     <ClInclude Include="src\scene\renderComponent.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
     <ClInclude Include="src\scene\cameraComponent.h" />
+    <ClInclude Include="src\scene\lightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

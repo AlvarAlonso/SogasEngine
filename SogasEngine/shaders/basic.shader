@@ -42,7 +42,8 @@ layout(location = 0) out vec4 outColor;
 
 uniform sampler2D u_texture;
 
-vec3 lightPosition = vec3(0, 20, 0);
+uniform vec3 lightPosition;
+uniform vec3 lightColor;
 
 void main() 
 {
@@ -50,7 +51,7 @@ void main()
 	vec3 N = normalize(v_normal);
 	float NdotL = clamp(dot(N, L), 0.0, 1.0);
 	vec2 uv = v_uv;
-	vec3 color = v_color;
+	vec3 color = v_color * lightColor;
 	color *= texture(u_texture, uv).xyz;
 	outColor = NdotL * vec4(color, 1);
 	//outColor = vec4(uv, 0.0, 1.0);

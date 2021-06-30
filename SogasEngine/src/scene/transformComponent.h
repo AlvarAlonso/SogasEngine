@@ -18,7 +18,7 @@ namespace Sogas
 		virtual bool init() override;
 
 		// Transform component functions
-		glm::mat4 getTransform(void) const { return m_transform; }
+		glm::mat4& getTransform(void) { return m_transform; }
 		void setTransform(glm::mat4& transform) { m_transform = transform; }
 		//glm::vec3 getPosition(void) {}
 		// TODO: setPosition(glm::vec3 position)

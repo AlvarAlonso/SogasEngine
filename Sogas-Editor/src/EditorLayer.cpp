@@ -15,10 +15,11 @@
 // TODO: find a better place to define components
 #include "scene/entityFactory.h"
 #include "scene/entity.h"
+#include "scene/scene.h"
 #include "scene/transformComponent.h"
 #include "scene/renderComponent.h"
 #include "scene/cameraComponent.h"
-#include "scene/scene.h"
+#include "scene/lightComponent.h"
 
 namespace Sogas 
 {
@@ -37,13 +38,25 @@ namespace Sogas
 
 		m_pScene = std::make_shared<Scene>();
 
-		auto entity = m_pScene->createEntity("cube");
+		auto entity = m_pScene->createEntity("Cube");
 		m_pScene->addComponent(entity, RenderComponent::s_name);
-		std::shared_ptr<RenderComponent> pRenderComponent = makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name));
-		pRenderComponent->setMesh("../Assets/cube.obj");
+		makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
 		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+
+		auto entity2 = m_pScene->createEntity("Cube");
+		m_pScene->addComponent(entity2, RenderComponent::s_name);
+		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+
+		translate = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
+		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+
+		auto light = m_pScene->createEntity("Light");
+		m_pScene->addComponent(light, LightComponent::s_name);
+		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
+		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
@@ -91,15 +104,24 @@ namespace Sogas
 
 		for (auto& entity : m_pScene->getEntities())
 		{
-
 			glm::mat4 model = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 
-			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
-			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
-
-			if(entity->has(RenderComponent::s_name))
+			if (entity->has(RenderComponent::s_name)) 
+			{
 				Renderer::drawIndexed(makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+			}
 
+			if (entity->has(LightComponent::s_name))
+			{
+				// Set light position
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightPosition", (glm::vec3)model[3]);
+
+				// Set light colour
+				auto lightComponent = makeStrongPtr(entity->getComponent<LightComponent>(LightComponent::s_name));
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightColor", lightComponent->getColor());
+			}
 		}
 
 		m_framebuffer->unbind();
@@ -177,6 +199,22 @@ namespace Sogas
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
 		ImGui::Text("Delta time: %f ms", io.DeltaTime);
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
+		ImGui::End();
+
+		ImGui::Begin("Components");
+		for (const auto& entity : m_pScene->getEntities())
+		{
+			ImGui::Text("Entity");
+			if (entity->has(TransformComponent::s_name)) 
+			{
+				bool changed = false;
+				auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
+				auto& matrix = transformComponent->getTransform();
+				changed |= ImGui::SliderFloat3("Transform", &((glm::vec3)matrix[3])[0], -1000.0f, 1000.0f);
+				if(changed)
+					transformComponent->setTransform(matrix);
+			}
+		}
 		ImGui::End();
 
 		// Viewport panel
