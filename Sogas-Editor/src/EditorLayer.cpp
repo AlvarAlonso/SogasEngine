@@ -49,8 +49,8 @@ namespace Sogas
 		m_pScene->addComponent(entity2, RenderComponent::s_name);
 		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		translate = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
+		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
 
 		auto light = m_pScene->createEntity("Light");
 		m_pScene->addComponent(light, LightComponent::s_name);
@@ -102,25 +102,26 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", camera->camera->getProjection());
 		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", camera->camera->getView());
 
-		for (auto& entity : m_pScene->getEntities())
+		std::vector<StrongEntityPtr> renderables = m_pScene->getByComponent(RenderComponent::s_name);
+		std::vector<StrongEntityPtr> lights = m_pScene->getByComponent(LightComponent::s_name);
+
+		for (const auto& renderable : renderables)
 		{
-			glm::mat4 model = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-			if (entity->has(RenderComponent::s_name)) 
-			{
-				Renderer::drawIndexed(makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
-				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
-				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
-			}
-
-			if (entity->has(LightComponent::s_name))
+			for (const auto& light : lights)
 			{
 				// Set light position
-				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightPosition", (glm::vec3)model[3]);
+				glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightPosition", (glm::vec3)lightModel[3]);
 
 				// Set light colour
-				auto lightComponent = makeStrongPtr(entity->getComponent<LightComponent>(LightComponent::s_name));
+				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
 				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightColor", lightComponent->getColor());
+
+				Renderer::drawIndexed(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
 			}
 		}
 

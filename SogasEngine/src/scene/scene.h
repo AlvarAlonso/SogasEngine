@@ -22,6 +22,7 @@ namespace Sogas {
 
 		void addComponent(StrongEntityPtr entity, const char* componentName);
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
+		std::vector<StrongEntityPtr> getByComponent(const char* componentName);
 		//std::vector<Renderable*>& getEntities() { return m_entities; }
 
 	private:

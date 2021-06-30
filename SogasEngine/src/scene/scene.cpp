@@ -62,4 +62,19 @@ namespace Sogas
 		// Should find a more robust way to create a specific component type
 		entity->addComponent(m_pEntityFactory->createComponent(componentName));
 	}
+
+	std::vector<StrongEntityPtr> Scene::getByComponent(const char* name)
+	{
+		std::vector<StrongEntityPtr> returnVector{};
+
+		for (auto& entity : m_entities)
+		{
+			if (entity->has(EntityComponent::getIdFromName(name)))
+			{
+				returnVector.push_back(entity);
+			}
+		}
+		
+		return returnVector;
+	}
 }

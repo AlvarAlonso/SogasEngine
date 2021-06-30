@@ -69,4 +69,5 @@ namespace Sogas
 		// No xml or json at the moment, create default component
 		return pComponent;
 	}
+
 }
