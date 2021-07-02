@@ -3,6 +3,7 @@
 #include "renderer/renderer.h"
 #include "core/input.h"
 #include "core/keyCodes.h"
+#include "core/mouseButtonCodes.h"
 #include "core/logger.h"
 #include "platform/openGL/openGLShader.h"
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
@@ -92,8 +93,6 @@ namespace Sogas
 	{
 		ImGui::SetCurrentContext(Application::getImguiContext());
 
-		onImGuizmoRender();
-
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
@@ -177,9 +176,18 @@ namespace Sogas
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 		ImGui::Begin("Viewport");
 
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 		Application::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
+
+		//ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		//m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		// TODO: Should also resize the aspect ratio of the camera
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -191,6 +199,37 @@ namespace Sogas
 		}
 		u32 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		
+		// Gizmos
+		Entity* selectedEntity = Application::m_guizmoEntity;
+		if(selectedEntity && m_gizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
+		
+			// Editor camera
+			const glm::mat4& cameraProjection = m_camera.get()->getProjection();
+			glm::mat4 cameraView = m_camera.get()->getView();
+
+			// Entity transform
+			glm::mat4& transform = selectedEntity->m_model;
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, nullptr);
+
+			if(ImGuizmo::IsUsing())
+			{
+				f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
+
+				// apply transformation here
+
+				ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(transform));
+			}
+		}
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -203,7 +242,51 @@ namespace Sogas
 		if (m_viewportFocused) {
 			m_cameraController.get()->onEvent(event);
 		}
+
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onKeyPressed));
 	}
+
+	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.getRepeatCount() > 0)
+			return false;
+
+		switch(e.getKeyCode())
+		{
+			// Gizmos
+			case SGS_KEY_Q:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = -1;
+				break;
+			}
+			case SGS_KEY_W:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+			case SGS_KEY_E:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
+			case SGS_KEY_R:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
+			}
+		}
+	}
+
+	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		return false;
+	}
+
 	void EditorLayer::onImGuizmoRender()
 	{
 		if (Application::m_guizmoEntity == nullptr)

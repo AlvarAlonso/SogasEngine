@@ -33,6 +33,9 @@ namespace Sogas
 		virtual void onUpdate(f32 dt) override;
 		virtual void onImguiRender() override;
 		virtual void onEvent(Event& event) override;
+	private:
+		bool onKeyPressed(KeyPressedEvent& e);
+		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
 
 	private:
 		Framebuffer* m_framebuffer;
@@ -49,8 +52,12 @@ namespace Sogas
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 
+		glm::vec2 m_viewportBounds[2];
+
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
+
+		i32 m_gizmoType = -1;
 
 		glm::vec2 mouse_pos;
 	private:
