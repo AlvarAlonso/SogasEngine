@@ -47,14 +47,14 @@ namespace Sogas
 
 		auto entity2 = m_pScene->createEntity("Cube");
 		m_pScene->addComponent(entity2, RenderComponent::s_name);
-		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/viking_room.obj");
 
-		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
+		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 20.0f)) * glm::scale(glm::mat4(1), glm::vec3(0.2));
 		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
 
 		auto light = m_pScene->createEntity("Light");
 		m_pScene->addComponent(light, LightComponent::s_name);
-		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
+		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
 		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
@@ -247,7 +247,7 @@ namespace Sogas
 	void EditorLayer::onEvent(Event& event)
 	{
 		if (m_viewportFocused) {
-			m_cameraController.get()->onEvent(event);
+			m_cameraController->onEvent(event);
 		}
 	}
 }

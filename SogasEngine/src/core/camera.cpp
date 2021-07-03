@@ -56,10 +56,10 @@ namespace Sogas
             setPosition(m_position - m_front * dt);
             break;
         case LEFT:
-            setPosition(m_position - m_right * dt);
+            setPosition(m_position + m_right * dt);
             break;
         case RIGHT:
-            setPosition(m_position + m_right * dt);
+            setPosition(m_position - m_right * dt);
             break;
         case UP:
             setPosition(m_position + m_up * dt);
