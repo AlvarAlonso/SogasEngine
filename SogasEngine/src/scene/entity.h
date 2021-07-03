@@ -4,56 +4,92 @@
 
 #include <../external/glm/glm/vec3.hpp>
 #include <../external/glm/glm/mat4x4.hpp>
-
+#include "types.h"
+#include "entityComponent.h"
 #include <string>
 #include <memory>
+#include <map>
 
 namespace Sogas 
 {
-	enum class e_LightType
-	{
-		DIRECTIONAL = 0,
-		POINT,
-		SPOT
-	};
-
-	class Prefab;
-
 	// TODO: This is temporal until we implement an Entity Component System
 
-	class SGS Entity
-	{
+	class SGS Entity {
 	public:
+		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
+	
+	private:
 		std::string m_name;
-		glm::mat4 m_model;
+		EntityId m_id;
+		EntityComponentsMap m_components{};
+		std::string m_type;
 
-		virtual void OnImguiRender() = 0;
-	protected:
-		Entity();
-	};
-
-	class SGS Renderable : public Entity
-	{
 	public:
-		Renderable();
-		Renderable(const std::string& name);
+		explicit Entity(EntityId id);
+		~Entity(void);
 
-		virtual void OnImguiRender() override;
+		bool init();
+		void postInit();
+		void destroy();
+		void update(f32 dt);
 
-		std::shared_ptr<Prefab> m_prefab;
-	};
+		EntityId getId() const { return m_id; }
+		std::string getType() const { return m_type; }
 
-	class SGS Light : public Entity
-	{
-	public:
-		Light();
-		Light(const std::string& name);
+		template<class ComponentType>
+		std::weak_ptr<ComponentType> getComponent(ComponentId id)
+		{
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+			{
+				// Downcast and return value
+				StrongEntityComponentPtr pBase(findIt->second);
+				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+				std::weak_ptr<ComponentType> pWeakSub(pSub);
+				return pWeakSub;
+			}
+			else
+			{
+				return std::weak_ptr<ComponentType>();
+			}
+		}
 
-		virtual void OnImguiRender() override;
+		template<class ComponentType>
+		std::weak_ptr<ComponentType> getComponent(const char* name)
+		{
+			ComponentId id = EntityComponent::getIdFromName(name);
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+			{
+				// Downcast and return value
+				StrongEntityComponentPtr pBase(findIt->second);
+				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
+				std::weak_ptr<ComponentType> pWeakSub(pSub);
+				return pWeakSub;
+			}
+			else {
+				return std::weak_ptr<ComponentType>();
+			}
+		}
 
-		glm::vec3 m_color;
-		f32 m_maxDist;
-		f32 m_intensity;
-		e_LightType m_lightType;
+		bool has(const char* componentName)
+		{
+			ComponentId id = EntityComponent::getIdFromName(componentName);
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+				return true;
+			return false;
+		}
+
+		bool has(ComponentId id)
+		{
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+				return true;
+			return false;
+		}
+
+		const EntityComponentsMap* getComponents() { return &m_components; }
+		void addComponent(StrongEntityComponentPtr pComponent);
 	};
 }

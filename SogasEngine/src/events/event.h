@@ -29,7 +29,7 @@ namespace Sogas
 								virtual e_eventType getEventType() const override { return getStaticType(); }\
 								virtual const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual u32 getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual u32 getCategoryFlags() const override { return static_cast<u32>(category); }
 
 	class Event
 	{
@@ -43,7 +43,7 @@ namespace Sogas
 
 		bool isInCategory(e_eventCategory category)
 		{
-			return getCategoryFlags() & category;
+			return getCategoryFlags() & static_cast<u32>(category);
 		}
 	};
 

@@ -1,16 +1,36 @@
 #include "EditorLayer.h"
 
-#include "renderer/renderer.h"
 #include "core/input.h"
 #include "core/keyCodes.h"
 #include "core/mouseButtonCodes.h"
 #include "core/logger.h"
+#include "core/cameraController.h"
 #include "platform/openGL/openGLShader.h"
+
+#include <ImGuizmo.h>
+#include <../external/glm/glm/gtc/type_ptr.hpp>
+
+/*
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 #include "scene/entity.h"
 #include "scene/prefab.h"
-#include <ImGuizmo.h>
-#include <../external/glm/glm/gtc/type_ptr.hpp>
+*/
+
+#include "glm/glm/gtc/matrix_transform.hpp"
+
+#include "renderer/renderer.h"
+#include "renderer/shader.h"
+#include "renderer/resources/texture.h"
+#include "renderer/framebuffer.h"
+
+// TODO: find a better place to define components
+#include "scene/entityFactory.h"
+#include "scene/entity.h"
+#include "scene/scene.h"
+#include "scene/transformComponent.h"
+#include "scene/renderComponent.h"
+#include "scene/cameraComponent.h"
+#include "scene/lightComponent.h"
 
 namespace Sogas 
 {
@@ -27,37 +47,45 @@ namespace Sogas
 
 		m_framebuffer = Framebuffer::create(specs);
 
+		m_pScene = std::make_shared<Scene>();
+
+		auto entity = m_pScene->createEntity("Cube");
+		m_pScene->addComponent(entity, RenderComponent::s_name);
+		makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+
+		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
+		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+
+		auto entity2 = m_pScene->createEntity("Cube");
+		m_pScene->addComponent(entity2, RenderComponent::s_name);
+		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+
+		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
+		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
+
+		auto light = m_pScene->createEntity("Light");
+		m_pScene->addComponent(light, LightComponent::s_name);
+		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
+		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
+
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
 
-		Mesh* mesh = new Mesh();
-		mesh->load("../Assets/viking_room.obj");
-
 		m_shader.reset(Shader::create("../SogasEngine/shaders/basic.shader"));
 
-		m_camera.reset(new Camera());
-		m_camera->setPosition({ 0, 15, -50 });
+		m_cameraEntity = m_pScene->createEntity("Camera");
+		m_pScene->addComponent(m_cameraEntity, CameraComponent::s_name);
 
-		m_cameraController.reset(new CameraController(m_camera));
+		// TODO: add scripting for camera movement/behavior
+		m_cameraController.reset(new CameraController(makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name))->camera));
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
-
-		m_currentScene = std::make_unique<Scene>();
-
-		m_prefab.reset(new Prefab());
-		Node* node = new Node();
-		node->m_mesh.reset(mesh);
-		m_prefab.get()->m_roots.push_back(node);
-
-		Renderable* renderable = new Renderable();
-
-		renderable->m_prefab = m_prefab;
-
-		m_currentScene.get()->entities.push_back(renderable);
 	}
 
 	void EditorLayer::onDetach()
 	{
+		m_pScene->destroy();
 	}
 
 	void EditorLayer::onUpdate(f32 dt)
@@ -67,24 +95,45 @@ namespace Sogas
 			m_cameraController->onUpdate(dt);
 		}
 
-		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
-		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(1, 0, 0));
+		// TODO: implement onUpdate func
+		m_pScene->onUpdate(dt);
 
 		m_framebuffer->bind();
 
-		Renderer::setClearColor(glm::vec4(0.2));
+		Renderer::setClearColor(glm::vec4(0.2f));
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
 
 		m_shader->bind();
 		m_texture->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
-		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		// TODO: clean up the prefab and entity API, pass the scene to be rendered to the renderer
-		Renderer::drawIndexed(m_prefab.get()->m_roots[0]->m_mesh->m_vertexArray);
+		std::shared_ptr<CameraComponent> camera = makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name));
+
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_projection", camera->camera->getProjection());
+		std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_view", camera->camera->getView());
+
+		std::vector<StrongEntityPtr> renderables = m_pScene->getByComponent(RenderComponent::s_name);
+		std::vector<StrongEntityPtr> lights = m_pScene->getByComponent(LightComponent::s_name);
+
+		for (const auto& renderable : renderables)
+		{
+			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+
+			for (const auto& light : lights)
+			{
+				// Set light position
+				glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightPosition", (glm::vec3)lightModel[3]);
+
+				// Set light colour
+				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
+				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightColor", lightComponent->getColor());
+
+				Renderer::drawIndexed(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+			}
+		}
 
 		m_framebuffer->unbind();
 	}
@@ -161,15 +210,35 @@ namespace Sogas
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
 		ImGui::Text("Delta time: %f ms", io.DeltaTime);
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
+		ImGui::End();
 
+		// TODO: Redo scene hierarchy
+		/*
 		// Scene Hierarchy
 		ImGui::Separator;
 		ImGui::Text("Scene Hierarchy");
-		for(auto& entity : m_currentScene.get()->entities)
+		for(auto& entity : m_currentScene.get()->getEntities())
 		{
 			entity->OnImguiRender();
 		}
 		ImGui::Separator;
+		ImGui::End();
+		*/
+
+		ImGui::Begin("Components");
+		for (const auto& entity : m_pScene->getEntities())
+		{
+			ImGui::Text("Entity");
+			if (entity->has(TransformComponent::s_name)) 
+			{
+				bool changed = false;
+				auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
+				auto& matrix = transformComponent->getTransform();
+				changed |= ImGui::SliderFloat3("Transform", &((glm::vec3)matrix[3])[0], -1000.0f, 1000.0f);
+				if(changed)
+					transformComponent->setTransform(matrix);
+			}
+		}
 		ImGui::End();
 
 		// Viewport panel
@@ -197,7 +266,7 @@ namespace Sogas
 			m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 			m_cameraController.get()->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 		}
-		u32 textureId = m_framebuffer->getColorAttachment();
+		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		
 		// Gizmos
@@ -210,11 +279,11 @@ namespace Sogas
 			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
 		
 			// Editor camera
-			const glm::mat4& cameraProjection = m_camera.get()->getProjection();
-			glm::mat4 cameraView = m_camera.get()->getView();
+			const glm::mat4& cameraProjection = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection();
+			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
 
 			// Entity transform
-			glm::mat4& transform = selectedEntity->m_model;
+			glm::mat4& transform = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
@@ -292,7 +361,7 @@ namespace Sogas
 		if (Application::m_guizmoEntity == nullptr)
 			return;
 
-		glm::mat4& transform = Application::m_guizmoEntity->m_model;
+		glm::mat4& transform = Application::m_guizmoEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
 
 		static ImGuizmo::OPERATION sCurrentGuizmoOperation(ImGuizmo::TRANSLATE);
 		static ImGuizmo::MODE sCurrentGuizmoMode(ImGuizmo::WORLD);
@@ -350,7 +419,8 @@ namespace Sogas
 
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		ImGuizmo::Manipulate(glm::value_ptr(m_camera.get()->getView()), glm::value_ptr(m_camera.get()->getProjection()), sCurrentGuizmoOperation,
+		ImGuizmo::Manipulate(glm::value_ptr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView()), 
+			glm::value_ptr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection()), sCurrentGuizmoOperation,
 			sCurrentGuizmoMode, glm::value_ptr(transform), nullptr, useSnap ? &snap.x : nullptr);
 	}
 }

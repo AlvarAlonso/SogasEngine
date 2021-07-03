@@ -7,70 +7,55 @@
 #include <ImGuizmo.h>
 
 #include <glm/gtc/type_ptr.hpp>
+#include "entityComponent.h"
+
+#include "core/logger.h"
+#include "core/assertions.h"
 
 namespace Sogas 
 {
-	Entity::Entity() : m_model(glm::mat4(1))
+	Entity::Entity(EntityId id)
 	{
+		m_id = id;
+		m_type = "unknown";
+		m_name = "entity";
 	}
 
-	Renderable::Renderable() : Entity()
+	Entity::~Entity(void)
 	{
-		m_name = "Renderable";
+		SGSINFO("Destroying actor %i", m_id);
+		SGSASSERT(m_components.empty());
 	}
 
-	Renderable::Renderable(const std::string& name) : Entity()
+	bool Entity::init()
 	{
-		m_name = name;
+		return true;
 	}
 
-	void Renderable::OnImguiRender()
+	void Entity::postInit()
 	{
-		ImGui::Text("Name %s", m_name.c_str());
-
-		if (ImGui::Button("Selected"))
-			Application::m_guizmoEntity = this;
-
-		if(ImGui::TreeNode((void*)this, "Model"))
+		for (EntityComponentsMap::iterator it = m_components.begin(); it != m_components.end(); it++)
 		{
-			float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(m_model), matrixTranslation, matrixRotation, matrixScale);
-			ImGui::DragFloat3("Position", matrixTranslation, 0.1f);
-			ImGui::DragFloat3("Rotation", matrixRotation, 0.1f);
-			ImGui::DragFloat3("Scale", matrixScale, 0.1f);
-			ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(m_model));
-
-			ImGui::TreePop();
+			it->second->postInit();
 		}
 	}
 
-	Light::Light() : Entity()
+	void Entity::destroy()
 	{
-		m_name = "Light";
+		m_components.clear();
 	}
 
-	Light::Light(const std::string& name) : Entity()
+	void Entity::update(f32 dt)
 	{
-		m_name = name;
-	}
-
-	void Light::OnImguiRender()
-	{
-		ImGui::Text("Name: %s", m_name.c_str());
-
-		if (ImGui::Button("Selected"))
-			Application::m_guizmoEntity = this;
-
-		if(ImGui::TreeNode((void*)this, "Model"))
+		for (EntityComponentsMap::iterator it = m_components.begin(); it != m_components.end(); it++)
 		{
-			float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(m_model), matrixTranslation, matrixRotation, matrixScale);
-			ImGui::DragFloat3("Position", glm::value_ptr(m_model[3]), 0.1f);
-			ImGui::DragFloat3("Rotation", matrixRotation, 0.1f);
-			ImGui::DragFloat3("Scale", matrixScale, 0.1f);
-			ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(m_model));
-
-			ImGui::TreePop();
+			it->second->update(dt);
 		}
+	}
+
+	void Entity::addComponent(StrongEntityComponentPtr pComponent)
+	{
+		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
+		SGSASSERT(success.second);
 	}
 }

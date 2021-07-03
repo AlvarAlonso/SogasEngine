@@ -27,6 +27,9 @@
 // TODO: platform specific should be done in engine
 #include "platform/openGL/openGLShader.h"
 
+#include "scene/scene.h"
+#include "scene/prefab.h"
+
 // TODO: check if that should be included
 //#define IMGUI_IMPL_OPENGL_LOADER_GLEW
 //#include "imgui/imgui_impl_glfw.h"

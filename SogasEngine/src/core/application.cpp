@@ -28,7 +28,7 @@ namespace Sogas
 		m_window->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
 
 		m_imguiLayer = new ImGuiLayer();
-		m_layerStack.pushOverlay(m_imguiLayer);
+		pushOverlay(m_imguiLayer);
 
 		if (glewInit() != GLEW_OK)
 		{

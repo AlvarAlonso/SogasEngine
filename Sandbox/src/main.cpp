@@ -3,6 +3,7 @@
 
 #include "../external/glm/glm/gtc/matrix_transform.hpp"
 #include "renderer/resources/mesh.h"
+#include "scene/entity.h"
 
 class ExampleLayer : public Sogas::Layer
 {
@@ -17,8 +18,13 @@ public:
 		uint32_t defaultTextureData = 0xffffffff;
 		m_defaultTexture->setData(&defaultTextureData, sizeof(uint32_t));
 
-		mesh = new Sogas::Mesh();
-		mesh->load("../Assets/viking_room.obj");
+		//mesh = new Sogas::Mesh();
+		//mesh->load("../Assets/viking_room.obj");
+
+		Sogas::Renderable* renderable = new Sogas::Renderable();
+		renderable->m_prefab.get()->get("../Assets/cube.obj");
+
+		m_scene.get()->getEntities().push_back(renderable);
 
 		m_shader.reset(Sogas::Shader::create("../SogasEngine/shaders/basic.shader"));
 
@@ -67,19 +73,19 @@ public:
 			m_camera->move(Sogas::BACKWARD, dt);
 		}
 
-		glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 5.0f));
-		model = glm::rotate(glm::mat4(model), glm::radians(0.0f), glm::vec3(1, 0, 0));
-		//model = glm::scale(glm::mat4(model), glm::vec3(1.0f, 2.0f, 1.0f));
-		
 		m_shader->bind();
 		m_texture->bind();
-		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
-		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
-		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_offset", x);
-		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_model", model);
-		std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+		for (auto& renderable : m_scene.get()->getEntities())
+		{
+			std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_projection", m_camera->getProjection());
+			std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_view", m_camera->getView());
+			std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_offset", x);
+			std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_model", renderable->m_model);
+			std::dynamic_pointer_cast<Sogas::OpenGLShader>(m_shader)->setUniform("u_texture", 0);
 
-		Sogas::Renderer::drawIndexed(mesh->m_vertexArray);
+			renderable->m_prefab.get()->render();
+		}
+
 		
 		m_framebuffer->unbind();
 	}
@@ -226,6 +232,7 @@ private:
 	f32 x = 0.0f;
 	f32 inc = 0.01f;
 	glm::vec2 mouse_pos;
+	std::unique_ptr<Sogas::Scene> m_scene;
 	Sogas::Mesh* mesh;
 	Sogas::Framebuffer* m_framebuffer;
 };

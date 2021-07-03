@@ -6,7 +6,7 @@ namespace Sogas
 {
 	struct FramebufferSpecs
 	{
-		u32 width, height;
+		u32 width{ 0 }, height{ 0 };
 		// Format?
 		bool swapChainTarget = false;
 	};

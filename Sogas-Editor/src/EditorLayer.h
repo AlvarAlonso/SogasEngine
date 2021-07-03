@@ -3,23 +3,25 @@
 //#include "sogas.h"
 #include "core/application.h"
 #include "core/layer.h"
-#include "core/cameraController.h"
-#include "renderer/resources/mesh.h"
+//#include "core/cameraController.h"
 
-#include "renderer/resources/texture.h"
-#include "renderer/framebuffer.h"
-#include "renderer/shader.h"
+#include "../external/glm/glm/glm.hpp"
+
+//#include "renderer/resources/texture.h"
+//#include "renderer/framebuffer.h"
+//#include "renderer/shader.h"
+//#include "scene/scene.h"
+
+#include "scene/types.h"
 
 namespace Sogas 
 {
-	class Entity;
-	class Prefab;
-
-	// Temporal
-	struct Scene
-	{
-		std::vector<Entity*> entities;
-	};
+	class CameraController;
+	class Texture2D;
+	class Shader;
+	class Scene;
+	class EntityFactory;
+	class Framebuffer;
 
 	class EditorLayer : public Layer
 	{
@@ -36,19 +38,22 @@ namespace Sogas
 	private:
 		bool onKeyPressed(KeyPressedEvent& e);
 		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
+		void onImGuizmoRender();
 
 	private:
-		Framebuffer* m_framebuffer;
+		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
-		std::shared_ptr<Camera> m_camera;
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<Texture2D> m_texture;
 		std::shared_ptr<Shader> m_shader;
 
-		std::shared_ptr<Prefab> m_prefab;
-
 		std::unique_ptr<Scene> m_currentScene;
+
+		// ECS
+		std::shared_ptr<Scene> m_pScene;
+
+		StrongEntityPtr m_cameraEntity;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 
@@ -59,8 +64,6 @@ namespace Sogas
 
 		i32 m_gizmoType = -1;
 
-		glm::vec2 mouse_pos;
-	private:
-		void onImGuizmoRender();
+		glm::vec2 mouse_pos{ 0, 0 };
 	};
 }

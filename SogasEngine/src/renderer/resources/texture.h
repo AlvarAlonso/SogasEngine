@@ -6,7 +6,8 @@
 
 namespace Sogas 
 {
-	class Texture
+	// Exported to avoid warning C4275 when exporting Texture2D class
+	class SGS Texture
 	{
 	public:
 		virtual ~Texture() = default;

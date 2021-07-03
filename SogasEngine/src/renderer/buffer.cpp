@@ -1,11 +1,9 @@
-#include "sgspch.h"
 
+#include "sgspch.h"
 #include "buffer.h"
 
 #include "renderer.h"
 #include "platform/OpenGL/openGLBuffer.h"
-
-#include "core/assertions.h"
 
 namespace Sogas 
 {

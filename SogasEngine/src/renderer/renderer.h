@@ -2,6 +2,13 @@
 
 #include "rendererAPI.h"
 
+// TODO: add statistics to print in Sogas-Editor
+struct statistics
+{
+	u32 drawCalls = 0;
+
+};
+
 namespace Sogas 
 {
 	class SGS Renderer

@@ -62,6 +62,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -75,15 +76,16 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm\;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\json\include\;$(SolutionDir)$(ProjectName)\external\stb_image\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -422,8 +424,16 @@
     <ClInclude Include="src\renderer\shader.h" />
     <ClInclude Include="src\renderer\resources\texture.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
+    <ClInclude Include="src\scene\cameraComponent.h" />
     <ClInclude Include="src\scene\entity.h" />
-    <ClInclude Include="src\scene\prefab.h" />
+    <ClInclude Include="src\scene\entityComponent.h" />
+    <ClInclude Include="src\scene\entityFactory.h" />
+    <ClInclude Include="src\scene\lightComponent.h" />
+    <ClInclude Include="src\scene\objectFactoryTemplate.h" />
+    <ClInclude Include="src\scene\renderComponent.h" />
+    <ClInclude Include="src\scene\scene.h" />
+    <ClInclude Include="src\scene\transformComponent.h" />
+    <ClInclude Include="src\scene\types.h" />
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
@@ -459,8 +469,13 @@
     <ClCompile Include="src\renderer\shader.cpp" />
     <ClCompile Include="src\renderer\resources\texture.cpp" />
     <ClCompile Include="src\renderer\vertexArray.cpp" />
+    <ClCompile Include="src\scene\cameraComponent.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
-    <ClCompile Include="src\scene\prefab.cpp" />
+    <ClCompile Include="src\scene\entityFactory.cpp" />
+    <ClCompile Include="src\scene\lightComponent.cpp" />
+    <ClCompile Include="src\scene\renderComponent.cpp" />
+    <ClCompile Include="src\scene\scene.cpp" />
+    <ClCompile Include="src\scene\transformComponent.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
   </ItemGroup>
   <ItemGroup>

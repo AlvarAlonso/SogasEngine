@@ -6,3 +6,6 @@
 	url = https://github.com/g-truc/glm.git
 [submodule "imgui"]
 	branch = docking
+[submodule "SogasEngine/external/json"]
+	path = SogasEngine/external/json
+	url = https://github.com/nlohmann/json.git
