@@ -38,7 +38,6 @@
     <ClCompile Include="src\renderer\resources\texture.cpp" />
     <ClCompile Include="src\renderer\resources\material.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
-    <ClCompile Include="src\scene\prefab.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\transformComponent.cpp" />
@@ -46,6 +45,7 @@
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\scene\cameraComponent.cpp" />
     <ClCompile Include="src\scene\lightComponent.cpp" />
+    <ClCompile Include="src\renderer\renderCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -380,7 +380,6 @@
     <ClInclude Include="src\renderer\resources\mesh.h" />
     <ClInclude Include="src\renderer\resources\texture.h" />
     <ClInclude Include="src\renderer\resources\material.h" />
-    <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\scene\scene.h" />
@@ -392,6 +391,7 @@
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
     <ClInclude Include="src\scene\cameraComponent.h" />
     <ClInclude Include="src\scene\lightComponent.h" />
+    <ClInclude Include="src\renderer\renderCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

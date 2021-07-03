@@ -5,7 +5,8 @@
 #include "entity.h"
 #include "entityFactory.h"
 
-namespace Sogas {
+namespace Sogas 
+{
 
 	class SGS Scene
 	{

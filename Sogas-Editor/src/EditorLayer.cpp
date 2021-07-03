@@ -90,9 +90,7 @@ namespace Sogas
 
 		m_framebuffer->bind();
 
-		Renderer::setClearColor(glm::vec4(0.2f));
-		Renderer::setDepthBuffer(true);
-		Renderer::clear();
+		Renderer::beginScene();
 
 		m_shader->bind();
 		m_texture->bind();
@@ -121,9 +119,12 @@ namespace Sogas
 				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
 				std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("lightColor", lightComponent->getColor());
 
-				Renderer::drawIndexed(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+				Renderer::submit(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
+				//Renderer::drawIndexed(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
 			}
 		}
+
+		Renderer::endScene();
 
 		m_framebuffer->unbind();
 	}

@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
+    <ClInclude Include="src\renderer\renderCommand.h" />
     <ClInclude Include="src\renderer\resources\mesh.h" />
     <ClInclude Include="src\core\camera.h" />
     <ClInclude Include="external\glm\glm\common.hpp" />
@@ -430,7 +431,6 @@
     <ClInclude Include="src\scene\entityFactory.h" />
     <ClInclude Include="src\scene\lightComponent.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
-    <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\renderComponent.h" />
     <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\scene\transformComponent.h" />
@@ -443,6 +443,7 @@
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
+    <ClCompile Include="src\renderer\renderCommand.cpp" />
     <ClCompile Include="src\renderer\resources\mesh.cpp" />
     <ClCompile Include="src\core\camera.cpp" />
     <ClCompile Include="external\glm\glm\detail\glm.cpp" />
@@ -474,7 +475,6 @@
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\lightComponent.cpp" />
-    <ClCompile Include="src\scene\prefab.cpp" />
     <ClCompile Include="src\scene\renderComponent.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\scene\transformComponent.cpp" />
