@@ -189,7 +189,7 @@ namespace Sogas
 
 		i32 location = glGetUniformLocation(m_ID, name.c_str());
 		if (location == -1) {
-			SGSWARN("Uniform %s is not being used!", name);
+			SGSWARN("Uniform %s is not being used!", name.c_str());
 		}
 
 		m_uniformLocationCache[name] = location;

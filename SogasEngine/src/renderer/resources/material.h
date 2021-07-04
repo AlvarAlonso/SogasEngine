@@ -40,9 +40,11 @@ namespace Sogas
 
 		void setMaterialShader(std::shared_ptr<Shader> shader);
 		void setMaterialProperties(const MaterialProperties& properties);
+
+		inline std::shared_ptr<Shader>& getShader() { return m_pShader; };
 	private:
 
-		std::shared_ptr<Shader> m_shader;
+		std::shared_ptr<Shader> m_pShader;
 
 		// material properties
 

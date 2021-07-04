@@ -33,4 +33,10 @@ namespace Sogas
 	{
 		glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
+
+	void OpenGLRendererAPI::setBlendFunc(bool blend)
+	{
+		if (blend)
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	}
 }

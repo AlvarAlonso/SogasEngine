@@ -16,5 +16,7 @@ namespace Sogas
 		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray) override;
 
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
+
+		virtual void setBlendFunc(bool blend) override;
 	};
 }

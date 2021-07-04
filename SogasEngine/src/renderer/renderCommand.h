@@ -33,6 +33,11 @@ namespace Sogas
 			s_rendererAPI->drawIndexed(vertexArray);
 		}
 
+		inline static void setBlendFunc(bool blend)
+		{
+			s_rendererAPI->setBlendFunc(blend);
+		}
+
 	private:
 		static RendererAPI* s_rendererAPI;
 	};

@@ -3,14 +3,8 @@
 //#include "sogas.h"
 #include "core/application.h"
 #include "core/layer.h"
-//#include "core/cameraController.h"
 
 #include "../external/glm/glm/glm.hpp"
-
-//#include "renderer/resources/texture.h"
-//#include "renderer/framebuffer.h"
-//#include "renderer/shader.h"
-//#include "scene/scene.h"
 
 #include "scene/types.h"
 
@@ -22,6 +16,7 @@ namespace Sogas
 	class Scene;
 	class EntityFactory;
 	class Framebuffer;
+	class Camera;
 
 	class EditorLayer : public Layer
 	{
@@ -39,10 +34,8 @@ namespace Sogas
 	private:
 		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
-
-		std::shared_ptr<VertexArray> m_vertexArray;
+		std::shared_ptr<Camera> m_pCamera;
 		std::shared_ptr<Texture2D> m_texture;
-		std::shared_ptr<Shader> m_shader;
 
 		// ECS
 		std::shared_ptr<Scene> m_pScene;

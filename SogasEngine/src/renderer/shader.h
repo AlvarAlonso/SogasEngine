@@ -13,7 +13,7 @@ namespace Sogas
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
-		static Shader* create(const std::string& vertexSource, const std::string& fragmentSource);
-		static Shader* create(const std::string& filepath);
+		static std::shared_ptr<Shader> create(const std::string& vertexSource, const std::string& fragmentSource);
+		static std::shared_ptr<Shader> create(const std::string& filepath);
 	};
 }

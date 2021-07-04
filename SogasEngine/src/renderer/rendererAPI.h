@@ -23,6 +23,8 @@ namespace Sogas
 
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
 
+		virtual void setBlendFunc(bool blend) = 0;
+
 		inline static API getAPI() { return s_API; }
 	private:
 		static API s_API;
