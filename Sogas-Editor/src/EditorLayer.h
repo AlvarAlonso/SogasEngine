@@ -37,6 +37,8 @@ namespace Sogas
 		std::shared_ptr<Camera> m_pCamera;
 		std::shared_ptr<Texture2D> m_texture;
 
+		std::shared_ptr<Shader> m_pShader;
+
 		// ECS
 		std::shared_ptr<Scene> m_pScene;
 

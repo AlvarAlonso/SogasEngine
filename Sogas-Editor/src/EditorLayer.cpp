@@ -40,6 +40,9 @@ namespace Sogas
 
 		m_pScene = std::make_shared<Scene>("../Assets/cube.json");
 
+		//auto entitiesVector = m_pScene->getEntities();
+		//makeStrongPtr(entitiesVector[0]->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+
 		//MaterialProperties props{};
 		//props.colorTexture = Texture2D::create("../Assets/texture.png");
 
@@ -50,7 +53,7 @@ namespace Sogas
 		//auto entity = m_pScene->createEntity("Cube");
 		//m_pScene->addComponent(entity, RenderComponent::s_name);
 		//makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
-		//makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMaterial(mat);
+		////makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMaterial(mat);
 
 		//glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
 		//makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
@@ -76,8 +79,11 @@ namespace Sogas
 		// TODO: textures should be handled by material
 		m_texture = Texture2D::create("../Assets/texture.png");
 
+		//m_pShader = Shader::create("../SogasEngine/shaders/basic.shader");
+
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
+		m_pCamera->setPosition(glm::vec3{ 0.0f, 0.0f, -5.0f });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 	}
@@ -114,7 +120,7 @@ namespace Sogas
 			auto shader = renderComponent->getShader();
 			if (!shader)
 			{
-				// Should give a default shader
+				// TODO: Should give a default shader - This should be done when loading the entity, not on every frame
 				shader = Shader::create("../SogasEngine/shaders/basic.shader");
 			}
 

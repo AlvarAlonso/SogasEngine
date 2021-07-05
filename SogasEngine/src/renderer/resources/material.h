@@ -52,11 +52,11 @@ namespace Sogas
 		bool m_isTransparent;
 
 		// material property factors
-		glm::vec4 m_color;
-		f32 m_roughnessFactor;
-		f32 m_metallicFactor;
-		f32 m_tillingFactor;
-		glm::vec3 m_emissiveFactor;
+		glm::vec4 m_color{ 1.0f, 1.0f, 1.0f, 1.0 };
+		f32 m_roughnessFactor{ 0.0f };
+		f32 m_metallicFactor{ 0.0f };
+		f32 m_tillingFactor{ 1.0f };
+		glm::vec3 m_emissiveFactor{ 0.0f };
 
 		// material textures
 		std::shared_ptr<Texture2D> m_colorTexture;

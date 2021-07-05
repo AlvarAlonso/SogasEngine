@@ -43,8 +43,29 @@ namespace Sogas
 
 					if (entity.contains(TransformComponent::s_name) && !entity[TransformComponent::s_name].is_null())
 					{
-						StrongEntityComponentPtr component = m_pEntityFactory->createComponent(TransformComponent::s_name);
 						// TODO: add transform
+						auto jsonTransform = entity[TransformComponent::s_name];
+						auto transformComponent = makeStrongPtr<TransformComponent>(ent->getComponent<TransformComponent>(TransformComponent::s_name));
+						glm::mat4 model = glm::mat4(1);
+
+						if (jsonTransform.contains("Position") && !jsonTransform["Position"].is_null())
+						{
+							auto jsonPosition = jsonTransform["Position"];
+							glm::vec3 position = glm::vec3(jsonPosition["x"], jsonPosition["y"], jsonPosition["z"]);
+							model = glm::translate(model, position);
+						}
+						if (jsonTransform.contains("Rotation") && !jsonTransform["Rotation"].is_null())
+						{
+							// TODO: rotation
+						}
+						if (jsonTransform.contains("Scale") && !jsonTransform["Scale"].is_null())
+						{
+							auto jsonScale = jsonTransform["Scale"];
+							glm::vec3 scale = glm::vec3(jsonScale["x"], jsonScale["y"], jsonScale["z"]);
+							model = glm::scale(model, scale);
+						}
+
+						transformComponent->setTransform(model);
 					}
 					if (entity.contains(RenderComponent::s_name) && !entity[RenderComponent::s_name].is_null())
 					{
@@ -52,21 +73,21 @@ namespace Sogas
 						ent->addComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 
 						auto jsonComponent = entity[RenderComponent::s_name];
-						std::shared_ptr<RenderComponent> component = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
+						std::shared_ptr<RenderComponent> renderComponent = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
 
 						if (jsonComponent.contains("Mesh") && !jsonComponent["Mesh"].is_null())
 						{
-							component->setMesh(jsonComponent["Mesh"].get<std::string>().c_str());
+							renderComponent->setMesh(jsonComponent["Mesh"].get<std::string>().c_str());
 						}
 						if (jsonComponent.contains("Material") && !jsonComponent["Material"].is_null())
 						{
 							// TODO: add material
+							renderComponent->setMaterial(std::make_shared<Material>());
 						}
 
 					}
 					m_entities.push_back(ent);
 				}
-
 			}
 		}
 	}

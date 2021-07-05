@@ -12,6 +12,22 @@
                     "Mesh": "../Assets/cube.obj",
                     "Material": null
                 }
+            },
+
+            {
+                "Name": "Viking Room",
+                "TransformComponent": 
+                {
+                    "Position": { "x":10, "y":0, "z":20 },
+                    "Rotation": null,
+                    "Scale": { "x":0.5, "y":0.5, "z":0.5 }
+                },
+                "RenderComponent":
+                {
+                    "Mesh": "../Assets/viking_room.obj",
+                    "Material": null
+                }
+
             }
         ]
 
