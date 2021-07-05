@@ -71,7 +71,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\external\GLFW\lib-vc2019\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\lib\Release\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll</Command>
+      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll
+copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sogas-Editor\$(ProjectName).dll
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -96,7 +98,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\external\GLFW\lib-vc2019\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\lib\Release\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll</Command>
+      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll
+copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sogas-Editor\$(ProjectName).dll
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

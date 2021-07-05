@@ -23,8 +23,7 @@ namespace Sogas
 
 	Entity::~Entity(void)
 	{
-		SGSINFO("Destroying actor %i", m_id);
-		SGSASSERT(m_components.empty());
+		//SGSINFO("Destroying actor %i", m_id);
 	}
 
 	bool Entity::init()
