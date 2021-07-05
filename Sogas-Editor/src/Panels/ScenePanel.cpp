@@ -20,12 +20,18 @@ namespace Sogas
 		ImGui::Begin("Scene Hierarchy");
 
 		//SGSINFO("Entity Selected %i", m_selectedEntity.getId());
-
-		for (auto& entity : m_context.get()->getEntities())
+		EntityId entityToDestroy = 0;
+		for (auto &entity : m_context.get()->getEntities())
 		{
 			//ImGui::Text(entity->getName().c_str());
-			drawEntityNode(*entity);
+			EntityId id = drawEntityNode(*entity);
+			
+			if(id != 0)
+				entityToDestroy = id;
 		}
+
+		if(entityToDestroy != 0)
+			m_context->destroyEntity(entityToDestroy);
 
 		// TODO: Add creation of entities
 
@@ -47,7 +53,7 @@ namespace Sogas
 		m_selectedEntity = entity;
 	}
 
-	void ScenePanel::drawEntityNode(Entity entity)
+	EntityId ScenePanel::drawEntityNode(Entity entity)
 	{
 		ImGuiTreeNodeFlags flags = ((m_selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -55,6 +61,15 @@ namespace Sogas
 		if(ImGui::IsItemClicked())
 		{
 			m_selectedEntity = entity;
+		}
+
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entityDeleted = true;
+
+			ImGui::EndPopup();
 		}
 
 		if(opened)
@@ -65,6 +80,17 @@ namespace Sogas
 				ImGui::TreePop();
 			ImGui::TreePop();
 		}
+
+		if(entityDeleted)
+		{
+			if (m_selectedEntity == entity)
+				m_selectedEntity = {};
+
+			return entity.getId();
+			//m_context->destroyEntity(entity); // TODO: delete all references
+		}
+
+		return 0;
 	}
 
 	void ScenePanel::drawEntityComponents(Entity entity)

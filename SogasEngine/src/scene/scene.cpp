@@ -25,16 +25,32 @@ namespace Sogas
 		return entity;
 	}
 
-	void Scene::DestroyEntity(StrongEntityPtr entity)
+	void Scene::destroyEntity(EntityId entity)
 	{
-		entity->destroy();
+		// TODO: Optimize insertion/deletion of entities
+		int index = 0;
+		for(auto& currentEntity : m_entities)
+		{
+			if (*currentEntity == entity)
+			{
+				currentEntity->destroy();
+				delete currentEntity.get();
+				currentEntity = nullptr;
+				m_entities.erase(m_entities.begin() + index);
+				break; // break loop after finding the entity to be deleted
+			}
+
+			index++;
+		}
+
+		// TODO: some way to destroy an entity deleting all the references to it automatically
 	}
 
 	void Scene::destroy()
 	{
 		for (auto& entity : m_entities)
 		{
-			DestroyEntity(entity);
+			destroyEntity(*entity);
 		}
 	}
 

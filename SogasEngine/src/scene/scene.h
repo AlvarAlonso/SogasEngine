@@ -14,7 +14,7 @@ namespace Sogas {
 		~Scene();
 
 		StrongEntityPtr createEntity(const std::string& name = std::string());
-		void DestroyEntity(StrongEntityPtr entity);
+		void destroyEntity(EntityId entity);
 
 		void destroy();
 

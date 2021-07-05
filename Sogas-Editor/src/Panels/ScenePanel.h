@@ -18,7 +18,7 @@ namespace Sogas {
 		Entity getSelectedEntity() const { return m_selectedEntity; }
 		void setSelectedEntity(Entity entity);
 	private:
-		void drawEntityNode(Entity entity);
+		EntityId drawEntityNode(Entity entity);
 		void drawEntityComponents(Entity entity);
 	private:
 		std::shared_ptr<Scene> m_context;
