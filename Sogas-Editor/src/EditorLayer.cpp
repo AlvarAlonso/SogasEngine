@@ -81,6 +81,8 @@ namespace Sogas
 		m_cameraController.reset(new CameraController(makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name))->camera));
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
+	
+		m_scenePanel.setContext(m_pScene);
 	}
 
 	void EditorLayer::onDetach()
@@ -205,6 +207,8 @@ namespace Sogas
 			ImGui::EndMenuBar();
 		}
 
+		m_scenePanel.onImGuiRender();
+
 		// Stats panel
 		ImGui::Begin("Stats");
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
@@ -224,7 +228,8 @@ namespace Sogas
 		ImGui::Separator;
 		ImGui::End();
 		*/
-
+		/*
+		* // Example:
 		ImGui::Begin("Components");
 		for (const auto& entity : m_pScene->getEntities())
 		{
@@ -240,7 +245,7 @@ namespace Sogas
 			}
 		}
 		ImGui::End();
-
+		*/
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 		ImGui::Begin("Viewport");

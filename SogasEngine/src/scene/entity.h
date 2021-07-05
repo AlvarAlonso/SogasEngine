@@ -20,11 +20,12 @@ namespace Sogas
 	
 	private:
 		std::string m_name;
-		EntityId m_id;
+		EntityId m_id{ 0 }; // default ID, it must count as an invalid ID
 		EntityComponentsMap m_components{};
 		std::string m_type;
 
 	public:
+		Entity() = default; // TODO: comprovar que aixo es correcte
 		explicit Entity(EntityId id);
 		~Entity(void);
 
@@ -33,6 +34,7 @@ namespace Sogas
 		void destroy();
 		void update(f32 dt);
 
+		std::string getName() const { return m_name; }
 		EntityId getId() const { return m_id; }
 		std::string getType() const { return m_type; }
 
@@ -91,5 +93,17 @@ namespace Sogas
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
 		void addComponent(StrongEntityComponentPtr pComponent);
+
+		operator bool() const { return m_id != 0; }
+
+		bool operator==(const Entity& other) const
+		{
+			return m_id == other.m_id; // TODO: they must be in the same scene too
+		}
+
+		bool operator !=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
 	};
 }

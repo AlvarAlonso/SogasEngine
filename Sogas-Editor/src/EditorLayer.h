@@ -11,6 +11,7 @@
 //#include "renderer/framebuffer.h"
 //#include "renderer/shader.h"
 //#include "scene/scene.h"
+#include "Panels/ScenePanel.h"
 
 #include "scene/types.h"
 
@@ -65,5 +66,8 @@ namespace Sogas
 		i32 m_gizmoType = -1;
 
 		glm::vec2 mouse_pos{ 0, 0 };
+
+		// Panels
+		ScenePanel m_scenePanel;
 	};
 }
