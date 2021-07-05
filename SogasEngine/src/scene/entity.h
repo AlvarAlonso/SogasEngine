@@ -27,6 +27,7 @@ namespace Sogas
 	public:
 		Entity() = default; // TODO: comprovar que aixo es correcte
 		explicit Entity(EntityId id);
+		Entity(const Entity& other) = default;
 		~Entity(void);
 
 		bool init();
@@ -37,6 +38,8 @@ namespace Sogas
 		std::string getName() const { return m_name; }
 		EntityId getId() const { return m_id; }
 		std::string getType() const { return m_type; }
+
+		void setName(std::string name) { m_name = name; }
 
 		template<class ComponentType>
 		std::weak_ptr<ComponentType> getComponent(ComponentId id)

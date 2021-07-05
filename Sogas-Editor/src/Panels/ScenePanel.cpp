@@ -1,5 +1,10 @@
 #include "ScenePanel.h"
 
+#include "scene/renderComponent.h"
+#include "scene/cameraComponent.h"
+#include "scene/transformComponent.h"
+#include "scene/lightComponent.h"
+
 #include <imgui.h>
 
 namespace Sogas
@@ -95,7 +100,59 @@ namespace Sogas
 		return 0;
 	}
 
+	// TODO: it must pass a pointer to the real entity, not a copy (selectedContext is a copy)
 	void ScenePanel::drawEntityComponents(Entity entity)
 	{
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		strncpy_s(buffer, entity.getName().c_str(), sizeof(buffer));
+		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+		{
+			m_context->findEntityById(entity.getId())->setName(std::string(buffer));
+		}
+
+		ImGui::SameLine();
+		ImGui::PushItemWidth(-1);
+
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("AddComponent");
+
+		if (ImGui::BeginPopup("AddComponent"))
+		{
+			if(ImGui::MenuItem("Mesh Render"))
+			{
+				if(!m_selectedEntity.has(RenderComponent::s_name))
+				{
+					// TODO: An entity should add its own components
+					StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
+					m_context->addComponent(pEntity, RenderComponent::s_name);
+				}
+				else
+				{
+					SGSWARN("This entity already has a render component.");
+				}
+
+				ImGui::CloseCurrentPopup();
+			}
+
+			if(ImGui::MenuItem("Light"))
+			{
+				if(!m_selectedEntity.has(LightComponent::s_name))
+				{
+					StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
+					m_context->addComponent(pEntity, LightComponent::s_name);
+				}
+				else
+				{
+					SGSWARN("This entity already has a light component.");
+				}
+
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::PopItemWidth();
 	}
 }
