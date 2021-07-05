@@ -1,0 +1,19 @@
+{
+    "Scene": 
+    {
+        "Name": "basic",
+        "Entities": 
+        [
+            {
+                "Name": "Cube",
+                "TransformComponent": null,
+                "RenderComponent":
+                {
+                    "Mesh": "../Assets/cube.obj",
+                    "Material": null
+                }
+            }
+        ]
+
+    }
+}

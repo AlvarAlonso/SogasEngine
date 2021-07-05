@@ -38,32 +38,39 @@ namespace Sogas
 
 		m_pCamera = std::make_shared<Camera>();
 
-		m_pScene = std::make_shared<Scene>();
+		m_pScene = std::make_shared<Scene>("../Assets/cube.json");
 
-		auto entity = m_pScene->createEntity("Cube");
-		m_pScene->addComponent(entity, RenderComponent::s_name);
-		makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+		//MaterialProperties props{};
+		//props.colorTexture = Texture2D::create("../Assets/texture.png");
+
+		//std::shared_ptr<Material> mat = std::make_shared<Material>();
+		//mat->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+		//mat->setMaterialProperties(props);
+
+		//auto entity = m_pScene->createEntity("Cube");
+		//m_pScene->addComponent(entity, RenderComponent::s_name);
+		//makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 		//makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMaterial(mat);
 
-		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+		//glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
+		//makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
 
-		auto entity2 = m_pScene->createEntity("Cube");
-		m_pScene->addComponent(entity2, RenderComponent::s_name);
-		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/plane.obj");
+		////auto entity2 = m_pScene->createEntity("Plane");
+		////m_pScene->addComponent(entity2, RenderComponent::s_name);
+		////makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/plane.obj");
 
-		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(0.0f, -5.0f, 0.0f)) * glm::scale(glm::mat4(1), glm::vec3(10.0f));
-		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
+		////glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(0.0f, -5.0f, 0.0f)) * glm::scale(glm::mat4(1), glm::vec3(10.0f));
+		////makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
 
-		auto light = m_pScene->createEntity("Light");
-		m_pScene->addComponent(light, LightComponent::s_name);
-		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
-		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
+		//auto light = m_pScene->createEntity("Light");
+		//m_pScene->addComponent(light, LightComponent::s_name);
+		//makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
+		//glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		//makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
-		auto light2 = m_pScene->createEntity("Light");
-		m_pScene->addComponent(light2, LightComponent::s_name);
-		makeStrongPtr(light2->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
+		//auto light2 = m_pScene->createEntity("Light");
+		//m_pScene->addComponent(light2, LightComponent::s_name);
+		//makeStrongPtr(light2->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
 
 		// load texture
 		// TODO: textures should be handled by material
@@ -93,7 +100,7 @@ namespace Sogas
 
 		m_framebuffer->bind();
 
-		Renderer::beginScene(m_pScene, m_cameraEntity);
+		Renderer::beginScene(m_pScene, m_pCamera);
 		m_texture->bind();
 
 		std::vector<StrongEntityPtr> renderables = m_pScene->getByComponent(RenderComponent::s_name);
@@ -102,8 +109,16 @@ namespace Sogas
 		{
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
 			glm::mat4& model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			
+			auto material = renderComponent->getMaterial();
+			auto shader = renderComponent->getShader();
+			if (!shader)
+			{
+				// Should give a default shader
+				shader = Shader::create("../SogasEngine/shaders/basic.shader");
+			}
 
-			Renderer::submit(renderComponent->getShader(), renderComponent->getMesh()->m_vertexArray, model);
+			Renderer::submit(shader, renderComponent->getMesh()->m_vertexArray, model, material);
 		}
 
 		Renderer::endScene();
@@ -188,15 +203,19 @@ namespace Sogas
 		ImGui::Begin("Components");
 		for (const auto& entity : m_pScene->getEntities())
 		{
-			ImGui::Text("Entity");
-			if (entity->has(TransformComponent::s_name)) 
+			if(ImGui::TreeNode((void*)&entity, "Entity"))
 			{
-				bool changed = false;
-				auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
-				auto& matrix = transformComponent->getTransform();
-				changed |= ImGui::SliderFloat3("Transform", &((glm::vec3)matrix[3])[0], -1000.0f, 1000.0f);
-				if(changed)
-					transformComponent->setTransform(matrix);
+				ImGui::Text("Entity");
+				if (entity->has(TransformComponent::s_name)) 
+				{
+					bool changed = false;
+					auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
+					auto& matrix = transformComponent->getTransform();
+					if (ImGui::TreeNode((void*)&matrix[0][0], "Model"))
+					{
+						ImGui::DragFloat3("Transform", &((glm::vec3)matrix[3])[0]);
+					}
+				}
 			}
 		}
 		ImGui::End();

@@ -5,12 +5,70 @@
 #include "transformComponent.h"
 #include "renderComponent.h"
 
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
 namespace Sogas
 {
 	Scene::Scene()
 	{
 		m_pEntityFactory.reset();
 		m_pEntityFactory = std::make_unique<EntityFactory>();
+	}
+
+	Scene::Scene(const char* filename)
+	{
+
+		std::ifstream file(filename);
+		json j;
+		file >> j;
+		
+		std::cout << j;
+
+		m_pEntityFactory.reset();
+		m_pEntityFactory = std::make_unique<EntityFactory>();
+
+		if (j.contains("Scene"))
+		{
+			auto scene = j["Scene"];
+			if (scene.contains("Entities")) {
+				auto entities = scene["Entities"];
+
+				for (auto entity : entities)
+				{
+					std::string name = entity["Name"].get<std::string>();
+					// TODO: pass the entity json to the function
+					auto ent = m_pEntityFactory->createEntity(name.c_str());
+
+					if (entity.contains(TransformComponent::s_name) && !entity[TransformComponent::s_name].is_null())
+					{
+						StrongEntityComponentPtr component = m_pEntityFactory->createComponent(TransformComponent::s_name);
+						// TODO: add transform
+					}
+					if (entity.contains(RenderComponent::s_name) && !entity[RenderComponent::s_name].is_null())
+					{
+
+						ent->addComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
+
+						auto jsonComponent = entity[RenderComponent::s_name];
+						std::shared_ptr<RenderComponent> component = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
+
+						if (jsonComponent.contains("Mesh") && !jsonComponent["Mesh"].is_null())
+						{
+							component->setMesh(jsonComponent["Mesh"].get<std::string>().c_str());
+						}
+						if (jsonComponent.contains("Material") && !jsonComponent["Material"].is_null())
+						{
+							// TODO: add material
+						}
+
+					}
+					m_entities.push_back(ent);
+				}
+
+			}
+		}
 	}
 
 	Scene::~Scene()

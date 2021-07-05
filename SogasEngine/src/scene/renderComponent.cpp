@@ -11,7 +11,6 @@ namespace Sogas
 	{
 		m_pMesh = nullptr;
 		m_pMaterial = std::make_shared<Material>(Shader::create("../SogasEngine/shaders/basic.shader"));
-		//m_pMaterial.reset(std::make_shared<Shader>("../SogasEngine/shaders/basic.shader"));
 	}
 
 	bool RenderComponent::init()

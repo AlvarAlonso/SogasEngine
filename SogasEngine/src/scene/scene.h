@@ -12,6 +12,7 @@ namespace Sogas
 	{
 	public:
 		Scene();
+		Scene(const char* filename);
 		~Scene();
 
 		StrongEntityPtr createEntity(const std::string& name = std::string());

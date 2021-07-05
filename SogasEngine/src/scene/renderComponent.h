@@ -21,6 +21,7 @@ namespace Sogas
 
 		Mesh* getMesh(void) const { return m_pMesh; }
 		void setMesh(const char* filename) { m_pMesh = new Mesh; m_pMesh->load(filename); }
+		void setMaterial(std::shared_ptr<Material> material) { m_pMaterial = material; }
 
 		//inline void setMaterial(Material* material) { m_pMaterial = std::make_shared<Material>(material); }
 		inline std::shared_ptr<Material>& getMaterial() { return m_pMaterial; }

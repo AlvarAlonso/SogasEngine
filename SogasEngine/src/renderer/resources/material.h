@@ -30,7 +30,7 @@ namespace Sogas
 		std::shared_ptr<Texture2D> normalTexture;
 	};
 
-	class Material
+	class SGS Material
 	{
 	public:
 		Material() = default;
@@ -42,6 +42,7 @@ namespace Sogas
 		void setMaterialProperties(const MaterialProperties& properties);
 
 		inline std::shared_ptr<Shader>& getShader() { return m_pShader; };
+		inline std::shared_ptr<Texture2D>& getColorTexture() { return m_colorTexture; }
 	private:
 
 		std::shared_ptr<Shader> m_pShader;

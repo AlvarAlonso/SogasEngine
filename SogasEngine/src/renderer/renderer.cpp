@@ -5,6 +5,8 @@
 #include "platform/OpenGL/openGLRendererAPI.h"
 #include "platform/openGL/openGLShader.h"
 #include "scene/scene.h"
+#include "renderer/resources/material.h"
+#include "renderer/resources/texture.h"
 
 #include "scene/cameraComponent.h"
 #include "scene/lightComponent.h"
@@ -17,16 +19,15 @@ namespace Sogas
 	Renderer::API Renderer::s_API = Renderer::API::OpenGL;
 	RendererAPI* Renderer::s_RendererAPI = new OpenGLRendererAPI;
 
-	void Renderer::beginScene(std::shared_ptr<Scene>& scene, StrongEntityPtr pCamera)
+	void Renderer::beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
 	{
-		RenderCommand::setClearColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 		RenderCommand::clear();
 		RenderCommand::setDepthBuffer(true);
 
 		RenderCommand::setBlendFunc(true);
 
-		std::shared_ptr<CameraComponent> camera = makeStrongPtr(pCamera->getComponent<CameraComponent>(CameraComponent::s_name));
-		s_sceneData->viewprojectionMatrix = camera->camera->getViewProjection();
+		s_sceneData->viewprojectionMatrix = pCamera->getViewProjection();
 
 		s_sceneData->lights = scene->getByComponent(LightComponent::s_name);
 	}
@@ -37,16 +38,23 @@ namespace Sogas
 	}
 
 	// TODO: dataScene should be to pass all scene info
-	void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform)
+	void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<Material>& material)
 	{
 		shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+
+		if (material->getColorTexture())
+		{
+			material->getColorTexture()->bind();
+			//std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", (int)material->getColorTexture()->getID());
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+		}
+		else
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", -1);
 
 		for (const auto& light : s_sceneData->lights)
 		{
-
 			// Set light position
 			glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", (glm::vec3)lightModel[3]);

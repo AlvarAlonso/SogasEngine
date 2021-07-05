@@ -4,7 +4,7 @@
 #include "core/application.h"
 #include "core/layer.h"
 
-#include "../external/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
 #include "scene/types.h"
 
@@ -39,8 +39,6 @@ namespace Sogas
 
 		// ECS
 		std::shared_ptr<Scene> m_pScene;
-
-		StrongEntityPtr m_cameraEntity;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 

@@ -59,7 +59,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\glm;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\json\include\;$(SolutionDir)$(ProjectName)\external\glm\;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -71,7 +71,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\external\GLFW\lib-vc2019\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\lib\Release\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll</Command>
+      <Command>copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sandbox\$(ProjectName).dll
+copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(SolutionDir)bin\$(Configuration)\Sogas-Editor\$(ProjectName).dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -102,6 +103,45 @@
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
+    <ClInclude Include="src\json\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="src\json\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\hash.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\identity_tag.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\string_escape.hpp" />
+    <ClInclude Include="src\json\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="src\json\nlohmann\json.hpp" />
+    <ClInclude Include="src\json\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="src\json\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="src\renderer\renderCommand.h" />
     <ClInclude Include="src\renderer\resources\mesh.h" />
     <ClInclude Include="src\core\camera.h" />

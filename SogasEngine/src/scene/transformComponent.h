@@ -4,7 +4,7 @@
 
 #include "entityComponent.h"
 
-#include "../external/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Sogas
 {
@@ -15,7 +15,7 @@ namespace Sogas
 		virtual const char* getName() const override { return s_name; }
 
 		TransformComponent(void) : m_transform(glm::mat4(1)) {};
-		virtual bool init() override;
+		virtual bool init(void) override;
 
 		// Transform component functions
 		glm::mat4& getTransform(void) { return m_transform; }
