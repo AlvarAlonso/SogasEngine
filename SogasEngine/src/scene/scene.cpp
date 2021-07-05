@@ -31,10 +31,9 @@ namespace Sogas
 		int index = 0;
 		for(auto& currentEntity : m_entities)
 		{
-			if (*currentEntity == entity)
+			if (currentEntity->getId() == entity)
 			{
 				currentEntity->destroy();
-				delete currentEntity.get();
 				currentEntity = nullptr;
 				m_entities.erase(m_entities.begin() + index);
 				break; // break loop after finding the entity to be deleted

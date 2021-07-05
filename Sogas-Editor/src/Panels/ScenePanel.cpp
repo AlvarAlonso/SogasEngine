@@ -31,7 +31,9 @@ namespace Sogas
 		}
 
 		if(entityToDestroy != 0)
+		{
 			m_context->destroyEntity(entityToDestroy);
+		}
 
 		// TODO: Add creation of entities
 
