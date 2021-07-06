@@ -4,6 +4,11 @@
 #include "scene/scene.h"
 #include "scene/entity.h"
 
+namespace ImGui
+{
+	void PushMultiItemsWidths(int components, float width_full);
+}
+
 namespace Sogas {
 
 	class ScenePanel

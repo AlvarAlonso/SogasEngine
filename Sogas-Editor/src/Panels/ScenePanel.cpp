@@ -144,7 +144,7 @@ namespace Sogas
 			}
 		}
 	}
-	/*
+	
 	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -157,10 +157,10 @@ namespace Sogas
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
-		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushItemWidth(3 * ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		float lineHeight = 1.0f; // GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
@@ -202,7 +202,7 @@ namespace Sogas
 
 		ImGui::SameLine();
 		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
+		ImGui::PopItemWidth(); // TODO: It breaks here
 
 		ImGui::PopStyleVar();
 
@@ -210,7 +210,7 @@ namespace Sogas
 
 		ImGui::PopID();
 	}
-	*/
+	
 	// TODO: it must pass a pointer to the real entity, not a copy (selectedContext is a copy)
 	void ScenePanel::drawEntityComponents(Entity entity)
 	{
@@ -268,7 +268,24 @@ namespace Sogas
 
 		drawComponent<TransformComponent>("Transform", entity, [](auto& component)
 			{
-				ImGui::Text("This is the transform component");
+				ImGui::Text(TransformComponent::s_name);
+				//glm::vec3 vector = glm::vec3(1.0f, 1.0f, 1.0f);
+				//DrawVec3Control("Translation", vector);
+			});
+
+		drawComponent<CameraComponent>("Camera", entity, [](auto& component)
+			{
+				ImGui::Text(CameraComponent::s_name);
+			});
+
+		drawComponent<LightComponent>("Light", entity, [](auto& component)
+			{
+				ImGui::Text(LightComponent::s_name);
+			});
+
+		drawComponent<RenderComponent>("Renderer", entity, [](auto& component)
+			{
+				ImGui::Text(RenderComponent::s_name);
 			});
 	}
 }
