@@ -100,6 +100,51 @@ namespace Sogas
 		return 0;
 	}
 
+	template<typename T, typename UIFunction>
+	void ScenePanel::drawComponent(const std::string& name, Entity entity, UIFunction uiFuntion)
+	{
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | 
+			ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+		
+		if(entity.has(T::s_name))
+		{
+			auto& component = entity.getComponent<T>(T::s_name);
+			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+		
+			ImGui::Separator();
+			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+			ImGui::PopStyleVar();
+			ImGui::SameLine(contentRegionAvailable.x);
+			if (ImGui::Button("+"), ImVec2{ 1.0f, 1.0f })
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
+
+			bool removeComponent = false;
+			if(ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
+			if (open)
+			{
+				uiFuntion(component);
+				ImGui::TreePop();
+			}
+
+			if(removeComponent)
+			{
+				StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
+				pEntity->removeComponent(T::s_name);
+			}
+		}
+	}
+
 	// TODO: it must pass a pointer to the real entity, not a copy (selectedContext is a copy)
 	void ScenePanel::drawEntityComponents(Entity entity)
 	{
@@ -154,5 +199,7 @@ namespace Sogas
 		}
 
 		ImGui::PopItemWidth();
+
+		
 	}
 }

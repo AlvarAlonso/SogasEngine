@@ -96,6 +96,7 @@ namespace Sogas
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
 		void addComponent(StrongEntityComponentPtr pComponent);
+		void removeComponent(const char* componentName);
 
 		operator bool() const { return m_id != 0; }
 

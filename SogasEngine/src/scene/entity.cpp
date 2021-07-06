@@ -57,4 +57,12 @@ namespace Sogas
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
 		SGSASSERT(success.second);
 	}
+
+	void Entity::removeComponent(const char* componentName)
+	{
+		ComponentId componentId = EntityComponent::getIdFromName(componentName);
+		EntityComponentsMap::iterator it = m_components.find(componentId);
+		if (it != m_components.end())
+			m_components.erase(it);
+	}
 }
