@@ -53,21 +53,21 @@ namespace Sogas
 		m_pScene->addComponent(entity, RenderComponent::s_name);
 		makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+		glm::vec3 translate = glm::vec3(0.0f, 0.0f, 10.0f);
+		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(translate);
 
 		auto entity2 = m_pScene->createEntity("Cube");
 		m_pScene->addComponent(entity2, RenderComponent::s_name);
 		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
+		glm::vec3 translate2 = glm::vec3(5.0f, 0.0f, 10.0f);
+		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(translate2);
 
 		auto light = m_pScene->createEntity("Light");
 		m_pScene->addComponent(light, LightComponent::s_name);
 		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
-		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
+		glm::vec3 lightTransform = glm::vec3(0.0f, 10.0f, 0.0f);
+		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(lightTransform);
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
@@ -288,7 +288,7 @@ namespace Sogas
 			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
 
 			// Entity transform
-			glm::mat4& transform = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
+			glm::mat4 transform = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
@@ -366,7 +366,7 @@ namespace Sogas
 		if (Application::m_guizmoEntity == nullptr)
 			return;
 
-		glm::mat4& transform = Application::m_guizmoEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
+		glm::mat4 transform = Application::m_guizmoEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
 
 		static ImGuizmo::OPERATION sCurrentGuizmoOperation(ImGuizmo::TRANSLATE);
 		static ImGuizmo::MODE sCurrentGuizmoMode(ImGuizmo::WORLD);

@@ -157,7 +157,8 @@ namespace Sogas
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
-		ImGui::PushItemWidth(3 * ImGui::CalcItemWidth());
+		//ImGui::PushItemWidth(3 * ImGui::CalcItemWidth());
+		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
 		float lineHeight = 1.0f; // GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
@@ -269,8 +270,11 @@ namespace Sogas
 		drawComponent<TransformComponent>("Transform", entity, [](auto& component)
 			{
 				ImGui::Text(TransformComponent::s_name);
-				//glm::vec3 vector = glm::vec3(1.0f, 1.0f, 1.0f);
-				//DrawVec3Control("Translation", vector);
+				DrawVec3Control("Translation", component.lock()->getTranslation());
+				glm::vec3 rotation = glm::degrees(component.lock()->getRotation());
+				DrawVec3Control("Rotation", rotation);
+				component.lock()->setRotation(rotation);
+				DrawVec3Control("Scale", component.lock()->getScale(), 1.0f);
 			});
 
 		drawComponent<CameraComponent>("Camera", entity, [](auto& component)
