@@ -6,7 +6,10 @@
         [
             {
                 "Name": "Cube",
-                "TransformComponent": null,
+                "TransformComponent": 
+                {
+                    "Position": { "x":0, "y":0, "z":10 }
+                },
                 "RenderComponent":
                 {
                     "Mesh": "../Assets/cube.obj",
@@ -18,9 +21,9 @@
                 "Name": "Viking Room",
                 "TransformComponent":
                 {
-                    "Position": { "x":10, "y":0, "z":10 },
-                    "Rotation": null,
-                    "Scale": { "x":0.5, "y":0.5, "z":0.5 }
+                    "Position": { "x":0, "y":0, "z":0 },
+                    "Rotation": { "x":0, "y":0, "z":1, "w":0 },
+                    "Scale": { "x":0.2, "y":0.2, "z":0.2 }
                 },
                 "RenderComponent":
                 {

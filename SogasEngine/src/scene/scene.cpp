@@ -5,7 +5,7 @@
 #include "renderer/shader.h"
 #include "transformComponent.h"
 #include "renderComponent.h"
-
+#include "glm/gtc/quaternion.hpp"
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
@@ -59,7 +59,9 @@ namespace Sogas
 						{
 							// TODO: rotation
 							auto jsonRotation = jsonTransform["Rotation"];
-							//model = glm::rotate()
+							glm::quat quaternion = glm::quat(jsonRotation["x"], jsonRotation["y"], jsonRotation["z"], jsonRotation["w"]);
+							glm::mat4 rotationMatrix = glm::mat4_cast(quaternion);
+							model = model * rotationMatrix;
 						}
 						if (jsonTransform.contains("Scale") && !jsonTransform["Scale"].is_null())
 						{
@@ -114,6 +116,8 @@ namespace Sogas
 								else {
 									material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
 								}
+
+								// Get the material properties
 							}
 							else {
 								material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));

@@ -2,7 +2,7 @@
 
 #include "core/assertions.h"
 
-#include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include <memory>
 
@@ -13,14 +13,14 @@ namespace Sogas
 
 	struct MaterialProperties
 	{
-		bool isTransparent;
+		bool isTransparent{ false };
 
 		// material property factors
-		glm::vec4 color;
-		f32 roughnessFactor;
-		f32 metallicFactor;
-		f32 tillingFactor;
-		glm::vec3 emissiveFactor;
+		glm::vec4	color{ 1.0 };
+		f32			roughnessFactor{ 0.0f };
+		f32			metallicFactor{ 0.0f };
+		f32			tillingFactor{ 1.0f };
+		glm::vec3	emissiveFactor{ 0.0f };
 
 		// material textures
 		std::shared_ptr<Texture2D> colorTexture;
@@ -42,27 +42,12 @@ namespace Sogas
 		void setMaterialProperties(const MaterialProperties& properties);
 
 		inline std::shared_ptr<Shader>& getShader() { return m_pShader; };
-		inline std::shared_ptr<Texture2D>& getColorTexture() { return m_colorTexture; }
+		inline MaterialProperties& getMaterialProperties() { return m_materialProperties; }
+
+		inline std::shared_ptr<Texture2D>& getColorTexture() { return m_materialProperties.colorTexture; }
 	private:
 
 		std::shared_ptr<Shader> m_pShader;
-
-		// material properties
-
-		bool m_isTransparent;
-
-		// material property factors
-		glm::vec4 m_color{ 1.0f, 1.0f, 1.0f, 1.0 };
-		f32 m_roughnessFactor{ 0.0f };
-		f32 m_metallicFactor{ 0.0f };
-		f32 m_tillingFactor{ 1.0f };
-		glm::vec3 m_emissiveFactor{ 0.0f };
-
-		// material textures
-		std::shared_ptr<Texture2D> m_colorTexture;
-		std::shared_ptr<Texture2D> m_emissiveTexture;
-		std::shared_ptr<Texture2D> m_metallicRoughnessTexture;
-		std::shared_ptr<Texture2D> m_occlusionTexture;
-		std::shared_ptr<Texture2D> m_normalTexture;
+		MaterialProperties m_materialProperties;
 	};
 }
