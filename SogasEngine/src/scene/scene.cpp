@@ -5,6 +5,7 @@
 #include "renderer/shader.h"
 #include "transformComponent.h"
 #include "renderComponent.h"
+#include "lightComponent.h"
 #include "renderer/resources/texture.h"
 
 #include "glm/gtc/quaternion.hpp"
@@ -44,6 +45,9 @@ namespace Sogas
 					// TODO: pass the entity json to the function
 					auto ent = m_pEntityFactory->createEntity(name.c_str());
 
+					// -----------------------
+					// Check if entity contains Transform Component
+					// -----------------------
 					if (entity.contains(TransformComponent::s_name) && !entity[TransformComponent::s_name].is_null())
 					{
 						// TODO: add transform
@@ -54,32 +58,47 @@ namespace Sogas
 						if (jsonTransform.contains("Position") && !jsonTransform["Position"].is_null())
 						{
 							auto jsonPosition = jsonTransform["Position"];
-							glm::vec3 position = glm::vec3(jsonPosition["x"], jsonPosition["y"], jsonPosition["z"]);
-							model = glm::translate(model, position);
+
+							f32 x = jsonPosition.contains("x") ? jsonPosition["x"].get<f32>() : 0.0f;
+							f32 y = jsonPosition.contains("y") ? jsonPosition["y"].get<f32>() : 0.0f;
+							f32 z = jsonPosition.contains("z") ? jsonPosition["z"].get<f32>() : 0.0f;
+
+							model = glm::translate(model, glm::vec3(x, y, z));
 						}
 						if (jsonTransform.contains("Rotation") && !jsonTransform["Rotation"].is_null())
 						{
-							// TODO: rotation
 							auto jsonRotation = jsonTransform["Rotation"];
-							glm::quat quaternion = glm::quat(jsonRotation["x"], jsonRotation["y"], jsonRotation["z"], jsonRotation["w"]);
-							glm::mat4 rotationMatrix = glm::mat4_cast(quaternion);
+
+							f32 x = jsonRotation.contains("x") ? jsonRotation["x"].get<f32>() : 0.0f;
+							f32 y = jsonRotation.contains("y") ? jsonRotation["y"].get<f32>() : 0.0f;
+							f32 z = jsonRotation.contains("z") ? jsonRotation["z"].get<f32>() : 0.0f;
+							f32 w = jsonRotation.contains("w") ? jsonRotation["w"].get<f32>() : 0.0f;
+
+							glm::mat4 rotationMatrix = glm::mat4_cast(glm::quat(x, y, z, w));
 							model = model * rotationMatrix;
 						}
 						if (jsonTransform.contains("Scale") && !jsonTransform["Scale"].is_null())
 						{
 							auto jsonScale = jsonTransform["Scale"];
-							glm::vec3 scale = glm::vec3(jsonScale["x"], jsonScale["y"], jsonScale["z"]);
-							model = glm::scale(model, scale);
+
+							f32 x = jsonScale.contains("x") ? jsonScale["x"].get<f32>() : 0.0f;
+							f32 y = jsonScale.contains("y") ? jsonScale["y"].get<f32>() : 0.0f;
+							f32 z = jsonScale.contains("z") ? jsonScale["z"].get<f32>() : 0.0f;
+
+							model = glm::scale(model, glm::vec3(x, y, z));
 						}
 
 						transformComponent->setTransform(model);
 					}
+
+					// -----------------------
+					// Check if entity contains Render Component
+					// -----------------------
 					if (entity.contains(RenderComponent::s_name) && !entity[RenderComponent::s_name].is_null())
 					{
-
+						auto jsonComponent = entity[RenderComponent::s_name];
 						ent->addComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 
-						auto jsonComponent = entity[RenderComponent::s_name];
 						std::shared_ptr<RenderComponent> renderComponent = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
 
 						// -----------------------
@@ -144,6 +163,29 @@ namespace Sogas
 						}
 
 					}
+
+					// -----------------------
+					// Check if entity contains Light Component
+					// -----------------------
+					if (entity.contains(LightComponent::s_name) && !entity[LightComponent::s_name].is_null())
+					{
+						auto jsonLight = entity["LightComponent"];
+						ent->addComponent(m_pEntityFactory->createComponent(LightComponent::s_name));
+
+						std::shared_ptr<LightComponent> lightComponent = makeStrongPtr(ent->getComponent<LightComponent>(LightComponent::s_name));
+
+						if (jsonLight.contains("Color") && !jsonLight["Color"].is_null())
+						{
+							auto jsonColor = jsonLight["Color"];
+
+							f32 r = jsonColor.contains("r") ? jsonColor["r"].get<f32>() : 0.0f;
+							f32 g = jsonColor.contains("g") ? jsonColor["g"].get<f32>() : 0.0f;
+							f32 b = jsonColor.contains("b") ? jsonColor["b"].get<f32>() : 0.0f;
+
+							lightComponent->setColor(glm::vec3(r, g, b));
+						}
+					}
+
 					m_entities.push_back(ent);
 				}
 			}

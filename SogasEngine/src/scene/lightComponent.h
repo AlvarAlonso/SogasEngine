@@ -24,8 +24,8 @@ namespace Sogas
 		void setColor(const glm::vec3 color) { m_color = color; }
 
 	private:
-		glm::vec3 m_color{ 0 };
-		f32 m_maxDistance{ 0 };
-		f32 m_intensity{ 0 };
+		glm::vec3 m_color{ 1 };
+		f32 m_maxDistance{ 100 };
+		f32 m_intensity{ 1 };
 	};
 }

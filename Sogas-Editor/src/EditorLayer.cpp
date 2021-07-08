@@ -40,11 +40,11 @@ namespace Sogas
 
 		m_pScene = std::make_shared<Scene>("../Assets/cube.json");
 
-		auto light = m_pScene->createEntity("Light");
-		m_pScene->addComponent(light, LightComponent::s_name);
-		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
-		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
+		//auto light = m_pScene->createEntity("Light");
+		//m_pScene->addComponent(light, LightComponent::s_name);
+		//makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
+		//glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		//makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
 		//m_texture = Texture2D::create("../Assets/texture.png");
 

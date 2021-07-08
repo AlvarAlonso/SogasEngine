@@ -8,7 +8,7 @@
                 "Name": "Cube",
                 "TransformComponent": 
                 {
-                    "Position": { "x":0, "y":0, "z":10 }
+                    "Position": { "z":10 }
                 },
                 "RenderComponent":
                 {
@@ -33,7 +33,20 @@
                         "ColorTexture": "../Assets/texture.png"
                     }
                 }
+            },
 
+            {
+                "Name": "Default Light",
+                "TransformComponent":
+                {
+                    "Position": { "y":10 }
+                }, 
+                "LightComponent":
+                {
+                    "Color": {"r": 1},
+                    "MaxDistance": 100.0,
+                    "Intensity": 100.0
+                }
             }
         ]
 
