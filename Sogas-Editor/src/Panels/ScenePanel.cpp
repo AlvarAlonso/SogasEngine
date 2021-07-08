@@ -29,7 +29,7 @@ namespace Sogas
 		for (auto &entity : m_context.get()->getEntities())
 		{
 			//ImGui::Text(entity->getName().c_str());
-			EntityId id = drawEntityNode(*entity);
+			EntityId id = drawEntityNode(entity);
 			
 			if(id != 0)
 				entityToDestroy = id;
@@ -48,23 +48,23 @@ namespace Sogas
 		ImGui::End();
 
 		ImGui::Begin("Properties");
-		if(m_selectedEntity)
+		if(m_selectedEntity.lock() != nullptr)
 		{
 			drawEntityComponents(m_selectedEntity);
 		}
 
 		ImGui::End();
 	}
-	void ScenePanel::setSelectedEntity(Entity entity)
+	void ScenePanel::setSelectedEntity(StrongEntityPtr entity)
 	{
 		m_selectedEntity = entity;
 	}
 
-	EntityId ScenePanel::drawEntityNode(Entity entity)
+	EntityId ScenePanel::drawEntityNode(StrongEntityPtr entity)
 	{
-		ImGuiTreeNodeFlags flags = ((m_selectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		ImGuiTreeNodeFlags flags = ((m_selectedEntity.lock() == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity.getId(), flags, entity.getName().c_str());
+		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity->getId(), flags, entity->getName().c_str());
 		if(ImGui::IsItemClicked())
 		{
 			m_selectedEntity = entity;
@@ -82,7 +82,7 @@ namespace Sogas
 		if(opened)
 		{
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, entity.getName().c_str());
+			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, entity->getName().c_str());
 			if (opened)
 				ImGui::TreePop();
 			ImGui::TreePop();
@@ -90,10 +90,10 @@ namespace Sogas
 
 		if(entityDeleted)
 		{
-			if (m_selectedEntity == entity)
+			if (m_selectedEntity.lock() == entity)
 				m_selectedEntity = {};
 
-			return entity.getId();
+			return entity->getId();
 			//m_context->destroyEntity(entity); // TODO: delete all references
 		}
 
@@ -101,14 +101,14 @@ namespace Sogas
 	}
 
 	template<typename T, typename UIFunction>
-	void ScenePanel::drawComponent(const std::string& name, Entity entity, UIFunction uiFuntion)
+	void ScenePanel::drawComponent(const std::string& name, StrongEntityPtr entity, UIFunction uiFuntion)
 	{
 		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | 
 			ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 		
-		if(entity.has(T::s_name))
+		if(entity->has(T::s_name))
 		{
-			auto component = entity.getComponent<T>(T::s_name);
+			auto component = entity->getComponent<T>(T::s_name);
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -139,8 +139,7 @@ namespace Sogas
 
 			if(removeComponent)
 			{
-				StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
-				pEntity->removeComponent(T::s_name);
+				entity->removeComponent(T::s_name);
 			}
 		}
 	}
@@ -161,7 +160,7 @@ namespace Sogas
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-		float lineHeight = 1.0f; // GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		float lineHeight = 18.0f; // GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
@@ -212,15 +211,16 @@ namespace Sogas
 		ImGui::PopID();
 	}
 	
-	// TODO: it must pass a pointer to the real entity, not a copy (selectedContext is a copy)
-	void ScenePanel::drawEntityComponents(Entity entity)
+	void ScenePanel::drawEntityComponents(std::weak_ptr<Entity> entity)
 	{
+		StrongEntityPtr pEntity = entity.lock();
+
 		char buffer[256];
 		memset(buffer, 0, sizeof(buffer));
-		strncpy_s(buffer, entity.getName().c_str(), sizeof(buffer));
+		strncpy_s(buffer, pEntity->getName().c_str(), sizeof(buffer));
 		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 		{
-			m_context->findEntityById(entity.getId())->setName(std::string(buffer));
+			pEntity->setName(std::string(buffer));
 		}
 
 		ImGui::SameLine();
@@ -233,10 +233,9 @@ namespace Sogas
 		{
 			if(ImGui::MenuItem("Mesh Render"))
 			{
-				if(!m_selectedEntity.has(RenderComponent::s_name))
+				if(!m_selectedEntity.lock()->has(RenderComponent::s_name))
 				{
 					// TODO: An entity should add its own components
-					StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
 					m_context->addComponent(pEntity, RenderComponent::s_name);
 				}
 				else
@@ -249,9 +248,8 @@ namespace Sogas
 
 			if(ImGui::MenuItem("Light"))
 			{
-				if(!m_selectedEntity.has(LightComponent::s_name))
+				if(!m_selectedEntity.lock()->has(LightComponent::s_name))
 				{
-					StrongEntityPtr pEntity = m_context->findEntityById(entity.getId());
 					m_context->addComponent(pEntity, LightComponent::s_name);
 				}
 				else
@@ -267,27 +265,28 @@ namespace Sogas
 
 		ImGui::PopItemWidth();
 
-		drawComponent<TransformComponent>("Transform", entity, [](auto& component)
+		drawComponent<TransformComponent>("Transform", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(TransformComponent::s_name);
 				DrawVec3Control("Translation", component.lock()->getTranslation());
 				glm::vec3 rotation = glm::degrees(component.lock()->getRotation());
 				DrawVec3Control("Rotation", rotation);
+				rotation = glm::radians(rotation);
 				component.lock()->setRotation(rotation);
 				DrawVec3Control("Scale", component.lock()->getScale(), 1.0f);
 			});
 
-		drawComponent<CameraComponent>("Camera", entity, [](auto& component)
+		drawComponent<CameraComponent>("Camera", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(CameraComponent::s_name);
 			});
 
-		drawComponent<LightComponent>("Light", entity, [](auto& component)
+		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(LightComponent::s_name);
 			});
 
-		drawComponent<RenderComponent>("Renderer", entity, [](auto& component)
+		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(RenderComponent::s_name);
 			});

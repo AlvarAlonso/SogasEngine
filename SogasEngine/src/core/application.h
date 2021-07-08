@@ -27,9 +27,6 @@ namespace Sogas
 		Application();
 		~Application() {};
 		
-		// TODO: This is temporal, all guizmo and scene hierarchy related things must be moved to the Editor Layer
-		static Entity* m_guizmoEntity;
-
 		static Application* getInstance() { return s_application; };
 		static ImGuiContext* getImguiContext() { return s_imguiContext; };
 

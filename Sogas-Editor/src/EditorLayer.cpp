@@ -275,7 +275,7 @@ namespace Sogas
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		
 		// Gizmos
-		Entity* selectedEntity = Application::m_guizmoEntity;
+		StrongEntityPtr selectedEntity = m_scenePanel.getSelectedEntity().lock();
 		if(selectedEntity && m_gizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
@@ -288,7 +288,9 @@ namespace Sogas
 			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
 
 			// Entity transform
-			glm::mat4 transform = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
+			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
+
+			glm::mat4 transform = transformComponent.lock()->getTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
@@ -300,8 +302,16 @@ namespace Sogas
 				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
 
 				// apply transformation here
+				glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
+				
+				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
+				transformComponent.lock()->setTranslation(newTranslation);
 
-				ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(transform));
+				glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
+				transformComponent.lock()->setRotation(newRotation);
+
+				glm::vec3 newScale = glm::make_vec3(matrixScale);
+				transformComponent.lock()->setScale(newScale);
 			}
 		}
 
@@ -359,73 +369,5 @@ namespace Sogas
 	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		return false;
-	}
-
-	void EditorLayer::onImGuizmoRender()
-	{
-		if (Application::m_guizmoEntity == nullptr)
-			return;
-
-		glm::mat4 transform = Application::m_guizmoEntity->getComponent<TransformComponent>(TransformComponent::s_name).lock()->getTransform();
-
-		static ImGuizmo::OPERATION sCurrentGuizmoOperation(ImGuizmo::TRANSLATE);
-		static ImGuizmo::MODE sCurrentGuizmoMode(ImGuizmo::WORLD);
-
-		// TODO: Abstract the input
-		if (ImGui::IsKeyPressed(90))
-			sCurrentGuizmoOperation = ImGuizmo::TRANSLATE;
-		if (ImGui::IsKeyPressed(69))
-			sCurrentGuizmoOperation = ImGuizmo::ROTATE;
-		if (ImGui::IsKeyPressed(82))
-			sCurrentGuizmoOperation = ImGuizmo::SCALE;
-		if (ImGui::RadioButton("Translate", sCurrentGuizmoOperation == ImGuizmo::TRANSLATE))
-			sCurrentGuizmoOperation = ImGuizmo::TRANSLATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotate", sCurrentGuizmoOperation == ImGuizmo::ROTATE))
-			sCurrentGuizmoOperation = ImGuizmo::ROTATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", sCurrentGuizmoOperation == ImGuizmo::SCALE))
-			sCurrentGuizmoOperation = ImGuizmo::SCALE;
-
-		f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
-		ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
-		ImGui::InputFloat3("Tr", matrixTranslation, "%.3f");
-		ImGui::InputFloat3("Rt", matrixRotation, "%.3f");
-		ImGui::InputFloat3("Sc", matrixScale, "%.3f");
-		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, glm::value_ptr(transform));
-
-		if(sCurrentGuizmoOperation != ImGuizmo::SCALE)
-		{
-			if (ImGui::RadioButton("Local", sCurrentGuizmoMode == ImGuizmo::LOCAL))
-				sCurrentGuizmoMode = ImGuizmo::LOCAL;
-			ImGui::SameLine();
-			if (ImGui::RadioButton("World", sCurrentGuizmoMode == ImGuizmo::WORLD))
-				sCurrentGuizmoMode = ImGuizmo::WORLD;
-		}
-
-		static bool useSnap(false);
-		if (ImGui::IsKeyPressed(83))
-			useSnap = !useSnap;
-		ImGui::Checkbox("", &useSnap);
-		ImGui::SameLine();
-		static glm::vec3 snap;
-		switch (sCurrentGuizmoOperation)
-		{
-		case ImGuizmo::TRANSLATE:
-			ImGui::InputFloat3("Snap", &snap.x);
-			break;
-		case ImGuizmo::ROTATE:
-			ImGui::InputFloat("Angle Snap", &snap.x);
-			break;
-		case ImGuizmo::SCALE:
-			ImGui::InputFloat("Scale Snap", &snap.x);
-			break;
-		}
-
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		ImGuizmo::Manipulate(glm::value_ptr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView()), 
-			glm::value_ptr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection()), sCurrentGuizmoOperation,
-			sCurrentGuizmoMode, glm::value_ptr(transform), nullptr, useSnap ? &snap.x : nullptr);
 	}
 }

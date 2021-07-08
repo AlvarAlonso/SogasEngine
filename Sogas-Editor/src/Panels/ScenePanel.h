@@ -20,16 +20,16 @@ namespace Sogas {
 		void setContext(const std::shared_ptr<Scene>& scene);
 		void onImGuiRender();
 
-		Entity getSelectedEntity() const { return m_selectedEntity; }
-		void setSelectedEntity(Entity entity);
+		std::weak_ptr<Entity> getSelectedEntity() const { return m_selectedEntity; }
+		void setSelectedEntity(StrongEntityPtr entity);
 	private:
-		EntityId drawEntityNode(Entity entity);
-		void drawEntityComponents(Entity entity);
+		EntityId drawEntityNode(StrongEntityPtr entity);
+		void drawEntityComponents(std::weak_ptr<Entity> entity);
 
 		template<typename T, typename UIFunction>
-		void drawComponent(const std::string& name, Entity entity, UIFunction uiFuntion);
+		void drawComponent(const std::string& name, StrongEntityPtr entity, UIFunction uiFuntion);
 	private:
 		std::shared_ptr<Scene> m_context;
-		Entity m_selectedEntity;
+		std::weak_ptr<Entity> m_selectedEntity;
 	};
 }

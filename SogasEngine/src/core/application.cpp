@@ -16,7 +16,6 @@ namespace Sogas
 {
 	Application* Application::s_application = nullptr;
 	ImGuiContext* Application::s_imguiContext = nullptr;
-	Entity* Application::m_guizmoEntity = nullptr;
 
 	static Camera* s_camera = nullptr;
 
