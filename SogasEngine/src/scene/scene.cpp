@@ -2,6 +2,7 @@
 #include "sgspch.h"
 #include "scene.h"
 
+#include "renderer/shader.h"
 #include "transformComponent.h"
 #include "renderComponent.h"
 
@@ -57,6 +58,8 @@ namespace Sogas
 						if (jsonTransform.contains("Rotation") && !jsonTransform["Rotation"].is_null())
 						{
 							// TODO: rotation
+							auto jsonRotation = jsonTransform["Rotation"];
+							//model = glm::rotate()
 						}
 						if (jsonTransform.contains("Scale") && !jsonTransform["Scale"].is_null())
 						{
@@ -75,14 +78,51 @@ namespace Sogas
 						auto jsonComponent = entity[RenderComponent::s_name];
 						std::shared_ptr<RenderComponent> renderComponent = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
 
+						// -----------------------
+						// Check for the mesh data - it should contain a Mesh, otherwise the render component loses its purpose
+						// TODO: Maybe should include an error handling for when loading a render component without a mesh or add a default one
+						// such as a cube
+						// -----------------------
 						if (jsonComponent.contains("Mesh") && !jsonComponent["Mesh"].is_null())
 						{
 							renderComponent->setMesh(jsonComponent["Mesh"].get<std::string>().c_str());
 						}
-						if (jsonComponent.contains("Material") && !jsonComponent["Material"].is_null())
+						else {
+							SGSWARN("Loading a render component with no valid Mesh!");
+						}
+
+						// -----------------------
+						// Check for the material data
+						// For the material data we create a default material if none is given. The default material should load the basic shader too
+						// -----------------------
+						if (jsonComponent.contains("Material"))
 						{
-							// TODO: add material
-							renderComponent->setMaterial(std::make_shared<Material>());
+							// Create the standard material, this will be inflated with the data parsed if any
+							std::shared_ptr<Material> material = std::make_shared<Material>();
+							
+							if (!jsonComponent["Material"].is_null())
+							{
+								auto jsonMaterial = jsonComponent["Material"];
+							
+								// Check if a valid shader is given
+								if (jsonMaterial.contains("Shader") && 
+									!jsonMaterial["Shader"].is_null() && 
+									jsonMaterial["Shader"].is_string())
+								{
+									material->setMaterialShader(Shader::create(jsonMaterial["Shader"].get<std::string>()));
+								}
+								else {
+									material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+								}
+							}
+							else {
+								material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+							}
+							renderComponent->setMaterial(material);
+						}
+						else
+						{
+							SGSWARN("Render component with no Material defined!");
 						}
 
 					}

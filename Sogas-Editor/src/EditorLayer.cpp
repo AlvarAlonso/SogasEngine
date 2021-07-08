@@ -40,46 +40,13 @@ namespace Sogas
 
 		m_pScene = std::make_shared<Scene>("../Assets/cube.json");
 
-		//auto entitiesVector = m_pScene->getEntities();
-		//makeStrongPtr(entitiesVector[0]->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
+		auto light = m_pScene->createEntity("Light");
+		m_pScene->addComponent(light, LightComponent::s_name);
+		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
+		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
-		//MaterialProperties props{};
-		//props.colorTexture = Texture2D::create("../Assets/texture.png");
-
-		//std::shared_ptr<Material> mat = std::make_shared<Material>();
-		//mat->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
-		//mat->setMaterialProperties(props);
-
-		//auto entity = m_pScene->createEntity("Cube");
-		//m_pScene->addComponent(entity, RenderComponent::s_name);
-		//makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
-		////makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMaterial(mat);
-
-		//glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
-		//makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
-
-		////auto entity2 = m_pScene->createEntity("Plane");
-		////m_pScene->addComponent(entity2, RenderComponent::s_name);
-		////makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/plane.obj");
-
-		////glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(0.0f, -5.0f, 0.0f)) * glm::scale(glm::mat4(1), glm::vec3(10.0f));
-		////makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
-
-		//auto light = m_pScene->createEntity("Light");
-		//m_pScene->addComponent(light, LightComponent::s_name);
-		//makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
-		//glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		//makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
-
-		//auto light2 = m_pScene->createEntity("Light");
-		//m_pScene->addComponent(light2, LightComponent::s_name);
-		//makeStrongPtr(light2->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
-
-		// load texture
-		// TODO: textures should be handled by material
 		m_texture = Texture2D::create("../Assets/texture.png");
-
-		//m_pShader = Shader::create("../SogasEngine/shaders/basic.shader");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -118,11 +85,7 @@ namespace Sogas
 			
 			auto material = renderComponent->getMaterial();
 			auto shader = renderComponent->getShader();
-			if (!shader)
-			{
-				// TODO: Should give a default shader - This should be done when loading the entity, not on every frame
-				shader = Shader::create("../SogasEngine/shaders/basic.shader");
-			}
+			SGSASSERT(shader != nullptr);
 
 			Renderer::submit(shader, renderComponent->getMesh()->m_vertexArray, model, material);
 		}

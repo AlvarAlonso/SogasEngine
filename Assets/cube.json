@@ -16,9 +16,9 @@
 
             {
                 "Name": "Viking Room",
-                "TransformComponent": 
+                "TransformComponent":
                 {
-                    "Position": { "x":10, "y":0, "z":20 },
+                    "Position": { "x":10, "y":0, "z":10 },
                     "Rotation": null,
                     "Scale": { "x":0.5, "y":0.5, "z":0.5 }
                 },

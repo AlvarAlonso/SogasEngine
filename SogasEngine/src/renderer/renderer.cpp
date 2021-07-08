@@ -53,22 +53,22 @@ namespace Sogas
 		//else
 		//	std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
 
-		//for (const auto& light : s_sceneData->lights)
-		//{
-		//	// Set light position
-		//	glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
-		//	std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", (glm::vec3)lightModel[3]);
+		for (const auto& light : s_sceneData->lights)
+		{
+			// Set light position
+			glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", (glm::vec3)lightModel[3]);
 
-		//	// Set light colour
-		//	auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
-		//	std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
+			// Set light colour
+			auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
 
-		//	vertexArray->bind();
-		//	RenderCommand::drawIndexed(vertexArray);
-		//}
+			vertexArray->bind();
+			RenderCommand::drawIndexed(vertexArray);
+		}
 
-		vertexArray->bind();
-		RenderCommand::drawIndexed(vertexArray);
+		//vertexArray->bind();
+		//RenderCommand::drawIndexed(vertexArray);
 
 	}
 }
