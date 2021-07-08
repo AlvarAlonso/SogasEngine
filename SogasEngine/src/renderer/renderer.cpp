@@ -44,14 +44,15 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
 
-		//if (material->getColorTexture())
-		//{
-		//	material->getColorTexture()->bind();
-		//	//std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", (int)material->getColorTexture()->getID());
-		//	std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", (int)material->getColorTexture()->getID());
-		//}
-		//else
-		//	std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+		if (material->getColorTexture())
+		{
+			material->getColorTexture()->bind(0);
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+		}
+		else
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+
+		//std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
 
 		for (const auto& light : s_sceneData->lights)
 		{
@@ -66,9 +67,5 @@ namespace Sogas
 			vertexArray->bind();
 			RenderCommand::drawIndexed(vertexArray);
 		}
-
-		//vertexArray->bind();
-		//RenderCommand::drawIndexed(vertexArray);
-
 	}
 }

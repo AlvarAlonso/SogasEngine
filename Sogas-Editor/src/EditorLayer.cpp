@@ -46,7 +46,7 @@ namespace Sogas
 		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
 
-		m_texture = Texture2D::create("../Assets/texture.png");
+		//m_texture = Texture2D::create("../Assets/texture.png");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -74,7 +74,7 @@ namespace Sogas
 		m_framebuffer->bind();
 
 		Renderer::beginScene(m_pScene, m_pCamera);
-		m_texture->bind();
+		//m_texture->bind();
 
 		std::vector<StrongEntityPtr> renderables = m_pScene->getByComponent(RenderComponent::s_name);
 		

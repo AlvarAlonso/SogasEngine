@@ -28,7 +28,10 @@
                 "RenderComponent":
                 {
                     "Mesh": "../Assets/viking_room.obj",
-                    "Material": null
+                    "Material":
+                    {
+                        "ColorTexture": "../Assets/texture.png"
+                    }
                 }
 
             }

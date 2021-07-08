@@ -5,6 +5,8 @@
 #include "renderer/shader.h"
 #include "transformComponent.h"
 #include "renderComponent.h"
+#include "renderer/resources/texture.h"
+
 #include "glm/gtc/quaternion.hpp"
 #include "nlohmann/json.hpp"
 
@@ -113,14 +115,26 @@ namespace Sogas
 								{
 									material->setMaterialShader(Shader::create(jsonMaterial["Shader"].get<std::string>()));
 								}
-								else {
+								else 
+								{
 									material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
 								}
 
 								// Get the material properties
+								if (jsonMaterial.contains("ColorTexture") && jsonMaterial["ColorTexture"].is_string())
+								{
+									auto& properties = material->getMaterialProperties();
+									properties.colorTexture = Texture2D::create(jsonMaterial["ColorTexture"].get<std::string>());
+									material->setMaterialProperties(properties);
+								}
 							}
 							else {
 								material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+								auto& properties = material->getMaterialProperties();
+								properties.colorTexture = Sogas::Texture2D::create(1, 1);
+								u32 defaultTextureData = 0xffffffff;
+								properties.colorTexture->setData(&defaultTextureData, sizeof(u32));
+								material->setMaterialProperties(properties);
 							}
 							renderComponent->setMaterial(material);
 						}
