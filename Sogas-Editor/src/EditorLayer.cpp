@@ -197,9 +197,18 @@ namespace Sogas
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Close", NULL, false))
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					newScene();
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					openScene();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					saveSceneAs();
+
+				if (ImGui::MenuItem("Exit", NULL, false))
 					Application::getInstance()->close();
 				ImGui::EndMenu();
 			}
@@ -216,36 +225,6 @@ namespace Sogas
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
 		ImGui::End();
 
-		// TODO: Redo scene hierarchy
-		/*
-		// Scene Hierarchy
-		ImGui::Separator;
-		ImGui::Text("Scene Hierarchy");
-		for(auto& entity : m_currentScene.get()->getEntities())
-		{
-			entity->OnImguiRender();
-		}
-		ImGui::Separator;
-		ImGui::End();
-		*/
-		/*
-		* // Example:
-		ImGui::Begin("Components");
-		for (const auto& entity : m_pScene->getEntities())
-		{
-			ImGui::Text("Entity");
-			if (entity->has(TransformComponent::s_name)) 
-			{
-				bool changed = false;
-				auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
-				auto& matrix = transformComponent->getTransform();
-				changed |= ImGui::SliderFloat3("Transform", &((glm::vec3)matrix[3])[0], -1000.0f, 1000.0f);
-				if(changed)
-					transformComponent->setTransform(matrix);
-			}
-		}
-		ImGui::End();
-		*/
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 		ImGui::Begin("Viewport");
@@ -369,5 +348,19 @@ namespace Sogas
 	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		return false;
+	}
+	void Sogas::EditorLayer::newScene()
+	{
+		SGSINFO("New scene function");
+	}
+
+	void Sogas::EditorLayer::openScene()
+	{
+		SGSINFO("Open scene function");
+	}
+
+	void Sogas::EditorLayer::saveSceneAs()
+	{
+		SGSINFO("Save scene function");
 	}
 }

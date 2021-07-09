@@ -39,8 +39,10 @@ namespace Sogas
 	private:
 		bool onKeyPressed(KeyPressedEvent& e);
 		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
-		void onImGuizmoRender();
-
+		
+		void newScene();
+		void openScene();
+		void saveSceneAs();
 	private:
 		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
