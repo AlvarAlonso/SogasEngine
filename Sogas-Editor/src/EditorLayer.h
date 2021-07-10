@@ -44,6 +44,7 @@ namespace Sogas
 		void openScene();
 		void saveSceneAs();
 	private:
+		//std::shared_ptr<Framebuffer> m_framebuffer = nullptr;
 		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
 

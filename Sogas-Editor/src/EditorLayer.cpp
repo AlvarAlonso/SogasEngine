@@ -42,6 +42,7 @@ namespace Sogas
 	void EditorLayer::onAttach()
 	{
 		Sogas::FramebufferSpecs specs;
+		specs.attachments = { FramebufferTextureFormat::R8G8B8A8_FLOAT, FramebufferTextureFormat::R32_INT, FramebufferTextureFormat::D24S8_FLOAT };
 		specs.width = 1280; // Application::getInstance()->getWindow().getWidth();
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
@@ -92,6 +93,8 @@ namespace Sogas
 
 	void EditorLayer::onUpdate(f32 dt)
 	{
+		// TODO: Framebuffer resize function
+
 		if (m_viewportFocused)
 		{
 			m_cameraController->onUpdate(dt);
@@ -136,6 +139,8 @@ namespace Sogas
 				Renderer::drawIndexed(makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name))->getMesh()->m_vertexArray);
 			}
 		}
+
+		// TODO: Mouse picking
 
 		m_framebuffer->unbind();
 	}
