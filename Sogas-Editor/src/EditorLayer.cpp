@@ -156,7 +156,6 @@ namespace Sogas
 		{
 			i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
 			
-			/*
 			if(pixelData == -1)
 			{
 				m_hoveredEntity.lock() = nullptr;
@@ -165,7 +164,6 @@ namespace Sogas
 			{
 				m_hoveredEntity.lock() = m_pScene->findEntityById(pixelData);
 			}
-			*/
 		}
 		
 		m_framebuffer->unbind();

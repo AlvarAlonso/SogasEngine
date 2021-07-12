@@ -89,6 +89,8 @@ namespace Sogas
 				return m_entities[index];
 			}
 		}
+
+		return nullptr;
 	}
 
 	std::vector<StrongEntityPtr> Scene::getByComponent(const char* name)
