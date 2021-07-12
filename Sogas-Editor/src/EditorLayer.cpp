@@ -141,7 +141,33 @@ namespace Sogas
 		}
 
 		// TODO: Mouse picking
+		
+		ImGui::SetCurrentContext(Application::getImguiContext());
 
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_viewportBounds[0].x;
+		my -= m_viewportBounds[0].y;
+		glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+		my = viewportSize.y - my;
+		i32 mouseX = (i32)mx;
+		i32 mouseY = (i32)my;
+	
+		if(mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
+		{
+			i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
+			
+			/*
+			if(pixelData == -1)
+			{
+				m_hoveredEntity.lock() = nullptr;
+			}
+			else
+			{
+				m_hoveredEntity.lock() = m_pScene->findEntityById(pixelData);
+			}
+			*/
+		}
+		
 		m_framebuffer->unbind();
 	}
 
@@ -222,6 +248,11 @@ namespace Sogas
 		}
 
 		m_scenePanel.onImGuiRender();
+
+		std::string name = "none";
+		if (m_hoveredEntity.lock())
+			name = m_hoveredEntity.lock()->getName();
+		ImGui::Text("Hovered Entity: &s", name.c_str());
 
 		// Stats panel
 		ImGui::Begin("Stats");

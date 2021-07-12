@@ -6,6 +6,7 @@
 #include "scene/lightComponent.h"
 
 #include <imgui.h>
+#include <imgui/imgui_internal.h>
 
 namespace Sogas
 {
@@ -43,7 +44,10 @@ namespace Sogas
 		// TODO: Add creation of entities
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+		{
+			SGSINFO("Mouse is down");
 			m_selectedEntity = {};
+		}
 
 		ImGui::End();
 
@@ -156,11 +160,10 @@ namespace Sogas
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
-		//ImGui::PushItemWidth(3 * ImGui::CalcItemWidth());
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
-		float lineHeight = 18.0f; // GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
