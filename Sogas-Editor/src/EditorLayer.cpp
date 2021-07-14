@@ -124,6 +124,9 @@ namespace Sogas
 
 		for (const auto& renderable : renderables)
 		{
+			if (renderable->getComponent<RenderComponent>(RenderComponent::s_name).lock()->getMesh() == nullptr)
+				continue;
+
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
