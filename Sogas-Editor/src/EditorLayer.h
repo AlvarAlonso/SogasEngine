@@ -74,5 +74,6 @@ namespace Sogas
 		ScenePanel m_scenePanel;
 
 		std::weak_ptr<Entity> m_hoveredEntity;
+		i32 m_entityIdHovered;
 	};
 }

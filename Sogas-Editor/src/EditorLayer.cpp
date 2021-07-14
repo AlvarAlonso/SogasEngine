@@ -109,6 +109,8 @@ namespace Sogas
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
 
+		m_framebuffer->clearAttachment(1, -1);
+
 		m_shader->bind();
 		m_texture->bind();
 
@@ -125,6 +127,7 @@ namespace Sogas
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_entityID", (int)renderable->getId());
 
 			for (const auto& light : lights)
 			{
@@ -154,6 +157,7 @@ namespace Sogas
 	
 		if(mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
 		{
+			// TODO: this has a high computational cost, in the future it probably needs a refactor
 			i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
 			
 			if(pixelData == -1)
@@ -162,8 +166,11 @@ namespace Sogas
 			}
 			else
 			{
-				m_hoveredEntity.lock() = m_pScene->findEntityById(pixelData);
+				// TODO: likely to be a bug
+				m_hoveredEntity = m_pScene->findEntityById(pixelData);
 			}
+
+			m_entityIdHovered = pixelData;
 		}
 		
 		m_framebuffer->unbind();
@@ -247,10 +254,14 @@ namespace Sogas
 
 		m_scenePanel.onImGuiRender();
 
+		// Hovered Entity
+		ImGui::Begin("Hovered Info");
 		std::string name = "none";
 		if (m_hoveredEntity.lock())
 			name = m_hoveredEntity.lock()->getName();
-		ImGui::Text("Hovered Entity: &s", name.c_str());
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+		ImGui::Text("ID hovered: %d", m_entityIdHovered);
+		ImGui::End();
 
 		// Stats panel
 		ImGui::Begin("Stats");
@@ -342,6 +353,7 @@ namespace Sogas
 
 		EventDispatcher dispatcher(event);
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onMouseButtonPressed));
 	}
 
 	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
@@ -381,8 +393,20 @@ namespace Sogas
 
 	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
+		if(e.getMouseButton() == SGS_MOUSE_BUTTON_LEFT)
+		{
+
+			// TODO: The m_entities of the scene fails when the hovered entity is set to be selected. The entity selected is the one that fails
+
+			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(SGS_KEY_LEFT_ALT))
+			{
+				m_scenePanel.setSelectedEntity(m_hoveredEntity.lock());
+			}
+		}
+
 		return false;
 	}
+
 	void Sogas::EditorLayer::newScene()
 	{
 		SGSINFO("New scene function");

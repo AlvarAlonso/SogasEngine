@@ -118,6 +118,8 @@ namespace Sogas
 		virtual u32 getSize() const = 0;
 
 		static VertexBuffer* create(f32* vertices, u32 size);
+		static VertexBuffer* create(const void* data, u32 size);
+
 	};
 
 	class SGS IndexBuffer

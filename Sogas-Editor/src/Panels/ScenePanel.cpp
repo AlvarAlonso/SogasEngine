@@ -59,6 +59,7 @@ namespace Sogas
 
 		ImGui::End();
 	}
+
 	void ScenePanel::setSelectedEntity(StrongEntityPtr entity)
 	{
 		m_selectedEntity = entity;

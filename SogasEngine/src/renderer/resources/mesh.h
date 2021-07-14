@@ -3,6 +3,7 @@
 #include "defines.h"
 #include "renderer/VertexArray.h"
 #include <string>
+#include "scene/entity.h"
 
 namespace Sogas 
 {
