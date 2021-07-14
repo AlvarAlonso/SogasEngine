@@ -41,7 +41,14 @@ namespace Sogas
 			m_context->destroyEntity(entityToDestroy);
 		}
 
-		// TODO: Add creation of entities
+		// TODO: If a mesh renderer is added to the empty entity, because mesh is nullptr the program breaks
+		if(ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+				m_context->createEntity("Empty Entity");
+
+			ImGui::EndPopup();
+		}
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 		{
