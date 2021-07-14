@@ -465,15 +465,17 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\renderer\shader.h" />
     <ClInclude Include="src\renderer\resources\texture.h" />
     <ClInclude Include="src\renderer\vertexArray.h" />
-    <ClInclude Include="src\scene\cameraComponent.h" />
+    <ClInclude Include="src\scene\components\cameraComponent.h" />
     <ClInclude Include="src\scene\entity.h" />
-    <ClInclude Include="src\scene\entityComponent.h" />
+    <ClInclude Include="src\scene\components\entityComponent.h" />
     <ClInclude Include="src\scene\entityFactory.h" />
-    <ClInclude Include="src\scene\lightComponent.h" />
+    <ClInclude Include="src\scene\components\lightComponent.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
-    <ClInclude Include="src\scene\renderComponent.h" />
+    <ClInclude Include="src\scene\components\renderComponent.h" />
     <ClInclude Include="src\scene\scene.h" />
-    <ClInclude Include="src\scene\transformComponent.h" />
+    <ClInclude Include="src\scene\components\transformComponent.h" />
+    <ClInclude Include="src\scene\serializer.h" />
+    <ClInclude Include="src\scene\serializerUtils.h" />
     <ClInclude Include="src\scene\types.h" />
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\sogas.h" />
@@ -511,13 +513,14 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="src\renderer\shader.cpp" />
     <ClCompile Include="src\renderer\resources\texture.cpp" />
     <ClCompile Include="src\renderer\vertexArray.cpp" />
-    <ClCompile Include="src\scene\cameraComponent.cpp" />
+    <ClCompile Include="src\scene\components\cameraComponent.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
-    <ClCompile Include="src\scene\lightComponent.cpp" />
-    <ClCompile Include="src\scene\renderComponent.cpp" />
+    <ClCompile Include="src\scene\components\lightComponent.cpp" />
+    <ClCompile Include="src\scene\components\renderComponent.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
-    <ClCompile Include="src\scene\transformComponent.cpp" />
+    <ClCompile Include="src\scene\components\transformComponent.cpp" />
+    <ClCompile Include="src\scene\serializer.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
   </ItemGroup>
   <ItemGroup>

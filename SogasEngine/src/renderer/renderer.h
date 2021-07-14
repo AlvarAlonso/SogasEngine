@@ -5,7 +5,6 @@
 
 #include "scene/types.h"
 
-
 // TODO: add statistics to print in Sogas-Editor
 struct statistics
 {
@@ -31,9 +30,12 @@ namespace Sogas
 		inline static API getAPI() { return s_API; }
 
 		static void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
+		static void render();
 		static void endScene();
-		//static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform);
-		static void submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<Material>& material);
+		static void submit(
+			const std::shared_ptr<Shader>& shader, 
+			const std::shared_ptr<VertexArray>& vertexArray, 
+			const glm::mat4& transform, std::shared_ptr<Material>& material);
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application
@@ -42,10 +44,9 @@ namespace Sogas
 		struct sceneData
 		{
 			glm::mat4 viewprojectionMatrix;
-
-			std::vector<StrongEntityPtr> lights;
 		};
 
+		static std::shared_ptr<Scene> s_pScene;
 		static std::unique_ptr<sceneData> s_sceneData;
 	};
 }

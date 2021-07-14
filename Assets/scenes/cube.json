@@ -1,0 +1,76 @@
+{
+    "Scene": {
+        "Name": "basic",
+        "Entities": [
+            {
+                "Name": "Cube",
+                "TransformComponent": {
+                    "Position": {
+                        "z": 10
+                    }
+                },
+                "RenderComponent": {
+                    "Mesh": "../Assets/cube.obj",
+                    "Material": null
+                }
+            },
+            {
+                "Name": "Viking Room",
+                "TransformComponent": {
+                    "Position": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "Rotation": {
+                        "x": 0,
+                        "y": 0,
+                        "z": 1,
+                        "w": 0
+                    },
+                    "Scale": {
+                        "x": 0.2,
+                        "y": 0.2,
+                        "z": 0.2
+                    }
+                },
+                "RenderComponent": {
+                    "Mesh": "../Assets/viking_room.obj",
+                    "Material": {
+                        "ColorTexture": "../Assets/texture.png"
+                    }
+                }
+            },
+            {
+                "Name": "Default Light",
+                "TransformComponent": {
+                    "Position": {
+                        "y": 10
+                    }
+                },
+                "LightComponent": {
+                    "Color": {
+                        "r": 1
+                    },
+                    "MaxDistance": 100.0,
+                    "Intensity": 100.0
+                }
+            },
+            {
+                "Name": "Default Light",
+                "TransformComponent": {
+                    "Position": {
+                        "y": 5
+                    }
+                },
+                "LightComponent": {
+                    "Color": {
+                        "g": 1
+                    },
+                    "MaxDistance": 100.0,
+                    "Intensity": 100.0
+                }
+            }
+        ]
+    }
+}

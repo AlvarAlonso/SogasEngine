@@ -16,10 +16,12 @@
 #include "scene/entityFactory.h"
 #include "scene/entity.h"
 #include "scene/scene.h"
-#include "scene/transformComponent.h"
-#include "scene/renderComponent.h"
-#include "scene/cameraComponent.h"
-#include "scene/lightComponent.h"
+#include "scene/components/transformComponent.h"
+#include "scene/components/renderComponent.h"
+#include "scene/components/cameraComponent.h"
+#include "scene/components/lightComponent.h"
+
+#include "scene/serializer.h"
 
 namespace Sogas 
 {
@@ -38,15 +40,7 @@ namespace Sogas
 
 		m_pCamera = std::make_shared<Camera>();
 
-		m_pScene = std::make_shared<Scene>("../Assets/cube.json");
-
-		//auto light = m_pScene->createEntity("Light");
-		//m_pScene->addComponent(light, LightComponent::s_name);
-		//makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 1.0f, 1.0f });
-		//glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		//makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
-
-		//m_texture = Texture2D::create("../Assets/texture.png");
+		m_pScene = std::make_shared<Scene>("../Assets/scenes/test.json");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -74,22 +68,7 @@ namespace Sogas
 		m_framebuffer->bind();
 
 		Renderer::beginScene(m_pScene, m_pCamera);
-		//m_texture->bind();
-
-		std::vector<StrongEntityPtr> renderables = m_pScene->getByComponent(RenderComponent::s_name);
-		
-		for (const auto& renderable : renderables)
-		{
-			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
-			glm::mat4& model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
-			
-			auto material = renderComponent->getMaterial();
-			auto shader = renderComponent->getShader();
-			SGSASSERT(shader != nullptr);
-
-			Renderer::submit(shader, renderComponent->getMesh()->m_vertexArray, model, material);
-		}
-
+		Renderer::render();
 		Renderer::endScene();
 
 		m_framebuffer->unbind();
@@ -154,6 +133,21 @@ namespace Sogas
 		{
 			if (ImGui::BeginMenu("Options"))
 			{
+				if (ImGui::MenuItem("Save", NULL, false))
+				{
+					Serializer* serializer = new Serializer(m_pScene);
+					serializer->serialize("../Assets/scenes/test.json");
+					delete serializer;
+
+					//if (m_savePath.empty())
+					//{
+					//	//ImGui::InputText("Name: ", );
+					//}
+					//else
+					//{
+					//	saveScene();
+					//}
+				}
 				if (ImGui::MenuItem("Close", NULL, false))
 					Application::getInstance()->close();
 				ImGui::EndMenu();
@@ -219,5 +213,10 @@ namespace Sogas
 		if (m_viewportFocused) {
 			m_cameraController->onEvent(event);
 		}
+	}
+
+	void EditorLayer::saveScene()
+	{
+
 	}
 }

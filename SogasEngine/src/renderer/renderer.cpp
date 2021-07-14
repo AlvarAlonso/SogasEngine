@@ -8,13 +8,15 @@
 #include "renderer/resources/material.h"
 #include "renderer/resources/texture.h"
 
-#include "scene/cameraComponent.h"
-#include "scene/lightComponent.h"
-#include "scene/transformComponent.h"
+#include "scene/components/cameraComponent.h"
+#include "scene/components/lightComponent.h"
+#include "scene/components/transformComponent.h"
+#include "scene/components/renderComponent.h"
 
 namespace Sogas 
 {
 	std::unique_ptr<Renderer::sceneData>Renderer::s_sceneData = std::make_unique<Renderer::sceneData>();
+	std::shared_ptr<Scene> Renderer::s_pScene;
 
 	Renderer::API Renderer::s_API = Renderer::API::OpenGL;
 	RendererAPI* Renderer::s_RendererAPI = new OpenGLRendererAPI;
@@ -25,11 +27,31 @@ namespace Sogas
 		RenderCommand::clear();
 		RenderCommand::setDepthBuffer(true);
 
+		// TODO Create enum with values to pass to depth and blend functions
+		glDepthFunc(GL_LEQUAL);
+
 		RenderCommand::setBlendFunc(true);
+		RenderCommand::enableBlend(true);
 
+		s_pScene = scene;
 		s_sceneData->viewprojectionMatrix = pCamera->getViewProjection();
+	}
 
-		s_sceneData->lights = scene->getByComponent(LightComponent::s_name);
+	void Renderer::render()
+	{
+		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent(RenderComponent::s_name);
+
+		for (const auto& renderable : renderables)
+		{
+			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
+			glm::mat4& model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+
+			auto material = renderComponent->getMaterial();
+			auto shader = renderComponent->getShader();
+			SGSASSERT(shader != nullptr);
+
+			Renderer::submit(shader, renderComponent->getMesh()->m_vertexArray, model, material);
+		}
 	}
 
 	void Renderer::endScene()
@@ -52,10 +74,14 @@ namespace Sogas
 		else
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
 
-		//std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+		auto lights = s_pScene->getByComponent(LightComponent::s_name);
 
-		for (const auto& light : s_sceneData->lights)
+		for (u32 i = 0; i < lights.size(); i++)
 		{
+			(i == 0) ? RenderCommand::enableBlend(false) : RenderCommand::enableBlend(true);
+
+			auto& light = lights.at(i);
+
 			// Set light position
 			glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", (glm::vec3)lightModel[3]);

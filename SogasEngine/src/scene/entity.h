@@ -3,7 +3,7 @@
 #include "defines.h"
 
 #include "types.h"
-#include "entityComponent.h"
+#include "components/entityComponent.h"
 #include <string>
 #include <memory>
 #include <map>
@@ -16,6 +16,8 @@ namespace Sogas
 	public:
 
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
+
+		std::string m_name;
 
 	private:
 		EntityId m_id;
@@ -88,6 +90,7 @@ namespace Sogas
 		}
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
+		const std::vector<StrongEntityComponentPtr>& getComponentsVector();
 		void addComponent(StrongEntityComponentPtr pComponent);
 
 	};

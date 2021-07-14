@@ -38,6 +38,11 @@ namespace Sogas
 			s_rendererAPI->setBlendFunc(blend);
 		}
 
+		inline static void enableBlend(bool blend)
+		{
+			s_rendererAPI->enableBlend(blend);
+		}
+
 	private:
 		static RendererAPI* s_rendererAPI;
 	};

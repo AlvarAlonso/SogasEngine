@@ -3,9 +3,9 @@
 #include "scene.h"
 
 #include "renderer/shader.h"
-#include "transformComponent.h"
-#include "renderComponent.h"
-#include "lightComponent.h"
+#include "components/transformComponent.h"
+#include "components/renderComponent.h"
+#include "components/lightComponent.h"
 #include "renderer/resources/texture.h"
 
 #include "glm/gtc/quaternion.hpp"
@@ -27,8 +27,6 @@ namespace Sogas
 		std::ifstream file(filename);
 		json j;
 		file >> j;
-		
-		std::cout << j;
 
 		m_pEntityFactory.reset();
 		m_pEntityFactory = std::make_unique<EntityFactory>();

@@ -40,12 +40,13 @@
     <ClCompile Include="src\scene\entity.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
-    <ClCompile Include="src\scene\transformComponent.cpp" />
-    <ClCompile Include="src\scene\renderComponent.cpp" />
+    <ClCompile Include="src\scene\components\transformComponent.cpp" />
+    <ClCompile Include="src\scene\components\renderComponent.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
-    <ClCompile Include="src\scene\cameraComponent.cpp" />
-    <ClCompile Include="src\scene\lightComponent.cpp" />
+    <ClCompile Include="src\scene\components\cameraComponent.cpp" />
+    <ClCompile Include="src\scene\components\lightComponent.cpp" />
     <ClCompile Include="src\renderer\renderCommand.cpp" />
+    <ClCompile Include="src\scene\serializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -384,13 +385,13 @@
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\scene\types.h" />
-    <ClInclude Include="src\scene\entityComponent.h" />
+    <ClInclude Include="src\scene\components\entityComponent.h" />
     <ClInclude Include="src\scene\entityFactory.h" />
-    <ClInclude Include="src\scene\transformComponent.h" />
-    <ClInclude Include="src\scene\renderComponent.h" />
+    <ClInclude Include="src\scene\components\transformComponent.h" />
+    <ClInclude Include="src\scene\components\renderComponent.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
-    <ClInclude Include="src\scene\cameraComponent.h" />
-    <ClInclude Include="src\scene\lightComponent.h" />
+    <ClInclude Include="src\scene\components\cameraComponent.h" />
+    <ClInclude Include="src\scene\components\lightComponent.h" />
     <ClInclude Include="src\renderer\renderCommand.h" />
     <ClInclude Include="src\json\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="src\json\nlohmann\byte_container_with_subtype.hpp" />
@@ -431,6 +432,8 @@
     <ClInclude Include="src\json\nlohmann\detail\value_t.hpp" />
     <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
+    <ClInclude Include="src\scene\serializer.h" />
+    <ClInclude Include="src\scene\serializerUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

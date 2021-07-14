@@ -45,6 +45,8 @@ namespace Sogas
 
     void Mesh::load(const std::string& filename)
     {
+        m_filename = filename;
+
         std::vector<Vertex> vertices;
         std::vector<u32> indices;
 

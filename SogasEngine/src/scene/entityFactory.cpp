@@ -5,11 +5,10 @@
 #include "entity.h"
 #include "entityFactory.h"
 
-#include "renderComponent.h"
-#include "transformComponent.h"
-#include "cameraComponent.h"
-#include "lightComponent.h"
-//#include "../external/json/include/nlohmann/json.hpp"
+#include "components/renderComponent.h"
+#include "components/transformComponent.h"
+#include "components/cameraComponent.h"
+#include "components/lightComponent.h"
 
 namespace Sogas
 {

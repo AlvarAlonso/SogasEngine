@@ -39,4 +39,9 @@ namespace Sogas
 		if (blend)
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	}
+
+	void OpenGLRendererAPI::enableBlend(bool blend)
+	{
+		blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+	}
 }

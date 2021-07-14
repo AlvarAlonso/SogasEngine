@@ -1,7 +1,7 @@
 #include "sgspch.h"
 
 #include "entity.h"
-#include "entityComponent.h"
+#include "components/entityComponent.h"
 
 #include "core/logger.h"
 #include "core/assertions.h"
@@ -44,6 +44,18 @@ namespace Sogas
 		{
 			it->second->update(dt);
 		}
+	}
+
+	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()
+	{
+		std::vector<StrongEntityComponentPtr> componentsVector{};
+		EntityComponentsMap::iterator it;
+		for (it = m_components.begin(); it != m_components.end(); it++)
+		{
+			componentsVector.push_back(it->second);
+		}
+
+		return componentsVector;
 	}
 
 	void Entity::addComponent(StrongEntityComponentPtr pComponent)

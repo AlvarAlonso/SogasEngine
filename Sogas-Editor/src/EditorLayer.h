@@ -32,12 +32,12 @@ namespace Sogas
 		virtual void onEvent(Event& event) override;
 
 	private:
+		void saveScene();
+
+	private:
 		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
 		std::shared_ptr<Camera> m_pCamera;
-		std::shared_ptr<Texture2D> m_texture;
-
-		std::shared_ptr<Shader> m_pShader;
 
 		// ECS
 		std::shared_ptr<Scene> m_pScene;
@@ -46,6 +46,7 @@ namespace Sogas
 
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
+		std::string m_savePath;
 
 		glm::vec2 mouse_pos{ 0, 0 };
 	};
