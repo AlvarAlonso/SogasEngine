@@ -44,7 +44,7 @@ namespace Sogas
 		for (const auto& renderable : renderables)
 		{
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
-			glm::mat4& model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 
 			auto material = renderComponent->getMaterial();
 			auto shader = renderComponent->getShader();

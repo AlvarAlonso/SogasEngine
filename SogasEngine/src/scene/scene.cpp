@@ -61,7 +61,9 @@ namespace Sogas
 							f32 y = jsonPosition.contains("y") ? jsonPosition["y"].get<f32>() : 0.0f;
 							f32 z = jsonPosition.contains("z") ? jsonPosition["z"].get<f32>() : 0.0f;
 
-							model = glm::translate(model, glm::vec3(x, y, z));
+							glm::vec3 position = glm::vec3(x, y, z);
+							transformComponent->setTranslation(position);
+							//model = glm::translate(model, glm::vec3(x, y, z));
 						}
 						if (jsonTransform.contains("Rotation") && !jsonTransform["Rotation"].is_null())
 						{
@@ -72,8 +74,10 @@ namespace Sogas
 							f32 z = jsonRotation.contains("z") ? jsonRotation["z"].get<f32>() : 0.0f;
 							f32 w = jsonRotation.contains("w") ? jsonRotation["w"].get<f32>() : 0.0f;
 
-							glm::mat4 rotationMatrix = glm::mat4_cast(glm::quat(x, y, z, w));
-							model = model * rotationMatrix;
+							glm::vec3 rotation = glm::eulerAngles(glm::quat(x, y, z, w));
+							transformComponent->setRotation(rotation);
+							//glm::mat4 rotationMatrix = glm::mat4_cast(glm::quat(x, y, z, w));
+							//model = model * rotationMatrix;
 						}
 						if (jsonTransform.contains("Scale") && !jsonTransform["Scale"].is_null())
 						{
@@ -83,10 +87,12 @@ namespace Sogas
 							f32 y = jsonScale.contains("y") ? jsonScale["y"].get<f32>() : 0.0f;
 							f32 z = jsonScale.contains("z") ? jsonScale["z"].get<f32>() : 0.0f;
 
-							model = glm::scale(model, glm::vec3(x, y, z));
+							glm::vec3 scale = glm::vec3(x, y, z);
+							transformComponent->setScale(scale);
+							//model = glm::scale(model, glm::vec3(x, y, z));
 						}
 
-						transformComponent->setTransform(model);
+						//transformComponent->setTransform(model);
 					}
 
 					// -----------------------

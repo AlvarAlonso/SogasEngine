@@ -2,8 +2,8 @@
 
 #include "defines.h"
 
-#include <../external/glm/glm/vec3.hpp>
-#include <../external/glm/glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include "types.h"
 #include "components/entityComponent.h"
 #include <string>
@@ -17,8 +17,6 @@ namespace Sogas
 	class SGS Entity {
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
-
-		std::string m_name;
 
 	private:
 		std::string m_name;

@@ -10,7 +10,9 @@ namespace Sogas
 
 	bool TransformComponent::init()
 	{
-		m_transform = glm::mat4(1);
+		m_translation = glm::vec3();
+		m_rotation = glm::vec3();
+		m_scale = glm::vec3(1);
 		return true;
 	}
 

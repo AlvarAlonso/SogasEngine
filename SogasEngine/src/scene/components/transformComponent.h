@@ -25,7 +25,7 @@ namespace Sogas
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation) : m_translation(translation){}
-		TransformComponent(void) : m_transform(glm::mat4(1)) {};
+		//TransformComponent(void) : m_transform(glm::mat4(1)) {};
 
 		virtual bool init() override;
 

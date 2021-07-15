@@ -52,7 +52,7 @@ namespace Sogas
 
 		m_pCamera = std::make_shared<Camera>();
 
-		m_pScene = std::make_shared<Scene>("../Assets/scenes/basic.json");
+		m_pScene = std::make_shared<Scene>("../Assets/scenes/test.json");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -157,7 +157,6 @@ namespace Sogas
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					saveSceneAs();
 
-				if (ImGui::MenuItem("Exit", NULL, false))
 				if (ImGui::MenuItem("Save", NULL, false))
 				{
 					Serializer* serializer = new Serializer(m_pScene);
@@ -173,7 +172,8 @@ namespace Sogas
 					//	saveScene();
 					//}
 				}
-				if (ImGui::MenuItem("Close", NULL, false))
+
+				if (ImGui::MenuItem("Exit", NULL, false))
 					Application::getInstance()->close();
 				ImGui::EndMenu();
 			}
@@ -237,8 +237,8 @@ namespace Sogas
 			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
 		
 			// Editor camera
-			const glm::mat4& cameraProjection = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection();
-			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
+			const glm::mat4& cameraProjection = m_pCamera->getProjection();
+			glm::mat4 cameraView = m_pCamera->getView();
 
 			// Entity transform
 			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);

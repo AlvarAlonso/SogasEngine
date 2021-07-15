@@ -1,9 +1,9 @@
 #include "ScenePanel.h"
 
-#include "scene/renderComponent.h"
-#include "scene/cameraComponent.h"
-#include "scene/transformComponent.h"
-#include "scene/lightComponent.h"
+#include "scene/components/renderComponent.h"
+#include "scene/components/cameraComponent.h"
+#include "scene/components/transformComponent.h"
+#include "scene/components/lightComponent.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>

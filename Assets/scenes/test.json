@@ -3,14 +3,13 @@
         "Entities": [
             {
                 "LightComponent": null,
-                "Name": "Unknown name",
+                "Name": "entity",
                 "RenderComponent": {
                     "Material": null,
                     "Mesh": "../Assets/cube.obj"
                 },
                 "TransformComponent": {
                     "Rotation": {
-                        "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
@@ -23,7 +22,7 @@
                     "Translation": {
                         "x": 0.0,
                         "y": 0.0,
-                        "z": 0.0
+                        "z": 10.0
                     }
                 }
             },
@@ -37,11 +36,10 @@
                     "Intensity": 1.0,
                     "MaxDistance": 100.0
                 },
-                "Name": "Unknown name",
+                "Name": "entity",
                 "RenderComponent": null,
                 "TransformComponent": {
                     "Rotation": {
-                        "w": 1.0,
                         "x": 0.0,
                         "y": 0.0,
                         "z": 0.0
@@ -53,7 +51,7 @@
                     },
                     "Translation": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": 10.0,
                         "z": 0.0
                     }
                 }

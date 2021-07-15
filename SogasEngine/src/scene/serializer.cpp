@@ -39,18 +39,17 @@ namespace Sogas
 	void from_json(const json& j, std::shared_ptr<TransformComponent>& transformComponent)
 	{
 
-		glm::vec3 translation, scale;
+		glm::vec3 translation, scale, rot;
 		glm::quat rotation;
 		from_json(j.at("Translation"), translation);
 		from_json(j.at("Rotation"), rotation);
 		from_json(j.at("Scale"), scale);
 		
-		glm::mat4 model;
-		model = glm::translate(glm::mat4(), translation);
-		model = model * glm::mat4_cast(rotation);
-		model = glm::scale(model, scale);
+		rot = glm::eulerAngles(rotation);
 
-		transformComponent->setTransform(model);
+		transformComponent->setTranslation(translation);
+		transformComponent->setRotation(rot);
+		transformComponent->setScale(scale);
 	}
 
 	//-----------------------
@@ -125,7 +124,7 @@ namespace Sogas
 
 		j = json
 		{
-			{"Name", !entity->m_name.empty() ? entity->m_name : "Unknown name" },
+			{"Name", !entity->getName().empty() ? entity->getName() : "Unknown name" },
 			{TransformComponent::s_name, transform},
 			{RenderComponent::s_name, render},
 			{LightComponent::s_name, light}
