@@ -2,9 +2,20 @@
 
 #include "core/input.h"
 #include "core/keyCodes.h"
+#include "core/mouseButtonCodes.h"
 #include "core/logger.h"
 #include "core/cameraController.h"
 #include "platform/openGL/openGLShader.h"
+
+#include <ImGuizmo.h>
+#include <../external/glm/glm/gtc/type_ptr.hpp>
+
+/*
+#include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "scene/entity.h"
+#include "scene/prefab.h"
+*/
+
 #include "glm/glm/gtc/matrix_transform.hpp"
 
 #include "renderer/renderer.h"
@@ -33,6 +44,7 @@ namespace Sogas
 	void EditorLayer::onAttach()
 	{
 		Sogas::FramebufferSpecs specs;
+		specs.attachments = { FramebufferTextureFormat::R8G8B8A8_FLOAT, FramebufferTextureFormat::R32_INT, FramebufferTextureFormat::D24S8_FLOAT };
 		specs.width = 1280; // Application::getInstance()->getWindow().getWidth();
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
@@ -47,6 +59,8 @@ namespace Sogas
 		m_pCamera->setPosition(glm::vec3{ 0.0f, 0.0f, -5.0f });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
+	
+		m_scenePanel.setContext(m_pScene);
 	}
 
 	void EditorLayer::onDetach()
@@ -56,6 +70,7 @@ namespace Sogas
 
 	void EditorLayer::onUpdate(f32 dt)
 	{
+		// TODO: Framebuffer resize function
 
 		if (m_viewportFocused)
 		{
@@ -131,8 +146,18 @@ namespace Sogas
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					newScene();
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					openScene();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					saveSceneAs();
+
+				if (ImGui::MenuItem("Exit", NULL, false))
 				if (ImGui::MenuItem("Save", NULL, false))
 				{
 					Serializer* serializer = new Serializer(m_pScene);
@@ -156,6 +181,17 @@ namespace Sogas
 			ImGui::EndMenuBar();
 		}
 
+		m_scenePanel.onImGuiRender();
+
+		// Hovered Entity
+		ImGui::Begin("Hovered Info");
+		std::string name = "none";
+		if (m_hoveredEntity.lock())
+			name = m_hoveredEntity.lock()->getName();
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+		ImGui::Text("ID hovered: %d", m_entityIdHovered);
+		ImGui::End();
+
 		// Stats panel
 		ImGui::Begin("Stats");
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
@@ -163,33 +199,22 @@ namespace Sogas
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
 		ImGui::End();
 
-		ImGui::Begin("Components");
-		for (const auto& entity : m_pScene->getEntities())
-		{
-			if(ImGui::TreeNode((void*)&entity, "Entity"))
-			{
-				ImGui::Text("Entity");
-				if (entity->has(TransformComponent::s_name)) 
-				{
-					bool changed = false;
-					auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
-					auto& matrix = transformComponent->getTransform();
-					if (ImGui::TreeNode((void*)&matrix[0][0], "Model"))
-					{
-						ImGui::DragFloat3("Transform", &((glm::vec3)matrix[3])[0]);
-					}
-				}
-			}
-		}
-		ImGui::End();
-
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 		ImGui::Begin("Viewport");
 
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 		Application::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
+
+		//ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		//m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		// TODO: Should also resize the aspect ratio of the camera
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -201,6 +226,47 @@ namespace Sogas
 		}
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		
+		// Gizmos
+		StrongEntityPtr selectedEntity = m_scenePanel.getSelectedEntity().lock();
+		if(selectedEntity && m_gizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
+		
+			// Editor camera
+			const glm::mat4& cameraProjection = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection();
+			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
+
+			// Entity transform
+			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
+
+			glm::mat4 transform = transformComponent.lock()->getTransform();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, nullptr);
+
+			if(ImGuizmo::IsUsing())
+			{
+				f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
+
+				// apply transformation here
+				glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
+				
+				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
+				transformComponent.lock()->setTranslation(newTranslation);
+
+				glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
+				transformComponent.lock()->setRotation(newRotation);
+
+				glm::vec3 newScale = glm::make_vec3(matrixScale);
+				transformComponent.lock()->setScale(newScale);
+			}
+		}
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -211,12 +277,77 @@ namespace Sogas
 	void EditorLayer::onEvent(Event& event)
 	{
 		if (m_viewportFocused) {
-			m_cameraController->onEvent(event);
+			m_cameraController.get()->onEvent(event);
+		}
+
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onMouseButtonPressed));
+	}
+
+	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.getRepeatCount() > 0)
+			return false;
+
+		switch(e.getKeyCode())
+		{
+			// Gizmos
+			case SGS_KEY_Q:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = -1;
+				break;
+			}
+			case SGS_KEY_W:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+			case SGS_KEY_E:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
+			case SGS_KEY_R:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
+			}
 		}
 	}
 
-	void EditorLayer::saveScene()
+	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
+		if(e.getMouseButton() == SGS_MOUSE_BUTTON_LEFT)
+		{
 
+			// TODO: The m_entities of the scene fails when the hovered entity is set to be selected. The entity selected is the one that fails
+
+			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(SGS_KEY_LEFT_ALT))
+			{
+				m_scenePanel.setSelectedEntity(m_hoveredEntity.lock());
+			}
+		}
+
+		return false;
+	}
+
+	void Sogas::EditorLayer::newScene()
+	{
+		SGSINFO("New scene function");
+	}
+
+	void Sogas::EditorLayer::openScene()
+	{
+		SGSINFO("Open scene function");
+	}
+
+	void Sogas::EditorLayer::saveSceneAs()
+	{
+		SGSINFO("Save scene function");
 	}
 }

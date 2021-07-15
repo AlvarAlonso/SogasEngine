@@ -5,6 +5,7 @@
 #include "core/layer.h"
 
 #include "glm/glm.hpp"
+#include "Panels/ScenePanel.h"
 
 #include "scene/types.h"
 
@@ -30,7 +31,13 @@ namespace Sogas
 		virtual void onUpdate(f32 dt) override;
 		virtual void onImguiRender() override;
 		virtual void onEvent(Event& event) override;
-
+	private:
+		bool onKeyPressed(KeyPressedEvent& e);
+		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
+		
+		void newScene();
+		void openScene();
+		void saveSceneAs();
 	private:
 		void saveScene();
 
@@ -39,15 +46,27 @@ namespace Sogas
 		std::unique_ptr<CameraController> m_cameraController;
 		std::shared_ptr<Camera> m_pCamera;
 
+		std::unique_ptr<Scene> m_currentScene;
+
 		// ECS
 		std::shared_ptr<Scene> m_pScene;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
 
+		glm::vec2 m_viewportBounds[2];
+
 		bool m_viewportFocused = false;
 		bool m_viewportHovered = false;
 		std::string m_savePath;
 
+		i32 m_gizmoType = -1;
+
 		glm::vec2 mouse_pos{ 0, 0 };
+
+		// Panels
+		ScenePanel m_scenePanel;
+
+		std::weak_ptr<Entity> m_hoveredEntity;
+		i32 m_entityIdHovered;
 	};
 }

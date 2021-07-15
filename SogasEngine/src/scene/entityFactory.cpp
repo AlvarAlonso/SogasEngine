@@ -28,6 +28,9 @@ namespace Sogas
 	StrongEntityPtr EntityFactory::createEntity(const char* entityResource)
 	{
 		// No xml or json at the moment, create default entity
+		
+		// TODO: generate the ID with some other function
+		m_lastEntityId++;
 
 		StrongEntityPtr pEntity(new Entity(m_lastEntityId));
 		if (!pEntity->init())

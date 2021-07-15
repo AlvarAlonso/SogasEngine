@@ -119,6 +119,7 @@ namespace Sogas
 		// TODO: Solve the char to i8 issue
 		const char* src = source.c_str();
 		glShaderSource(id, 1, &src, nullptr);
+
 		glCompileShader(id);
 
 		i32 isCompiled;

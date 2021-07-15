@@ -14,6 +14,8 @@ namespace Sogas
 		u32 m_size;
 	public:
 		OpenGLVertexBuffer(f32* data, u32 size);
+		OpenGLVertexBuffer(const void* data, u32 size);
+
 		virtual ~OpenGLVertexBuffer();
 
 		virtual void bind() const override;

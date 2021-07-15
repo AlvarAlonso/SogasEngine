@@ -104,6 +104,7 @@ namespace Sogas
                 if (uniqueVertices.count(vertex) == 0)
                 {
                     uniqueVertices[vertex] = static_cast<u32>(vertices.size());
+                    //vertex.entityId = entityId;
                     vertices.push_back(vertex);
                 }
 
@@ -111,6 +112,7 @@ namespace Sogas
             }
         }
 
+        /*
         std::vector<f32> aux;
         for (auto& vert : vertices)
         {
@@ -126,8 +128,17 @@ namespace Sogas
             aux.push_back(vert.uv.x);
             aux.push_back(vert.uv.y);
         }
+        */
 
-        m_vertexBuffer.reset(VertexBuffer::create(aux.data(), (u32)aux.size() * sizeof(f32)));
+        //m_vertexBuffer.reset(VertexBuffer::create(aux.data(), (u32)aux.size() * sizeof(f32)));
+        size_t arraySize = vertices.size();
+        size_t vertexSize = sizeof(Vertex);
+
+        size_t size = arraySize * vertexSize;
+        u32 sizeU = (u32)size;
+
+        //u32 size = vertices.size() * sizeof(Vertex);
+        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
         VertexBufferLayout layout = {
             {ShaderDataType::Float3, "a_position"},
             {ShaderDataType::Float3, "a_normal"},
