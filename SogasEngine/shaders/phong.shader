@@ -40,11 +40,27 @@ layout(location = 0) out vec4 outColor;
 
 uniform sampler2D u_texture;
 
-void main() 
+uniform vec3 u_lightPosition;
+uniform vec3 u_lightColor;
+
+void main()
 {
+	float maxDistance = 75;
+
+	vec3 L = u_lightPosition - v_worldPosition;
+	float lightDistance = length(L);
+	L = normalize(L);
+
+	float attenuation = maxDistance - lightDistance;
+	attenuation /= maxDistance;
+	attenuation = max(attenuation, 0.0);
+	attenuation = attenuation * attenuation;
+
 	vec3 N = normalize(v_normal);
+	float NdotL = clamp(dot(N, L), 0.0, 1.0);
 	vec2 uv = v_uv;
-	vec3 color = v_color;
+	vec3 color = v_color * u_lightColor;
 	color *= texture(u_texture, uv).xyz;
-	outColor = vec4(color, 1);
+	outColor = NdotL * vec4(color, 1) * attenuation;
+	//outColor = vec4(1, 0, 0, 1);
 };

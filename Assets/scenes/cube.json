@@ -6,7 +6,7 @@
                 "Name": "Cube",
                 "TransformComponent": {
                     "Position": {
-                        "z": 10
+                        "y": 5
                     }
                 },
                 "RenderComponent": {

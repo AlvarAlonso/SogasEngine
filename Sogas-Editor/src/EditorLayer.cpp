@@ -40,7 +40,7 @@ namespace Sogas
 
 		m_pCamera = std::make_shared<Camera>();
 
-		m_pScene = std::make_shared<Scene>("../Assets/scenes/test.json");
+		m_pScene = std::make_shared<Scene>("../Assets/scenes/basic.json");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));

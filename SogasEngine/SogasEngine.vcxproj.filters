@@ -1272,5 +1272,6 @@
     <None Include="external\glm\glm\gtx\vector_query.inl" />
     <None Include="external\glm\glm\gtx\wrap.inl" />
     <None Include="shaders\basic.shader" />
+    <None Include="shaders\phong.shader" />
   </ItemGroup>
 </Project>
