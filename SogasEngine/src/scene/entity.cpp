@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "core/application.h"
 
-#include "../external/imgui/imgui.h"
+#include "imgui.h"
 #include <ImGuizmo.h>
 
 #include <glm/gtc/type_ptr.hpp>
