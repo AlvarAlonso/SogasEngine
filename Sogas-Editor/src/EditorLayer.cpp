@@ -185,24 +185,11 @@ namespace Sogas
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 					openScene();
 
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					saveScene();
+
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					saveSceneAs();
-
-				if (ImGui::MenuItem("Save", NULL, false))
-				{
-					Serializer* serializer = new Serializer(m_pScene);
-					serializer->serialize("../Assets/scenes/test.json");
-					delete serializer;
-
-					//if (m_savePath.empty())
-					//{
-					//	//ImGui::InputText("Name: ", );
-					//}
-					//else
-					//{
-					//	saveScene();
-					//}
-				}
 
 				if (ImGui::MenuItem("Exit", NULL, false))
 					Application::getInstance()->close();
@@ -291,8 +278,9 @@ namespace Sogas
 				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
 				transformComponent.lock()->setTranslation(newTranslation);
 
-				glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
-				transformComponent.lock()->setRotation(newRotation);
+				glm::vec3 rot = glm::eulerAngles(glm::quat_cast(transform));
+				//glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
+				transformComponent.lock()->setRotation(rot);
 
 				glm::vec3 newScale = glm::make_vec3(matrixScale);
 				transformComponent.lock()->setScale(newScale);
@@ -375,6 +363,26 @@ namespace Sogas
 	void Sogas::EditorLayer::openScene()
 	{
 		SGSINFO("Open scene function");
+	}
+
+	/*
+	*	Function called when saving an scene. If scene has been previously saved it automatically
+	*	saves it to the same path and name. Call the saveSceneAs() function otherwise.
+	*	@param void
+	*	@return void
+	*/
+	void EditorLayer::saveScene()
+	{
+		if (m_savePath.empty())
+		{
+			saveSceneAs();
+		}
+		else
+		{
+			Serializer* serializer = new Serializer(m_pScene);
+			serializer->serialize("../Assets/scenes/test.json");
+			delete serializer;
+		}
 	}
 
 	void Sogas::EditorLayer::saveSceneAs()

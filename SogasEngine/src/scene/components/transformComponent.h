@@ -39,6 +39,13 @@ namespace Sogas
 				* glm::scale(glm::mat4(1.0f), m_scale);
 		}
 
+		void setTransform(const glm::mat4& transform)
+		{
+			m_translation = (glm::vec3)transform[0][3];
+			//m_rotation = 
+			m_scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
+		}
+
 		glm::vec3& getTranslation() { return m_translation; }
 		glm::vec3& getRotation() { return m_rotation; }
 		glm::vec3& getScale() { return m_scale; }

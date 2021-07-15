@@ -37,9 +37,8 @@ namespace Sogas
 		
 		void newScene();
 		void openScene();
-		void saveSceneAs();
-	private:
 		void saveScene();
+		void saveSceneAs();
 
 	private:
 		Framebuffer* m_framebuffer = nullptr;
