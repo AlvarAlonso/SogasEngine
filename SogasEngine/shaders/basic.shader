@@ -5,7 +5,6 @@ layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec3 a_normal;
 layout(location = 2) in vec3 a_color;
 layout(location = 3) in vec2 a_uv;
-//layout(location = 4) in int a_entityID;
 
 uniform mat4 u_viewProjectionMatrix;
 uniform float u_offset;
@@ -54,4 +53,5 @@ void main()
 	vec3 color = v_color;
 	color *= texture(u_texture, uv).xyz;
 	outColor = vec4(color, 1);
+	outColor2 = v_entityID;
 };

@@ -17,6 +17,7 @@ namespace Sogas
 	class Scene;
 	class Camera;
 	class Material;
+	class RenderComponent;
 
 	class SGS Renderer
 	{
@@ -32,10 +33,7 @@ namespace Sogas
 		static void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
 		static void render();
 		static void endScene();
-		static void submit(
-			const std::shared_ptr<Shader>& shader, 
-			const std::shared_ptr<VertexArray>& vertexArray, 
-			const glm::mat4& transform, std::shared_ptr<Material>& material);
+		static void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application

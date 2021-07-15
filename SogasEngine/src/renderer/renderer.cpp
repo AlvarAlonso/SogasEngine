@@ -46,11 +46,7 @@ namespace Sogas
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 
-			auto material = renderComponent->getMaterial();
-			auto shader = renderComponent->getShader();
-			SGSASSERT(shader != nullptr);
-
-			Renderer::submit(shader, renderComponent->getMesh()->m_vertexArray, model, material);
+			Renderer::submit(renderComponent, model);
 		}
 	}
 
@@ -59,12 +55,14 @@ namespace Sogas
 
 	}
 
-	// TODO: dataScene should be to pass all scene info
-	void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<Material>& material)
+	void Renderer::submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform)
 	{
+		auto& shader = renderComponent->getShader();
+		auto& material = renderComponent->getMaterial();
 		shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
 
 		if (material->getColorTexture())
 		{
@@ -72,7 +70,7 @@ namespace Sogas
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
 		}
 		else
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);	// TODO: use default texture ??
 
 		auto lights = s_pScene->getByComponent(LightComponent::s_name);
 
@@ -83,15 +81,15 @@ namespace Sogas
 			auto& light = lights.at(i);
 
 			// Set light position
-			glm::mat4 lightModel = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", (glm::vec3)lightModel[3]);
+			glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTranslation();
+			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", lightPosition);
 
 			// Set light colour
 			auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
 
-			vertexArray->bind();
-			RenderCommand::drawIndexed(vertexArray);
+			renderComponent->getMesh()->m_vertexArray->bind();
+			RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
 		}
 	}
 }
