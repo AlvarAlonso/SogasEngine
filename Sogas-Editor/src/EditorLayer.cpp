@@ -2,9 +2,20 @@
 
 #include "core/input.h"
 #include "core/keyCodes.h"
+#include "core/mouseButtonCodes.h"
 #include "core/logger.h"
 #include "core/cameraController.h"
 #include "platform/openGL/openGLShader.h"
+
+#include <ImGuizmo.h>
+#include <../external/glm/glm/gtc/type_ptr.hpp>
+
+/*
+#include "../external/glm/glm/gtc/matrix_transform.hpp"
+#include "scene/entity.h"
+#include "scene/prefab.h"
+*/
+
 #include "glm/glm/gtc/matrix_transform.hpp"
 
 #include "renderer/renderer.h"
@@ -31,6 +42,7 @@ namespace Sogas
 	void EditorLayer::onAttach()
 	{
 		Sogas::FramebufferSpecs specs;
+		specs.attachments = { FramebufferTextureFormat::R8G8B8A8_FLOAT, FramebufferTextureFormat::R32_INT, FramebufferTextureFormat::D24S8_FLOAT };
 		specs.width = 1280; // Application::getInstance()->getWindow().getWidth();
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
@@ -42,21 +54,21 @@ namespace Sogas
 		m_pScene->addComponent(entity, RenderComponent::s_name);
 		makeStrongPtr(entity->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		glm::mat4 translate = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate);
+		glm::vec3 translate = glm::vec3(0.0f, 0.0f, 10.0f);
+		makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(translate);
 
 		auto entity2 = m_pScene->createEntity("Cube");
 		m_pScene->addComponent(entity2, RenderComponent::s_name);
 		makeStrongPtr(entity2->getComponent<RenderComponent>(RenderComponent::s_name))->setMesh("../Assets/cube.obj");
 
-		glm::mat4 translate2 = glm::translate(glm::mat4(1), glm::vec3(5.0f, 0.0f, 10.0f));
-		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(translate2);
+		glm::vec3 translate2 = glm::vec3(5.0f, 0.0f, 10.0f);
+		makeStrongPtr(entity2->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(translate2);
 
 		auto light = m_pScene->createEntity("Light");
 		m_pScene->addComponent(light, LightComponent::s_name);
 		makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name))->setColor(glm::vec3{ 1.0f, 0.0f, 1.0f });
-		glm::mat4 lightTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
-		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTransform(lightTransform);
+		glm::vec3 lightTransform = glm::vec3(0.0f, 10.0f, 0.0f);
+		makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->setTranslation(lightTransform);
 
 		// load texture
 		m_texture = Texture2D::create("../Assets/texture.png");
@@ -70,6 +82,8 @@ namespace Sogas
 		m_cameraController.reset(new CameraController(makeStrongPtr(m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name))->camera));
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
+	
+		m_scenePanel.setContext(m_pScene);
 	}
 
 	void EditorLayer::onDetach()
@@ -79,6 +93,7 @@ namespace Sogas
 
 	void EditorLayer::onUpdate(f32 dt)
 	{
+		// TODO: Framebuffer resize function
 
 		if (m_viewportFocused)
 		{
@@ -94,6 +109,8 @@ namespace Sogas
 		Renderer::setDepthBuffer(true);
 		Renderer::clear();
 
+		m_framebuffer->clearAttachment(1, -1);
+
 		m_shader->bind();
 		m_texture->bind();
 
@@ -107,9 +124,13 @@ namespace Sogas
 
 		for (const auto& renderable : renderables)
 		{
+			if (renderable->getComponent<RenderComponent>(RenderComponent::s_name).lock()->getMesh() == nullptr)
+				continue;
+
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_model", model);
 			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_texture", 0);
+			std::dynamic_pointer_cast<OpenGLShader>(m_shader)->setUniform("u_entityID", (int)renderable->getId());
 
 			for (const auto& light : lights)
 			{
@@ -125,6 +146,36 @@ namespace Sogas
 			}
 		}
 
+		// TODO: Mouse picking
+		
+		ImGui::SetCurrentContext(Application::getImguiContext());
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_viewportBounds[0].x;
+		my -= m_viewportBounds[0].y;
+		glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+		my = viewportSize.y - my;
+		i32 mouseX = (i32)mx;
+		i32 mouseY = (i32)my;
+	
+		if(mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
+		{
+			// TODO: this has a high computational cost, in the future it probably needs a refactor
+			i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
+			
+			if(pixelData == -1)
+			{
+				m_hoveredEntity.lock() = nullptr;
+			}
+			else
+			{
+				// TODO: likely to be a bug
+				m_hoveredEntity = m_pScene->findEntityById(pixelData);
+			}
+
+			m_entityIdHovered = pixelData;
+		}
+		
 		m_framebuffer->unbind();
 	}
 
@@ -185,15 +236,35 @@ namespace Sogas
 
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Close", NULL, false))
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					newScene();
+
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					openScene();
+
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					saveSceneAs();
+
+				if (ImGui::MenuItem("Exit", NULL, false))
 					Application::getInstance()->close();
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
 		}
+
+		m_scenePanel.onImGuiRender();
+
+		// Hovered Entity
+		ImGui::Begin("Hovered Info");
+		std::string name = "none";
+		if (m_hoveredEntity.lock())
+			name = m_hoveredEntity.lock()->getName();
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+		ImGui::Text("ID hovered: %d", m_entityIdHovered);
+		ImGui::End();
 
 		// Stats panel
 		ImGui::Begin("Stats");
@@ -202,29 +273,22 @@ namespace Sogas
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
 		ImGui::End();
 
-		ImGui::Begin("Components");
-		for (const auto& entity : m_pScene->getEntities())
-		{
-			ImGui::Text("Entity");
-			if (entity->has(TransformComponent::s_name)) 
-			{
-				bool changed = false;
-				auto transformComponent = makeStrongPtr(entity->getComponent<TransformComponent>(TransformComponent::s_name));
-				auto& matrix = transformComponent->getTransform();
-				changed |= ImGui::SliderFloat3("Transform", &((glm::vec3)matrix[3])[0], -1000.0f, 1000.0f);
-				if(changed)
-					transformComponent->setTransform(matrix);
-			}
-		}
-		ImGui::End();
-
 		// Viewport panel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
 		ImGui::Begin("Viewport");
 
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
 		m_viewportFocused = ImGui::IsWindowFocused();
 		m_viewportHovered = ImGui::IsWindowHovered();
 		Application::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
+
+		//ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		//m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		// TODO: Should also resize the aspect ratio of the camera
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -236,6 +300,47 @@ namespace Sogas
 		}
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		
+		// Gizmos
+		StrongEntityPtr selectedEntity = m_scenePanel.getSelectedEntity().lock();
+		if(selectedEntity && m_gizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
+		
+			// Editor camera
+			const glm::mat4& cameraProjection = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getProjection();
+			glm::mat4 cameraView = m_cameraEntity->getComponent<CameraComponent>(CameraComponent::s_name).lock()->camera->getView();
+
+			// Entity transform
+			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
+
+			glm::mat4 transform = transformComponent.lock()->getTransform();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, nullptr);
+
+			if(ImGuizmo::IsUsing())
+			{
+				f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
+
+				// apply transformation here
+				glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
+				
+				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
+				transformComponent.lock()->setTranslation(newTranslation);
+
+				glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
+				transformComponent.lock()->setRotation(newRotation);
+
+				glm::vec3 newScale = glm::make_vec3(matrixScale);
+				transformComponent.lock()->setScale(newScale);
+			}
+		}
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -248,5 +353,75 @@ namespace Sogas
 		if (m_viewportFocused) {
 			m_cameraController.get()->onEvent(event);
 		}
+
+		EventDispatcher dispatcher(event);
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(BIND_EVENT_FUNC(EditorLayer::onMouseButtonPressed));
+	}
+
+	bool EditorLayer::onKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.getRepeatCount() > 0)
+			return false;
+
+		switch(e.getKeyCode())
+		{
+			// Gizmos
+			case SGS_KEY_Q:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = -1;
+				break;
+			}
+			case SGS_KEY_W:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+			case SGS_KEY_E:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
+			case SGS_KEY_R:
+			{
+				if (!ImGuizmo::IsUsing())
+					m_gizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
+			}
+		}
+	}
+
+	bool EditorLayer::onMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if(e.getMouseButton() == SGS_MOUSE_BUTTON_LEFT)
+		{
+
+			// TODO: The m_entities of the scene fails when the hovered entity is set to be selected. The entity selected is the one that fails
+
+			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(SGS_KEY_LEFT_ALT))
+			{
+				m_scenePanel.setSelectedEntity(m_hoveredEntity.lock());
+			}
+		}
+
+		return false;
+	}
+
+	void Sogas::EditorLayer::newScene()
+	{
+		SGSINFO("New scene function");
+	}
+
+	void Sogas::EditorLayer::openScene()
+	{
+		SGSINFO("Open scene function");
+	}
+
+	void Sogas::EditorLayer::saveSceneAs()
+	{
+		SGSINFO("Save scene function");
 	}
 }
