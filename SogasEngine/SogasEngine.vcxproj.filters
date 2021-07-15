@@ -38,7 +38,6 @@
     <ClCompile Include="src\renderer\resources\texture.cpp" />
     <ClCompile Include="src\renderer\resources\material.cpp" />
     <ClCompile Include="src\scene\entity.cpp" />
-    <ClCompile Include="src\scene\prefab.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\transformComponent.cpp" />
@@ -380,7 +379,6 @@
     <ClInclude Include="src\renderer\resources\mesh.h" />
     <ClInclude Include="src\renderer\resources\texture.h" />
     <ClInclude Include="src\renderer\resources\material.h" />
-    <ClInclude Include="src\scene\prefab.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\sgspch.h" />
     <ClInclude Include="src\scene\scene.h" />

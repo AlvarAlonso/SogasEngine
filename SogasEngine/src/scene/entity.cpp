@@ -1,6 +1,12 @@
 #include "sgspch.h"
 
 #include "entity.h"
+#include "core/application.h"
+
+#include "../external/imgui/imgui.h"
+#include <ImGuizmo.h>
+
+#include <glm/gtc/type_ptr.hpp>
 #include "entityComponent.h"
 
 #include "core/logger.h"
@@ -12,12 +18,12 @@ namespace Sogas
 	{
 		m_id = id;
 		m_type = "unknown";
+		m_name = "entity";
 	}
 
 	Entity::~Entity(void)
 	{
-		SGSINFO("Destroying actor %i", m_id);
-		SGSASSERT(m_components.empty());
+		//SGSINFO("Destroying actor %i", m_id);
 	}
 
 	bool Entity::init()
@@ -50,5 +56,13 @@ namespace Sogas
 	{
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
 		SGSASSERT(success.second);
+	}
+
+	void Entity::removeComponent(const char* componentName)
+	{
+		ComponentId componentId = EntityComponent::getIdFromName(componentName);
+		EntityComponentsMap::iterator it = m_components.find(componentId);
+		if (it != m_components.end())
+			m_components.erase(it);
 	}
 }

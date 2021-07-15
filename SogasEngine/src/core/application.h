@@ -17,6 +17,7 @@
 
 namespace Sogas 
 {
+	class Entity;
 	class Shader;
 	class VertexArray;
 
@@ -25,7 +26,7 @@ namespace Sogas
 	public:
 		Application();
 		~Application() {};
-
+		
 		static Application* getInstance() { return s_application; };
 		static ImGuiContext* getImguiContext() { return s_imguiContext; };
 

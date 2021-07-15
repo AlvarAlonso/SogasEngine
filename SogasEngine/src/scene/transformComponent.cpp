@@ -8,7 +8,6 @@ namespace Sogas
 
 	bool TransformComponent::init()
 	{
-		m_transform = glm::mat4(1);
 		return true;
 	}
 }

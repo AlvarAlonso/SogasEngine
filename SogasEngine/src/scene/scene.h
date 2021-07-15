@@ -14,7 +14,7 @@ namespace Sogas {
 		~Scene();
 
 		StrongEntityPtr createEntity(const std::string& name = std::string());
-		void DestroyEntity(StrongEntityPtr entity);
+		void destroyEntity(EntityId entityId);
 
 		void destroy();
 
@@ -22,9 +22,8 @@ namespace Sogas {
 
 		void addComponent(StrongEntityPtr entity, const char* componentName);
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
+		StrongEntityPtr findEntityById(EntityId entityId);
 		std::vector<StrongEntityPtr> getByComponent(const char* componentName);
-		//std::vector<Renderable*>& getEntities() { return m_entities; }
-
 	private:
 		std::vector<StrongEntityPtr> m_entities;
 		std::unique_ptr<EntityFactory> m_pEntityFactory;

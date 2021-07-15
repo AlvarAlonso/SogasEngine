@@ -2,6 +2,8 @@
 
 #include "defines.h"
 
+#include <../external/glm/glm/vec3.hpp>
+#include <../external/glm/glm/mat4x4.hpp>
 #include "types.h"
 #include "entityComponent.h"
 #include <string>
@@ -14,16 +16,18 @@ namespace Sogas
 
 	class SGS Entity {
 	public:
-
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
-
+	
 	private:
-		EntityId m_id;
+		std::string m_name;
+		EntityId m_id{ 0 }; // default ID, it must count as an invalid ID
 		EntityComponentsMap m_components{};
 		std::string m_type;
 
 	public:
+		Entity() = default; // TODO: comprovar que aixo es correcte
 		explicit Entity(EntityId id);
+		Entity(const Entity& other) = default;
 		~Entity(void);
 
 		bool init();
@@ -31,8 +35,11 @@ namespace Sogas
 		void destroy();
 		void update(f32 dt);
 
+		std::string getName() const { return m_name; }
 		EntityId getId() const { return m_id; }
 		std::string getType() const { return m_type; }
+
+		void setName(std::string name) { m_name = name; }
 
 		template<class ComponentType>
 		std::weak_ptr<ComponentType> getComponent(ComponentId id)
@@ -89,6 +96,18 @@ namespace Sogas
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
 		void addComponent(StrongEntityComponentPtr pComponent);
+		void removeComponent(const char* componentName);
 
+		operator bool() const { return m_id != 0; }
+
+		bool operator==(const Entity& other) const
+		{
+			return m_id == other.m_id; // TODO: they must be in the same scene too
+		}
+
+		bool operator !=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
 	};
 }

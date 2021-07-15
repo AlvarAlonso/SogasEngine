@@ -25,16 +25,33 @@ namespace Sogas
 		return entity;
 	}
 
-	void Scene::DestroyEntity(StrongEntityPtr entity)
+	void Scene::destroyEntity(EntityId entityId)
 	{
-		entity->destroy();
+		// TODO: Optimize insertion/deletion of entities
+
+		i32 index = 0;
+		for(auto& currentEntity : m_entities)
+		{
+			if (currentEntity->getId() == entityId)
+			{
+				currentEntity->destroy();
+				currentEntity = nullptr;
+				m_entities.erase(m_entities.begin() + index);
+				break; // break loop after finding the entity to be deleted
+			}
+
+			index++;
+		}
+
+		// TODO: some way to destroy an entity deleting all the references to it automatically
 	}
 
 	void Scene::destroy()
 	{
+		// TODO: bug when closing the window
 		for (auto& entity : m_entities)
 		{
-			DestroyEntity(entity);
+			destroyEntity(*entity);
 		}
 	}
 
@@ -61,6 +78,19 @@ namespace Sogas
 		// TODO: name from type may not be the same as stored in static s_name
 		// Should find a more robust way to create a specific component type
 		entity->addComponent(m_pEntityFactory->createComponent(componentName));
+	}
+
+	StrongEntityPtr Scene::findEntityById(EntityId entityId)
+	{
+		for (i32 index = 0; index < m_entities.size(); index++)
+		{
+			if(m_entities[index]->getId() == entityId)
+			{
+				return m_entities[index];
+			}
+		}
+
+		return nullptr;
 	}
 
 	std::vector<StrongEntityPtr> Scene::getByComponent(const char* name)

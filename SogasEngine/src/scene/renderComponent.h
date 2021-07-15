@@ -18,7 +18,6 @@ namespace Sogas
 
 		Mesh* getMesh(void) const { return m_pMesh; }
 		void setMesh(const char* filename) { m_pMesh = new Mesh; m_pMesh->load(filename); }
-
 	private:
 		Mesh* m_pMesh = nullptr;
 	};

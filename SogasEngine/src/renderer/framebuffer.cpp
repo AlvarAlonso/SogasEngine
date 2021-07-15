@@ -11,8 +11,8 @@ namespace Sogas
 	{
 		switch ((u16)Renderer::getAPI())
 		{
-		case (u16)RendererAPI::API::None: SGSASSERT(false); return nullptr;
-		case (u16)RendererAPI::API::OpenGL: return new OpenGLFramebuffer(specs);
+			case (u16)RendererAPI::API::None: SGSASSERT(false); return nullptr;
+			case (u16)RendererAPI::API::OpenGL: return new OpenGLFramebuffer(specs);
 		}
 
 		SGSASSERT(false);

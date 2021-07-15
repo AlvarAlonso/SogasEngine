@@ -11,8 +11,20 @@ namespace Sogas
 	{
 		switch (Renderer::getAPI())
 		{
-		case Renderer::API::None: SGSASSERT_MSG(false, "No graphics API selected");
-		case Renderer::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+			case Renderer::API::None: SGSASSERT_MSG(false, "No graphics API selected");
+			case Renderer::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+		}
+
+		SGSASSERT_MSG(false, "Unknown renderer API!");
+		return nullptr;
+	}
+
+	VertexBuffer* VertexBuffer::create(const void* data, u32 size)
+	{
+		switch (Renderer::getAPI())
+		{
+			case Renderer::API::None: SGSASSERT_MSG(false, "No graphics API selected");
+			case Renderer::API::OpenGL: return new OpenGLVertexBuffer(data, size);
 		}
 
 		SGSASSERT_MSG(false, "Unknown renderer API!");
@@ -23,8 +35,8 @@ namespace Sogas
 	{
 		switch (Renderer::getAPI())
 		{
-		case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
-		case Renderer::API::OpenGL: return new OpenGLIndexBuffer(indices, count);
+			case Renderer::API::None:  SGSASSERT_MSG(false, "No graphics API selected");
+			case Renderer::API::OpenGL: return new OpenGLIndexBuffer(indices, count);
 		}
 
 		SGSASSERT_MSG(false, "Unknown renderer API!");

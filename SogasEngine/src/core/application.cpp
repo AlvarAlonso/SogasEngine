@@ -33,7 +33,6 @@ namespace Sogas
 		{
 			SGSFATAL("Failed to link GLEW against OpenGL context!");
 		}
-
 	}
 
 	void Application::run()
