@@ -75,9 +75,34 @@ namespace Sogas
 		};
 	}
 
-	void Entity::from_json(const json& j)
+	void Entity::from_json(const json& jsonEntity)
 	{
+		// -----------------------
+		// Check if entity contains Transform Component
+		// -----------------------
+		if (jsonEntity.contains(TransformComponent::s_name) && !jsonEntity[TransformComponent::s_name].is_null())
+		{
+			auto jsonTransform = jsonEntity[TransformComponent::s_name];
+			makeStrongPtr<TransformComponent>(getComponent<TransformComponent>())->from_json(jsonTransform);
+		}
 
+		// -----------------------
+		// Check if entity contains Render Component
+		// -----------------------
+		if (jsonEntity.contains(RenderComponent::s_name) && !jsonEntity[RenderComponent::s_name].is_null())
+		{
+			auto jsonComponent = jsonEntity[RenderComponent::s_name];
+			makeStrongPtr(getComponent<RenderComponent>())->from_json(jsonComponent);
+		}
+
+		// -----------------------
+		// Check if entity contains Light Component
+		// -----------------------
+		if (jsonEntity.contains(LightComponent::s_name) && !jsonEntity[LightComponent::s_name].is_null())
+		{
+			auto jsonLight = jsonEntity[LightComponent::s_name];
+			makeStrongPtr(getComponent<LightComponent>())->from_json(jsonLight);
+		}
 	}
 
 	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()

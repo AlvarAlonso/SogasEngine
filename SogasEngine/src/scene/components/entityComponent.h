@@ -37,7 +37,7 @@ namespace Sogas
 		virtual ComponentId getId() const { return getIdFromName(getName()); }
 		virtual const char* getName() const = 0;
 		virtual void to_json(json& j) = 0;
-		//virtual void from_json(const json& j) = 0;
+		virtual void from_json(const json& j) = 0;
 
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
 		// It fails in the find func with const char*

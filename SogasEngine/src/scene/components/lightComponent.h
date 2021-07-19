@@ -17,6 +17,7 @@ namespace Sogas
 		virtual bool init() override;
 		virtual const char* getName() const override { return s_name; }
 		virtual void to_json(json& j) override;
+		virtual void from_json(const json& j) override;
 
 		inline glm::vec3& getColor() { return m_color; }
 		inline f32 getMaxDistance() { return m_maxDistance; }

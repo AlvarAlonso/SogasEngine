@@ -22,6 +22,7 @@ namespace Sogas
 
 		virtual bool init() override;
 		virtual void to_json(json& j) override;
+		virtual void from_json(const json& j) override;
 
 		// Transform component functions		
 		glm::mat4 getTransform() const
