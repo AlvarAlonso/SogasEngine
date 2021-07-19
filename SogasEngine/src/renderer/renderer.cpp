@@ -39,7 +39,7 @@ namespace Sogas
 
 	void Renderer::render()
 	{
-		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent(RenderComponent::s_name);
+		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent<RenderComponent>();
 
 		for (const auto& renderable : renderables)
 		{
@@ -72,7 +72,7 @@ namespace Sogas
 		else
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);	// TODO: use default texture ??
 
-		auto lights = s_pScene->getByComponent(LightComponent::s_name);
+		auto lights = s_pScene->getByComponent<LightComponent>();
 
 		for (u32 i = 0; i < lights.size(); i++)
 		{

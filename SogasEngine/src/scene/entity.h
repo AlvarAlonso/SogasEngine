@@ -60,23 +60,6 @@ namespace Sogas
 
 		}
 
-		bool has(const char* componentName)
-		{
-			ComponentId id = EntityComponent::getIdFromName(componentName);
-			EntityComponentsMap::iterator findIt = m_components.find(id);
-			if (findIt != m_components.end())
-				return true;
-			return false;
-		}
-
-		bool has(ComponentId id)
-		{
-			EntityComponentsMap::iterator findIt = m_components.find(id);
-			if (findIt != m_components.end())
-				return true;
-			return false;
-		}
-
 		template <class T>
 		bool has()
 		{

@@ -116,10 +116,10 @@ namespace Sogas
 		json transform, render, light;
 		to_json(transform, makeStrongPtr(entity->getComponent<TransformComponent>()));
 		
-		if (entity->has(RenderComponent::getIdFromName(RenderComponent::s_name)))
+		if (entity->has<RenderComponent>())
 			to_json(render, makeStrongPtr(entity->getComponent<RenderComponent>()));
 
-		if (entity->has(LightComponent::getIdFromName(LightComponent::s_name)))
+		if (entity->has<LightComponent>())
 			to_json(light, makeStrongPtr(entity->getComponent<LightComponent>()));
 
 		j = json
