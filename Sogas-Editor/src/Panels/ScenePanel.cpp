@@ -247,7 +247,7 @@ namespace Sogas
 				if(!m_selectedEntity.lock()->has<RenderComponent>())
 				{
 					// TODO: An entity should add its own components
-					m_context->addComponent(pEntity, RenderComponent::s_name);
+					m_context->addComponent<RenderComponent>(pEntity);
 				}
 				else
 				{
@@ -261,7 +261,7 @@ namespace Sogas
 			{
 				if(!m_selectedEntity.lock()->has<LightComponent>())
 				{
-					m_context->addComponent(pEntity, LightComponent::s_name);
+					m_context->addComponent<LightComponent>(pEntity);
 				}
 				else
 				{

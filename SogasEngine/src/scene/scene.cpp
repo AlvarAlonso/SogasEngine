@@ -9,7 +9,7 @@
 #include "renderer/resources/texture.h"
 
 #include "glm/gtc/quaternion.hpp"
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
@@ -248,19 +248,6 @@ namespace Sogas
 
 	}
 
-	void Scene::addComponent(StrongEntityPtr entity, const char* componentName)
-	{
-		if (!componentName)
-		{
-			SGSWARN("No valid component name given.");
-			return;
-		}
-
-		// TODO: name from type may not be the same as stored in static s_name
-		// Should find a more robust way to create a specific component type
-		entity->addComponent(m_pEntityFactory->createComponent(componentName));
-	}
-
 	/*
 	* Search for the entity with the correspondant id and returns it
 	* @param EntityId
@@ -279,4 +266,16 @@ namespace Sogas
 
 		return nullptr;
 	}
+
+	//void Scene::to_json(json& j)
+	//{
+	//	json entArray = json::array();
+	//	for (auto& entity : getEntities())
+	//	{
+	//		json ent;
+	//		//entity->to_json(ent);
+	//		entArray.push_back(ent);
+	//	}
+	//	j = json{ {"Entities", entArray} };
+	//}
 }
