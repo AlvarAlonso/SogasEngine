@@ -120,7 +120,7 @@ namespace Sogas
 		
 		if(entity->has(T::s_name))
 		{
-			auto component = entity->getComponent<T>(T::s_name);
+			auto component = entity->getComponent<T>();
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -244,7 +244,7 @@ namespace Sogas
 		{
 			if(ImGui::MenuItem("Mesh Render"))
 			{
-				if(!m_selectedEntity.lock()->has(RenderComponent::s_name))
+				if(!m_selectedEntity.lock()->has<RenderComponent>())
 				{
 					// TODO: An entity should add its own components
 					m_context->addComponent(pEntity, RenderComponent::s_name);
@@ -259,7 +259,7 @@ namespace Sogas
 
 			if(ImGui::MenuItem("Light"))
 			{
-				if(!m_selectedEntity.lock()->has(LightComponent::s_name))
+				if(!m_selectedEntity.lock()->has<LightComponent>())
 				{
 					m_context->addComponent(pEntity, LightComponent::s_name);
 				}

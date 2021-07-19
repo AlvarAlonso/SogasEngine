@@ -41,40 +41,23 @@ namespace Sogas
 
 		void setName(std::string name) { m_name = name; }
 
-		template<class ComponentType>
-		std::weak_ptr<ComponentType> getComponent(ComponentId id)
+		template <class T>
+		std::weak_ptr<T> getComponent()
 		{
+			ComponentId id = EntityComponent::getIdFromName(T::s_name);
 			EntityComponentsMap::iterator findIt = m_components.find(id);
 			if (findIt != m_components.end())
 			{
 				// Downcast and return value
 				StrongEntityComponentPtr pBase(findIt->second);
-				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
-				std::weak_ptr<ComponentType> pWeakSub(pSub);
-				return pWeakSub;
-			}
-			else
-			{
-				return std::weak_ptr<ComponentType>();
-			}
-		}
-
-		template<class ComponentType>
-		std::weak_ptr<ComponentType> getComponent(const char* name)
-		{
-			ComponentId id = EntityComponent::getIdFromName(name);
-			EntityComponentsMap::iterator findIt = m_components.find(id);
-			if (findIt != m_components.end())
-			{
-				// Downcast and return value
-				StrongEntityComponentPtr pBase(findIt->second);
-				std::shared_ptr<ComponentType> pSub(std::static_pointer_cast<ComponentType>(pBase));
-				std::weak_ptr<ComponentType> pWeakSub(pSub);
+				std::shared_ptr<T> pSub(std::static_pointer_cast<T>(pBase));
+				std::weak_ptr<T> pWeakSub(pSub);
 				return pWeakSub;
 			}
 			else {
-				return std::weak_ptr<ComponentType>();
+				return std::weak_ptr<T>();
 			}
+
 		}
 
 		bool has(const char* componentName)
@@ -88,6 +71,16 @@ namespace Sogas
 
 		bool has(ComponentId id)
 		{
+			EntityComponentsMap::iterator findIt = m_components.find(id);
+			if (findIt != m_components.end())
+				return true;
+			return false;
+		}
+
+		template <class T>
+		bool has()
+		{
+			ComponentId id = EntityComponent::getIdFromName(T::s_name);
 			EntityComponentsMap::iterator findIt = m_components.find(id);
 			if (findIt != m_components.end())
 				return true;

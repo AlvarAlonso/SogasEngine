@@ -3,19 +3,12 @@
 #include "defines.h"
 
 #include "entityComponent.h"
+#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
-#include "../external/glm/glm/glm.hpp"
-
-#define GLM_ENABLE_EXPERIMENTAL
-#include "../external/glm/glm/gtx/quaternion.hpp"
-
 namespace Sogas
 {
-
-	//using json = nlohmann::json;
-
 	class SGS TransformComponent : public EntityComponent
 	{
 	public:
@@ -32,17 +25,15 @@ namespace Sogas
 		// Transform component functions		
 		glm::mat4 getTransform() const
 		{
-			glm::mat4 rotation = glm::toMat4(glm::quat(m_rotation));
-			
 			return glm::translate(glm::mat4(1.0f), m_translation)
-				* rotation
+				* glm::mat4_cast(glm::quat(m_rotation))
 				* glm::scale(glm::mat4(1.0f), m_scale);
 		}
 
 		void setTransform(const glm::mat4& transform)
 		{
 			m_translation = (glm::vec3)transform[0][3];
-			//m_rotation = 
+			m_rotation = glm::eulerAngles(glm::quat_cast(transform));
 			m_scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
 		}
 
@@ -53,8 +44,7 @@ namespace Sogas
 		void setTranslation(glm::vec3& translation) { m_translation = translation; }
 		void setRotation(glm::vec3& rotation) { m_rotation = rotation; }
 		void setScale(glm::vec3& scale) { m_scale = scale; }
-		//glm::vec3 getPosition(void) {}
-		// TODO: setPosition(glm::vec3 position)
+
 		// TODO: getLookAt(void)
 
 	private:

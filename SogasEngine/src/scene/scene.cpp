@@ -50,7 +50,7 @@ namespace Sogas
 					{
 						// TODO: add transform
 						auto jsonTransform = entity[TransformComponent::s_name];
-						auto transformComponent = makeStrongPtr<TransformComponent>(ent->getComponent<TransformComponent>(TransformComponent::s_name));
+						auto transformComponent = makeStrongPtr<TransformComponent>(ent->getComponent<TransformComponent>());
 						glm::mat4 model = glm::mat4(1);
 
 						if (jsonTransform.contains("Position") && !jsonTransform["Position"].is_null())
@@ -103,7 +103,7 @@ namespace Sogas
 						auto jsonComponent = entity[RenderComponent::s_name];
 						ent->addComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
 
-						std::shared_ptr<RenderComponent> renderComponent = makeStrongPtr(ent->getComponent<RenderComponent>(RenderComponent::s_name));
+						std::shared_ptr<RenderComponent> renderComponent = makeStrongPtr(ent->getComponent<RenderComponent>());
 
 						// -----------------------
 						// Check for the mesh data - it should contain a Mesh, otherwise the render component loses its purpose
@@ -176,7 +176,7 @@ namespace Sogas
 						auto jsonLight = entity["LightComponent"];
 						ent->addComponent(m_pEntityFactory->createComponent(LightComponent::s_name));
 
-						std::shared_ptr<LightComponent> lightComponent = makeStrongPtr(ent->getComponent<LightComponent>(LightComponent::s_name));
+						std::shared_ptr<LightComponent> lightComponent = makeStrongPtr(ent->getComponent<LightComponent>());
 
 						if (jsonLight.contains("Color") && !jsonLight["Color"].is_null())
 						{

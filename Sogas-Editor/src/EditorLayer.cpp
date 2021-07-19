@@ -259,7 +259,8 @@ namespace Sogas
 			glm::mat4 cameraView = m_pCamera->getView();
 
 			// Entity transform
-			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
+			//std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
+			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>();
 
 			glm::mat4 transform = transformComponent.lock()->getTransform();
 

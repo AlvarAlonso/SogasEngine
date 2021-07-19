@@ -43,8 +43,8 @@ namespace Sogas
 
 		for (const auto& renderable : renderables)
 		{
-			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>(RenderComponent::s_name));
-			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>(TransformComponent::s_name))->getTransform();
+			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>());
+			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>())->getTransform();
 
 			Renderer::submit(renderComponent, model);
 		}
@@ -81,11 +81,11 @@ namespace Sogas
 			auto& light = lights.at(i);
 
 			// Set light position
-			glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>(TransformComponent::s_name))->getTranslation();
+			glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>())->getTranslation();
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", lightPosition);
 
 			// Set light colour
-			auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>(LightComponent::s_name));
+			auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
 			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
 
 			renderComponent->getMesh()->m_vertexArray->bind();
