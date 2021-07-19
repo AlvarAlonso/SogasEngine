@@ -9,9 +9,6 @@
 #include "renderer/resources/texture.h"
 
 #include "glm/gtc/quaternion.hpp"
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
 
 namespace Sogas
 {
@@ -267,15 +264,20 @@ namespace Sogas
 		return nullptr;
 	}
 
-	//void Scene::to_json(json& j)
-	//{
-	//	json entArray = json::array();
-	//	for (auto& entity : getEntities())
-	//	{
-	//		json ent;
-	//		//entity->to_json(ent);
-	//		entArray.push_back(ent);
-	//	}
-	//	j = json{ {"Entities", entArray} };
-	//}
+	/*
+	* Serialize all data in the scene to json
+	* @param json&
+	* @return void
+	*/
+	void Scene::to_json(json& j)
+	{
+		json entArray = json::array();
+		for (auto& entity : getEntities())
+		{
+			json ent;
+			entity->to_json(ent);
+			entArray.push_back(ent);
+		}
+		j = json{ {"Entities", entArray} };
+	}
 }

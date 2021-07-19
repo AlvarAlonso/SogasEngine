@@ -15,7 +15,7 @@ namespace Sogas
 	* @param const glm::vec3&
 	* @return void
 	*/
-	void to_json(json& j, const glm::vec3& vector)
+	inline void to_json(json& j, const glm::vec3& vector)
 	{
 		j = json{
 			{ "x", vector.x },
@@ -30,7 +30,7 @@ namespace Sogas
 	* @param glm::vec3&
 	* @return void
 	*/
-	void from_json(const json& j, glm::vec3& vector)
+	inline void from_json(const json& j, glm::vec3& vector)
 	{
 		j.at("x").get_to(vector.x);
 		j.at("y").get_to(vector.y);
@@ -43,7 +43,7 @@ namespace Sogas
 	* @param const glm::vec4&
 	* @return void
 	*/
-	void to_json(json& j, const glm::vec4& vector)
+	inline void to_json(json& j, const glm::vec4& vector)
 	{
 		j = ordered_json{
 			{ "x", vector.x },
@@ -59,7 +59,7 @@ namespace Sogas
 	* @param glm::vec3&
 	* @return void
 	*/
-	void from_json(const json& j, glm::vec4& vector)
+	inline void from_json(const json& j, glm::vec4& vector)
 	{
 		j.at("x").get_to(vector.x);
 		j.at("y").get_to(vector.y);
@@ -73,7 +73,7 @@ namespace Sogas
 	* @param const glm::quat&
 	* @return void
 	*/
-	void to_json(json& j, const glm::quat& quat)
+	inline void to_json(json& j, const glm::quat& quat)
 	{
 		j = ordered_json
 		{
@@ -90,7 +90,7 @@ namespace Sogas
 	* @param glm::quat&
 	* @return void
 	*/
-	void from_json(const json& j, glm::quat& quat)
+	inline void from_json(const json& j, glm::quat& quat)
 	{
 		j.at("x").get_to(quat.x);
 		j.at("y").get_to(quat.y);

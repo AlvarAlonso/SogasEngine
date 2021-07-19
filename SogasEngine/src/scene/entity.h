@@ -2,16 +2,21 @@
 
 #include "defines.h"
 
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
 #include "types.h"
 #include "components/entityComponent.h"
+
+#include <json/single_include/nlohmann/json.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <string>
 #include <memory>
 #include <map>
 
 namespace Sogas 
 {
+
+	using json = nlohmann::json;
+
 	class SGS Entity {
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
@@ -33,11 +38,16 @@ namespace Sogas
 		void destroy();
 		void update(f32 dt);
 
+		void		setName(std::string name) { m_name = name; }
 		std::string getName() const { return m_name; }
-		EntityId getId() const { return m_id; }
+		EntityId	getId() const { return m_id; }
 		std::string getType() const { return m_type; }
+		void		to_json(json& j);
 
-		void setName(std::string name) { m_name = name; }
+		const EntityComponentsMap* getComponents() { return &m_components; }
+		const std::vector<StrongEntityComponentPtr>& getComponentsVector();
+		void addComponent(StrongEntityComponentPtr pComponent);
+		void removeComponent(const char* componentName);
 
 		template <class T>
 		std::weak_ptr<T> getComponent()
@@ -66,11 +76,6 @@ namespace Sogas
 				return true;
 			return false;
 		}
-
-		const EntityComponentsMap* getComponents() { return &m_components; }
-		const std::vector<StrongEntityComponentPtr>& getComponentsVector();
-		void addComponent(StrongEntityComponentPtr pComponent);
-		void removeComponent(const char* componentName);
 
 		operator bool() const { return m_id != 0; }
 

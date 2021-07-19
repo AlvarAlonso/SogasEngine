@@ -18,6 +18,7 @@ namespace Sogas
 		RenderComponent();
 		virtual bool init() override;
 		virtual const char* getName() const override { return s_name; }
+		virtual void to_json(json& j) override {};
 
 		Mesh* getMesh(void) const { return m_pMesh; }
 		void setMesh(const char* filename) { m_pMesh = new Mesh; m_pMesh->load(filename); }

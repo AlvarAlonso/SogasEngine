@@ -1,7 +1,10 @@
 #include "sgspch.h"
 
 #include "entity.h"
-#include "components/entityComponent.h"
+#include "components/lightComponent.h"
+#include "components/cameraComponent.h"
+#include "components/renderComponent.h"
+#include "components/transformComponent.h"
 #include "core/application.h"
 
 #include "imgui.h"
@@ -50,6 +53,26 @@ namespace Sogas
 		{
 			it->second->update(dt);
 		}
+	}
+
+	void Entity::to_json(json& j)
+	{
+		json transform, render, light;
+		getComponent<TransformComponent>().lock()->to_json(transform);
+
+		if (has<RenderComponent>())
+			getComponent<RenderComponent>().lock()->to_json(render);
+
+		if (has<LightComponent>())
+			getComponent<LightComponent>().lock()->to_json(light);
+
+		j = json
+		{
+			{"Name", !getName().empty() ? getName() : "Unknown name" },
+			{TransformComponent::s_name, transform},
+			{RenderComponent::s_name, render},
+			{LightComponent::s_name, light}
+		};
 	}
 
 	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()

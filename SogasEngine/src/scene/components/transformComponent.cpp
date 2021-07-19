@@ -1,8 +1,7 @@
 
 #include "sgspch.h"
 #include "transformComponent.h"
-#include "nlohmann/json.hpp"
-//#include "scene/serializerUtils.h"
+#include "scene/serializerUtils.h"
 
 namespace Sogas
 {
@@ -16,17 +15,17 @@ namespace Sogas
 		return true;
 	}
 
-	//void TransformComponent::to_json(json& j, const std::shared_ptr<TransformComponent>& transformComponent)
-	//{
-	//	json translation, rotation, scale;
-	//	Sogas::to_json(translation, transformComponent->getTranslation());
-	//	Sogas::to_json(rotation, transformComponent->getRotation());
-	//	Sogas::to_json(scale, transformComponent->getScale());
+	void TransformComponent::to_json(json& j)
+	{
+		json translation, rotation, scale;
+		Sogas::to_json(translation, getTranslation());
+		Sogas::to_json(rotation, getRotation());
+		Sogas::to_json(scale, getScale());
 
-	//	j = json{
-	//		{"Translation", translation},
-	//		{"Rotation", rotation},
-	//		{"Scale", scale}
-	//	};
-	//}
+		j = json{
+			{"Translation", translation},
+			{"Rotation", rotation},
+			{"Scale", scale}
+		};
+	}
 }

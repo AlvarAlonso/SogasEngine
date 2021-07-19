@@ -4,9 +4,11 @@
 
 #include "../types.h"
 #include <unordered_map>
+#include <json/single_include/nlohmann/json.hpp>
 
 namespace Sogas
 {
+	using json = nlohmann::json;
 
 	//TODO: find a better way to find a const char* in a map
 	struct cmp_str
@@ -34,6 +36,7 @@ namespace Sogas
 		// Functions meant to be overriden by the interface class
 		virtual ComponentId getId() const { return getIdFromName(getName()); }
 		virtual const char* getName() const = 0;
+		virtual void to_json(json& j) = 0;
 
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
 		// It fails in the find func with const char*

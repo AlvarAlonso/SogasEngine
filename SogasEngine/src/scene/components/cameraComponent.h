@@ -11,9 +11,10 @@ namespace Sogas
 		static const char* s_name;
 
 		CameraComponent() = default;
-		virtual const char* getName() const override { return s_name; }
 
+		virtual const char* getName() const override { return s_name; }
 		virtual bool init() override;
+		virtual void to_json(json& j) override {};
 
 		std::shared_ptr<Camera> camera;
 		bool primary = false;

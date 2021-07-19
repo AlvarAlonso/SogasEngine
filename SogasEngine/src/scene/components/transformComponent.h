@@ -21,6 +21,7 @@ namespace Sogas
 		//TransformComponent(void) : m_transform(glm::mat4(1)) {};
 
 		virtual bool init() override;
+		virtual void to_json(json& j) override;
 
 		// Transform component functions		
 		glm::mat4 getTransform() const

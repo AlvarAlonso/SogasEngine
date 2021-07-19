@@ -4,12 +4,11 @@
 
 #include "entity.h"
 #include "entityFactory.h"
-//#include <nlohmann/json_fwd.hpp>
+#include <json/single_include/nlohmann/json.hpp>
 
 namespace Sogas 
 {
-	//using json = nlohmann::json;
-	//class nlohmann::json;
+	using json = nlohmann::json;
 
 	class SGS Scene
 	{
@@ -25,7 +24,7 @@ namespace Sogas
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		StrongEntityPtr findEntityById(EntityId entityId);
 
-		//void to_json(json& j);
+		void to_json(json& j);
 
 		/*
 		* Adds component to an entity
