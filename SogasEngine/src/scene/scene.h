@@ -4,9 +4,11 @@
 
 #include "entity.h"
 #include "entityFactory.h"
+#include "nlohmann/json.hpp"
 
 namespace Sogas 
 {
+	using json = nlohmann::json;
 
 	class SGS Scene
 	{
@@ -23,6 +25,18 @@ namespace Sogas
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		StrongEntityPtr findEntityById(EntityId entityId);
 
+		void to_json(json& j)
+		{
+			json entArray = json::array();
+			for (auto& entity : getEntities())
+			{
+				json ent;
+				//entity->to_json(ent);
+				entArray.push_back(ent);
+			}
+			j = json{ {"Entities", entArray} };
+		}
+
 		template <class T>
 		std::vector<StrongEntityPtr> getByComponent()
 		{
@@ -38,6 +52,7 @@ namespace Sogas
 
 			return returnVector;
 		}
+
 	private:
 		std::vector<StrongEntityPtr> m_entities;
 		std::unique_ptr<EntityFactory> m_pEntityFactory;

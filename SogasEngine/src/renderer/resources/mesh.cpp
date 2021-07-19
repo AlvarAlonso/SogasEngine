@@ -5,9 +5,9 @@
 #include "../external/tinyobj/tiny_obj_loader.h"
 
 #include "core/logger.h"
-#include "../external/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
-#include <../external/glm/glm/gtx/hash.hpp>
+#include <glm/gtx/hash.hpp>
 
 namespace Sogas 
 {
@@ -18,7 +18,6 @@ namespace Sogas
         glm::vec3 color;
         glm::vec2 uv;
 
-        // TODO: add texture coordinates
         bool operator==(const Vertex& other) const {
             return position == other.position && normal == other.normal && color == other.color && uv == other.uv;
         }
