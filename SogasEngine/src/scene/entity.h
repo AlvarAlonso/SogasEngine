@@ -43,6 +43,7 @@ namespace Sogas
 		EntityId	getId() const { return m_id; }
 		std::string getType() const { return m_type; }
 		void		to_json(json& j);
+		void		from_json(const json& j);
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
 		const std::vector<StrongEntityComponentPtr>& getComponentsVector();

@@ -25,6 +25,7 @@ namespace Sogas
 		StrongEntityPtr findEntityById(EntityId entityId);
 
 		void to_json(json& j);
+		void from_json(const json& j);
 
 		/*
 		* Adds component to an entity

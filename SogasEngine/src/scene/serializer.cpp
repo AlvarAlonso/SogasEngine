@@ -46,7 +46,12 @@ namespace Sogas
 	*/
 	bool Serializer::deserialize(const std::string& filename)
 	{
-		SGSASSERT_MSG(false, "Function not implemented yet.");
-		return false;
+		std::ifstream file(filename);
+		json j;
+		file >> j;
+
+		m_pScene->from_json(j);
+
+		return true;
 	}
 }

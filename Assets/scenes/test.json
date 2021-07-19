@@ -10,7 +10,7 @@
                 },
                 "TransformComponent": {
                     "Rotation": {
-                        "x": 0.0,
+                        "x": -0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
@@ -20,9 +20,9 @@
                         "z": 1.0
                     },
                     "Translation": {
-                        "x": 0.0,
+                        "x": -2.299999952316284,
                         "y": 0.0,
-                        "z": 10.0
+                        "z": 0.0
                     }
                 }
             },
@@ -40,7 +40,7 @@
                 "RenderComponent": null,
                 "TransformComponent": {
                     "Rotation": {
-                        "x": 0.0,
+                        "x": -0.0,
                         "y": 0.0,
                         "z": 0.0
                     },
@@ -51,7 +51,7 @@
                     },
                     "Translation": {
                         "x": 0.0,
-                        "y": 10.0,
+                        "y": 0.0,
                         "z": 0.0
                     }
                 }

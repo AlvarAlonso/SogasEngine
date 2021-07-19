@@ -8,13 +8,7 @@
 #include "platform/openGL/openGLShader.h"
 
 #include <ImGuizmo.h>
-#include <../external/glm/glm/gtc/type_ptr.hpp>
-
-/*
-#include "../external/glm/glm/gtc/matrix_transform.hpp"
-#include "scene/entity.h"
-#include "scene/prefab.h"
-*/
+#include <glm/glm/gtc/type_ptr.hpp>
 
 #include "glm/glm/gtc/matrix_transform.hpp"
 
@@ -387,6 +381,9 @@ namespace Sogas
 
 	void Sogas::EditorLayer::saveSceneAs()
 	{
+		Serializer* serializer = new Serializer(m_pScene);
+		serializer->serialize("../Assets/scenes/test.json");
+		delete serializer;
 		SGSINFO("Save scene function");
 	}
 }

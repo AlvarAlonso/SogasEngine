@@ -75,6 +75,11 @@ namespace Sogas
 		};
 	}
 
+	void Entity::from_json(const json& j)
+	{
+
+	}
+
 	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()
 	{
 		std::vector<StrongEntityComponentPtr> componentsVector{};

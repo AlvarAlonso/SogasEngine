@@ -25,11 +25,11 @@ namespace Sogas
 	* @param json&
 	* @retun void
 	*/
-	//void RenderComponent::to_json(json& j)
-	//{
-	//	j = json{
-	//		{"Mesh", getMesh()->getMeshName() },
-	//		{"Material", nullptr}
-	//	};
-	//}
+	void RenderComponent::to_json(json& j)
+	{
+		j = json{
+			{"Mesh", getMesh()->getMeshName() },
+			{"Material", nullptr}
+		};
+	}
 }
