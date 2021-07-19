@@ -65,7 +65,6 @@ namespace Sogas
 
 	void EditorLayer::onDetach()
 	{
-		m_pScene->destroy();
 	}
 
 	void EditorLayer::onUpdate(f32 dt)

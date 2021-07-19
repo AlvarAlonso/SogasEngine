@@ -12,8 +12,6 @@
 
 namespace Sogas 
 {
-	// TODO: This is temporal until we implement an Entity Component System
-
 	class SGS Entity {
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
@@ -57,7 +55,6 @@ namespace Sogas
 			else {
 				return std::weak_ptr<T>();
 			}
-
 		}
 
 		template <class T>

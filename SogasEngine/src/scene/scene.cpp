@@ -201,6 +201,13 @@ namespace Sogas
 		
 	}
 
+	/*
+	* TODO: Should probably receive the path to the json to deserialize, name should not be
+	* added at creation. 
+	* Create automatically an entity to the scene
+	* @param const std::string& name
+	* @return StrongEntityPtr
+	*/
 	StrongEntityPtr Scene::createEntity(const std::string& name)
 	{
 		StrongEntityPtr entity = m_pEntityFactory->createEntity(name.c_str());
@@ -229,15 +236,6 @@ namespace Sogas
 		// TODO: some way to destroy an entity deleting all the references to it automatically
 	}
 
-	void Scene::destroy()
-	{
-		// TODO: bug when closing the window
-		for (auto& entity : m_entities)
-		{
-			destroyEntity(*entity);
-		}
-	}
-
 	// TODO: scene onUpdate should update and submit commands to the renderer, thus the renderer needs to have access to the shader
 	// and textures to bind them when updating/rendering
 	void Scene::onUpdate(f32 dt)
@@ -262,6 +260,12 @@ namespace Sogas
 		// Should find a more robust way to create a specific component type
 		entity->addComponent(m_pEntityFactory->createComponent(componentName));
 	}
+
+	/*
+	* Search for the entity with the correspondant id and returns it
+	* @param EntityId
+	* @return StrongEntityPtr (shared_ptr<Entity>)
+	*/
 
 	StrongEntityPtr Scene::findEntityById(EntityId entityId)
 	{

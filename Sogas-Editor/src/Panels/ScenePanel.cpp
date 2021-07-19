@@ -118,7 +118,7 @@ namespace Sogas
 		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | 
 			ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 		
-		if(entity->has(T::s_name))
+		if(entity->has<T>())
 		{
 			auto component = entity->getComponent<T>();
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
