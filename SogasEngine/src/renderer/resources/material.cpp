@@ -5,7 +5,9 @@
 namespace Sogas 
 {
 	Material::Material(std::shared_ptr<Shader> shader)
+		: m_pShader(shader)
 	{
+		m_materialProperties = MaterialProperties();
 	}
 
 	Material::Material(std::shared_ptr<Shader> shader, const MaterialProperties& properties)

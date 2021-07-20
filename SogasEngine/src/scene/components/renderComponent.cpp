@@ -8,9 +8,14 @@ namespace Sogas
 {
 	const char* RenderComponent::s_name = "RenderComponent";
 
+	/*
+	* @brief constructor to default parameters. Cube.obj and basic.shader at the moment
+	* @param void
+	* @return none
+	*/
 	RenderComponent::RenderComponent()
 	{
-		m_pMesh = nullptr;
+		m_pMesh = Mesh::GET("../Assets/cube.obj");
 		m_pMaterial = std::make_shared<Material>(Shader::create("../SogasEngine/shaders/basic.shader"));
 	}
 

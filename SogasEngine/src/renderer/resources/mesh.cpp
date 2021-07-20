@@ -37,6 +37,8 @@ namespace std {
 
 namespace Sogas 
 {
+    std::unordered_map<std::string, std::shared_ptr<Mesh>> Mesh::s_loadedMeshes;
+
     Mesh::Mesh()
     {
         m_vertexArray.reset(VertexArray::create());
@@ -149,5 +151,20 @@ namespace Sogas
 
         m_indexBuffer.reset(IndexBuffer::create(indices.data(), (u32)indices.size()));
         m_vertexArray->setIndexBuffer(m_indexBuffer);
+    }
+
+    std::shared_ptr<Mesh> Mesh::GET(const std::string& filename)
+    {
+        std::string s = filename;
+        
+        if (!s_loadedMeshes[filename])
+        {
+            std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+            mesh->load(filename);
+            s_loadedMeshes[filename] = mesh;
+            return mesh;
+        }
+
+        return s_loadedMeshes[filename];
     }
 }
