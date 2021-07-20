@@ -5,6 +5,8 @@
 #include "scene/components/transformComponent.h"
 #include "scene/components/lightComponent.h"
 
+#include "platform/utils/platformUtils.h"
+
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -301,6 +303,12 @@ namespace Sogas
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(RenderComponent::s_name);
+				if (ImGui::Button("Mesh"))
+				{
+					std::string meshName = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
+
+					component.lock()->setMesh(meshName.c_str());
+				}
 			});
 	}
 }

@@ -42,6 +42,7 @@ namespace Sogas
 		struct sceneData
 		{
 			glm::mat4 viewprojectionMatrix;
+			glm::vec3 cameraPosition;
 		};
 
 		static std::shared_ptr<Scene> s_pScene;

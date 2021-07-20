@@ -35,6 +35,7 @@ namespace Sogas
 
 		s_pScene = scene;
 		s_sceneData->viewprojectionMatrix = pCamera->getViewProjection();
+		s_sceneData->cameraPosition = pCamera->getPosition();
 	}
 
 	void Renderer::render()
@@ -61,6 +62,7 @@ namespace Sogas
 		auto& material = renderComponent->getMaterial();
 		shader->bind();
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_view", s_sceneData->cameraPosition);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
 
@@ -76,6 +78,7 @@ namespace Sogas
 
 		if (lights.empty())
 		{
+			RenderCommand::enableBlend(false);
 			RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
 		}
 		else
