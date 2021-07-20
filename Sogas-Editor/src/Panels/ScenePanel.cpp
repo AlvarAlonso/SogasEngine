@@ -41,7 +41,7 @@ namespace Sogas
 			m_context->destroyEntity(entityToDestroy);
 		}
 
-		// TODO: If a mesh renderer is added to the empty entity, because mesh is nullptr the program breaks
+		// TODO: Mesh is a cube by default
 		if(ImGui::BeginPopupContextWindow(0, 1, false))
 		{
 			if (ImGui::MenuItem("Create Empty Entity"))
@@ -295,6 +295,7 @@ namespace Sogas
 		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(LightComponent::s_name);
+				DrawVec3Control("Colour", component.lock()->getColor(), 1.0f, 1.0f);
 			});
 
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)

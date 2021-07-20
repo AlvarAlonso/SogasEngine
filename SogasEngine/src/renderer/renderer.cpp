@@ -74,22 +74,29 @@ namespace Sogas
 
 		auto lights = s_pScene->getByComponent<LightComponent>();
 
-		for (u32 i = 0; i < lights.size(); i++)
+		if (lights.empty())
 		{
-			(i == 0) ? RenderCommand::enableBlend(false) : RenderCommand::enableBlend(true);
-
-			auto& light = lights.at(i);
-
-			// Set light position
-			glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>())->getTranslation();
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", lightPosition);
-
-			// Set light colour
-			auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
-
-			renderComponent->getMesh()->m_vertexArray->bind();
 			RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
+		}
+		else
+		{
+			for (u32 i = 0; i < lights.size(); i++)
+			{
+				(i == 0) ? RenderCommand::enableBlend(false) : RenderCommand::enableBlend(true);
+
+				auto& light = lights.at(i);
+
+				// Set light position
+				glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>())->getTranslation();
+				std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", lightPosition);
+
+				// Set light colour
+				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
+				std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
+
+				renderComponent->getMesh()->m_vertexArray->bind();
+				RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
+			}
 		}
 	}
 }
