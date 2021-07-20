@@ -144,6 +144,9 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\json\nlohmann\ordered_map.hpp" />
     <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
+    <ClInclude Include="src\platform\windows\windowsUtils.h" />
+    <ClInclude Include="src\platform\utils\platformUtils.h" />
+    <ClInclude Include="src\platform\windows\windowsUtils.cpp" />
     <ClInclude Include="src\renderer\renderCommand.h" />
     <ClInclude Include="src\renderer\resources\mesh.h" />
     <ClInclude Include="src\core\camera.h" />
@@ -524,6 +527,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="src\scene\components\transformComponent.cpp" />
     <ClCompile Include="src\scene\serializer.cpp" />
     <ClCompile Include="src\sgspch.cpp" />
+    <ClCompile Include="src\platform\utils\platformUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

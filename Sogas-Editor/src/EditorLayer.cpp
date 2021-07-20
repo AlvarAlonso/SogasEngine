@@ -5,28 +5,25 @@
 #include "core/mouseButtonCodes.h"
 #include "core/logger.h"
 #include "core/cameraController.h"
-#include "platform/openGL/openGLShader.h"
+
+#include "platform/utils/platformUtils.h"
 
 #include <ImGuizmo.h>
 #include <glm/glm/gtc/type_ptr.hpp>
-
-#include "glm/glm/gtc/matrix_transform.hpp"
+#include <glm/glm/gtc/matrix_transform.hpp>
 
 #include "renderer/renderer.h"
-#include "renderer/shader.h"
-#include "renderer/resources/texture.h"
 #include "renderer/framebuffer.h"
 
 // TODO: find a better place to define components
 #include "scene/entityFactory.h"
 #include "scene/entity.h"
 #include "scene/scene.h"
+#include "scene/serializer.h"
 #include "scene/components/transformComponent.h"
 #include "scene/components/renderComponent.h"
 #include "scene/components/cameraComponent.h"
 #include "scene/components/lightComponent.h"
-
-#include "scene/serializer.h"
 
 namespace Sogas 
 {
@@ -46,7 +43,7 @@ namespace Sogas
 
 		m_pCamera = std::make_shared<Camera>();
 
-		m_pScene = std::make_shared<Scene>("../Assets/scenes/test.json");
+		this->newScene();
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -349,18 +346,40 @@ namespace Sogas
 		return false;
 	}
 
+	/*
+	* @brief Command the application to create a new scene
+	* @param void
+	* @return void
+	*/
 	void Sogas::EditorLayer::newScene()
 	{
-		SGSINFO("New scene function");
+		m_pScene = std::make_shared<Scene>();
+		m_scenePanel.setContext(m_pScene);
 	}
 
+	/*
+	* @brief Allows the user to search a json file where scene is saved and deserialize it.
+	* @param void
+	* @return void
+	*/
 	void Sogas::EditorLayer::openScene()
 	{
+		std::string filepath = FileDialog::openFile("Sogas Scene (*.sgs)\0*.sgs\0");
+		
+		if (!filepath.empty())
+		{
+			m_pScene = std::make_shared<Scene>();
+			m_scenePanel.setContext(m_pScene);
+			
+			Serializer serializer(m_pScene);
+			serializer.deserialize(filepath);
+		}
+
 		SGSINFO("Open scene function");
 	}
 
 	/*
-	*	Function called when saving an scene. If scene has been previously saved it automatically
+	*	@brief Function called when saving an scene. If scene has been previously saved it automatically
 	*	saves it to the same path and name. Call the saveSceneAs() function otherwise.
 	*	@param void
 	*	@return void
@@ -373,17 +392,25 @@ namespace Sogas
 		}
 		else
 		{
-			Serializer* serializer = new Serializer(m_pScene);
-			serializer->serialize("../Assets/scenes/test.json");
-			delete serializer;
+			Serializer serializer(m_pScene);
+			serializer.serialize(m_savePath);
 		}
 	}
 
+	/*
+	* @brief Used to open a file explorer and save the file where the scene will be deserialized
+	* @param void
+	* @return void
+	*/
 	void Sogas::EditorLayer::saveSceneAs()
 	{
-		Serializer* serializer = new Serializer(m_pScene);
-		serializer->serialize("../Assets/scenes/test.json");
-		delete serializer;
-		SGSINFO("Save scene function");
+		m_savePath = FileDialog::saveFile("Sogas Scene (*.sgs)\0*.sgs\0");
+
+		if (!m_savePath.empty())
+		{
+			Serializer serializer(m_pScene);
+			serializer.serialize(m_savePath);
+			SGSINFO("Save scene function");
+		}
 	}
 }

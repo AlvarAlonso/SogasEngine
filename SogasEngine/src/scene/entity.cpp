@@ -26,7 +26,7 @@ namespace Sogas
 
 	Entity::~Entity(void)
 	{
-		//SGSINFO("Destroying actor %i", m_id);
+		SGSINFO("Destroying entity %i", m_id);
 	}
 
 	bool Entity::init()

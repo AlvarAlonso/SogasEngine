@@ -47,6 +47,7 @@
     <ClCompile Include="src\scene\components\lightComponent.cpp" />
     <ClCompile Include="src\renderer\renderCommand.cpp" />
     <ClCompile Include="src\scene\serializer.cpp" />
+    <ClCompile Include="src\platform\utils\platformUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -434,6 +435,9 @@
     <ClInclude Include="src\json\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="src\scene\serializer.h" />
     <ClInclude Include="src\scene\serializerUtils.h" />
+    <ClInclude Include="src\platform\utils\platformUtils.h" />
+    <ClInclude Include="src\platform\windows\windowsUtils.cpp" />
+    <ClInclude Include="src\platform\windows\windowsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

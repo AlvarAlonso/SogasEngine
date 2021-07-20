@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vertexArray.h"
-#include "../external/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
 namespace Sogas 
 {

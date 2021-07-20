@@ -31,6 +31,7 @@ namespace Sogas
 		virtual void onUpdate(f32 dt) override;
 		virtual void onImguiRender() override;
 		virtual void onEvent(Event& event) override;
+
 	private:
 		bool onKeyPressed(KeyPressedEvent& e);
 		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
@@ -47,7 +48,6 @@ namespace Sogas
 
 		std::unique_ptr<Scene> m_currentScene;
 
-		// ECS
 		std::shared_ptr<Scene> m_pScene;
 
 		glm::vec2 m_viewportSize{ 0, 0 };
