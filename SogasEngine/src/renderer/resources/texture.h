@@ -17,15 +17,23 @@ namespace Sogas
 
 		virtual void setData(void* data, u32 size) = 0;
 		virtual u32 getID() const = 0;
+		virtual std::string& getName() = 0;
 
 		virtual void bind(u32 slot = 0) const = 0;
 
+	protected:
+		std::string m_filepath;
 	};
 
 	class SGS Texture2D : public Texture
 	{
 	public:
+		static std::unordered_map<std::string, std::shared_ptr<Texture2D>> s_loadedTextures;
+
 		static std::shared_ptr<Texture2D> create(u32 width, u32 height);
 		static std::shared_ptr<Texture2D> create(const std::string& path);
+		static std::shared_ptr<Texture2D> GET(const std::string& filepath);
+
+		virtual std::string& getName() = 0;
 	};
 }

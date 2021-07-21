@@ -155,8 +155,6 @@ namespace Sogas
 
     std::shared_ptr<Mesh> Mesh::GET(const std::string& filename)
     {
-        std::string s = filename;
-        
         if (!s_loadedMeshes[filename])
         {
             std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();

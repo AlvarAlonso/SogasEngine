@@ -18,6 +18,7 @@ namespace Sogas
 
 		virtual void setData(void* data, u32 size) override;
 		virtual u32 getID() const override { return m_ID; };
+		virtual std::string& getName() override { return m_path; }
 
 		virtual void bind(u32 slot = 0) const override;
 	private:

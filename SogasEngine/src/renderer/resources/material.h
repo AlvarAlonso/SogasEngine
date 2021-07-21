@@ -38,15 +38,18 @@ namespace Sogas
 		Material(std::shared_ptr<Shader> shader, const MaterialProperties& properties);
 		~Material();
 
+		void setName(const std::string& name) { m_name = name; }
 		void setMaterialShader(std::shared_ptr<Shader> shader);
 		void setMaterialProperties(const MaterialProperties& properties);
 
+		inline std::string getName() const { return m_name; }
 		inline std::shared_ptr<Shader>& getShader() { return m_pShader; };
 		inline MaterialProperties& getMaterialProperties() { return m_materialProperties; }
 
 		inline std::shared_ptr<Texture2D>& getColorTexture() { return m_materialProperties.colorTexture; }
 	private:
 
+		std::string m_name;
 		std::shared_ptr<Shader> m_pShader;
 		MaterialProperties m_materialProperties;
 	};

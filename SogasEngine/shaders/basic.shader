@@ -57,7 +57,7 @@ void main()
 	vec2 uv = v_uv;
 	vec3 color = v_color;
 	color *= texture(u_texture, uv).xyz;
-	color = color * cameraPercentage + vec3(1, 0, 0) * (1 - cameraPercentage);
+	//color = color * cameraPercentage + vec3(1, 0, 0) * (1 - cameraPercentage);
 	outColor = vec4(color, 1);
 	outColor2 = v_entityID;
 };

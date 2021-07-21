@@ -3,21 +3,18 @@
 //#include "sogas.h"
 #include "core/application.h"
 #include "core/layer.h"
-
-#include "glm/glm.hpp"
-#include "Panels/ScenePanel.h"
-
 #include "scene/types.h"
+#include "Panels/ScenePanel.h"
+#include "glm/glm.hpp"
 
 namespace Sogas 
 {
 	class CameraController;
-	class Texture2D;
-	class Shader;
 	class Scene;
 	class EntityFactory;
 	class Framebuffer;
 	class Camera;
+	class ScenePanel;
 
 	class EditorLayer : public Layer
 	{

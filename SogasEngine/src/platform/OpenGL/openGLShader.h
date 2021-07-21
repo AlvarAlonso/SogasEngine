@@ -30,6 +30,7 @@ namespace Sogas
 
 		void bind() const;
 		void unbind() const;
+		virtual std::string getName() const { return m_filePath; }
 
 		// upload
 		void setUniform(const char* varname, bool input) { setUniform1(varname, input); }

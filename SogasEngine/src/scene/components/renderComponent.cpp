@@ -16,7 +16,7 @@ namespace Sogas
 	RenderComponent::RenderComponent()
 	{
 		m_pMesh = Mesh::GET("../Assets/cube.obj");
-		m_pMaterial = std::make_shared<Material>(Shader::create("../SogasEngine/shaders/basic.shader"));
+		m_pMaterial = std::make_shared<Material>(Shader::GET("../SogasEngine/shaders/basic.shader"));
 	}
 
 	bool RenderComponent::init()
@@ -72,11 +72,11 @@ namespace Sogas
 					!jsonMaterial["Shader"].is_null() &&
 					jsonMaterial["Shader"].is_string())
 				{
-					material->setMaterialShader(Shader::create(jsonMaterial["Shader"].get<std::string>()));
+					material->setMaterialShader(Shader::GET(jsonMaterial["Shader"].get<std::string>()));
 				}
 				else
 				{
-					material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+					material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));
 				}
 
 				// Get the material properties
@@ -88,7 +88,7 @@ namespace Sogas
 				}
 			}
 			else {
-				material->setMaterialShader(Shader::create("../SogasEngine/shaders/basic.shader"));
+				material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));
 				auto& properties = material->getMaterialProperties();
 				properties.colorTexture = Sogas::Texture2D::create(1, 1);
 				u32 defaultTextureData = 0xffffffff;

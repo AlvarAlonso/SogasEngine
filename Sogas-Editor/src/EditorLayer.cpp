@@ -25,6 +25,8 @@
 #include "scene/components/cameraComponent.h"
 #include "scene/components/lightComponent.h"
 
+#include "Panels/ScenePanel.h"
+
 namespace Sogas 
 {
 	EditorLayer::EditorLayer()

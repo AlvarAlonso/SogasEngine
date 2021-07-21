@@ -6,6 +6,8 @@
 #include "scene/components/lightComponent.h"
 
 #include "platform/utils/platformUtils.h"
+#include "renderer/shader.h"
+#include "renderer/resources/texture.h"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -303,12 +305,43 @@ namespace Sogas
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(RenderComponent::s_name);
-				if (ImGui::Button("Mesh"))
+				ImGui::Columns(2);
+				ImGui::Text("Mesh");
+				ImGui::NextColumn();
+				if (ImGui::Button(component.lock()->getMesh()->getMeshName().c_str()))
 				{
 					std::string meshName = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
-
 					component.lock()->setMesh(meshName.c_str());
 				}
+				ImGui::EndColumns();
+
+				ImGui::Text("Material");
+				ImGui::Columns(2);
+				ImGui::Text("Shader");
+				ImGui::NextColumn();
+				if (ImGui::Button(component.lock()->getShader()->getName().c_str()))
+				{
+					std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
+					component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
+				}
+				ImGui::EndColumns();
+				
+				auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
+				glm::vec3 color = glm::vec3(materialProperties.color.x, materialProperties.color.y, materialProperties.color.z);
+				
+				DrawVec3Control("Colour", color);
+				ImGui::Columns(2);
+				ImGui::Text("Colour Texture");
+				ImGui::NextColumn();
+
+				const char* colorTextureName = materialProperties.colorTexture ? materialProperties.colorTexture->getName().c_str() : "None";
+
+				if (ImGui::Button(colorTextureName))
+				{
+					std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+					materialProperties.colorTexture = Texture2D::GET(textureName);
+				}
+				ImGui::EndColumns();
 			});
 	}
 }

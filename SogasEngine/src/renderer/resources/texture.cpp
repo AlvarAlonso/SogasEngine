@@ -7,6 +7,8 @@
 
 namespace Sogas 
 {
+	std::unordered_map<std::string, std::shared_ptr<Texture2D>> Texture2D::s_loadedTextures;
+
 	std::shared_ptr<Texture2D> Texture2D::create(u32 width, u32 height)
 	{
 		switch (Renderer::getAPI())
@@ -29,5 +31,16 @@ namespace Sogas
 
 		SGSASSERT_MSG(false, "Unknown renderer API!");
 		return nullptr;
+	}
+	std::shared_ptr<Texture2D> Texture2D::GET(const std::string& filepath)
+	{
+		if (!s_loadedTextures[filepath])
+		{
+			std::shared_ptr<Texture2D> texture = Texture2D::create(filepath);
+			texture->m_filepath = filepath;
+			s_loadedTextures[filepath] = texture;
+			return texture;
+		}
+		return s_loadedTextures[filepath];
 	}
 }

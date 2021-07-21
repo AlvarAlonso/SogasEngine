@@ -7,6 +7,8 @@
 
 namespace Sogas 
 {
+	std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::s_loadedShaders;
+
 	std::shared_ptr<Shader> Shader::create(const std::string& vertexSource, const std::string& fragmentSource)
 	{
 		switch (Renderer::getAPI())
@@ -29,5 +31,16 @@ namespace Sogas
 
 		SGSASSERT_MSG(false, "Unknown renderer API!");
 		return nullptr;
+	}
+
+	std::shared_ptr<Shader> Shader::GET(const std::string filepath)
+	{
+		if (!Shader::s_loadedShaders[filepath])
+		{
+			std::shared_ptr<Shader> shader = Shader::create(filepath);
+			s_loadedShaders[filepath] = shader;
+			return shader;
+		}
+		return Shader::s_loadedShaders[filepath];
 	}
 }
