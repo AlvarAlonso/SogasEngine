@@ -39,6 +39,8 @@ namespace Sogas
 		virtual void to_json(json& j) = 0;
 		virtual void from_json(const json& j) = 0;
 
+		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
+
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
 		// It fails in the find func with const char*
 		static ComponentId getIdFromName(const char* componentStr)
@@ -57,7 +59,6 @@ namespace Sogas
 		}
 
 	private:
-		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
 		static std::unordered_map<std::string, u32> m_componentTypes;
 		static u32 lastId;
 	};

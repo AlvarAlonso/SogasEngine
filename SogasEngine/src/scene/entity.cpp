@@ -68,7 +68,7 @@ namespace Sogas
 
 		j = json
 		{
-			{"Name", !getName().empty() ? getName() : "Unknown name" },
+			{"Name", !getName().empty() ? getName() : "Entity" },
 			{TransformComponent::s_name, transform},
 			{RenderComponent::s_name, render},
 			{LightComponent::s_name, light}
@@ -77,6 +77,14 @@ namespace Sogas
 
 	void Entity::from_json(const json& jsonEntity)
 	{
+		/*
+		* Add name to the entity if one
+		*/
+		if (jsonEntity.contains("Name"))
+		{
+			setName(jsonEntity["Name"].get<std::string>());
+		}
+
 		// -----------------------
 		// Check if entity contains Transform Component
 		// -----------------------
@@ -120,6 +128,7 @@ namespace Sogas
 	void Entity::addComponent(StrongEntityComponentPtr pComponent)
 	{
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
+		//pComponent->setOwner(this);
 		SGSASSERT(success.second);
 	}
 

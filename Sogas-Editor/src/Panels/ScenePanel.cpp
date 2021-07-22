@@ -299,7 +299,6 @@ namespace Sogas
 
 		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
 			{
-				//DrawVec3Control("Colour", component.lock()->getColor(), 1.0f, 1.0f);
 				ImGui::ColorEdit3("Colour", &component.lock()->getColor().x);
 				ImGui::DragFloat("Intensity", &component.lock()->getIntensity(), 0.0f, 1000.0f);
 				ImGui::DragFloat("Maximum Distance", &component.lock()->getMaxDistance(), 0.0f, 1000.0f);
@@ -332,16 +331,8 @@ namespace Sogas
 					ImGui::EndColumns();
 
 					auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
-					//glm::vec3 color = glm::vec3(materialProperties.color.x, materialProperties.color.y, materialProperties.color.z);
 
-					//DrawVec3Control("Base Colour", color);
-
-					//ImGui::Columns(2);
-					//ImGui::Text("Base Colour");
-					//ImGui::NextColumn();
 					ImGui::ColorEdit4("", &materialProperties.color.x);
-					//ImGui::EndColumns();
-
 					ImGui::DragFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Roughness", &materialProperties.roughnessFactor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Tilling", &materialProperties.tillingFactor, 0.0f, 100.0f);
