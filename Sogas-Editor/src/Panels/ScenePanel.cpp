@@ -29,6 +29,8 @@ namespace Sogas
 	{
 		ImGui::Begin("Scene Hierarchy");
 
+		ImGui::ShowDemoWindow();
+
 		//SGSINFO("Entity Selected %i", m_selectedEntity.getId());
 		EntityId entityToDestroy = 0;
 		for (auto &entity : m_context.get()->getEntities())
@@ -282,7 +284,6 @@ namespace Sogas
 
 		drawComponent<TransformComponent>("Transform", entity.lock(), [](auto& component)
 			{
-				ImGui::Text(TransformComponent::s_name);
 				DrawVec3Control("Translation", component.lock()->getTranslation());
 				glm::vec3 rotation = glm::degrees(component.lock()->getRotation());
 				DrawVec3Control("Rotation", rotation);
@@ -298,13 +299,14 @@ namespace Sogas
 
 		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
 			{
-				ImGui::Text(LightComponent::s_name);
-				DrawVec3Control("Colour", component.lock()->getColor(), 1.0f, 1.0f);
+				//DrawVec3Control("Colour", component.lock()->getColor(), 1.0f, 1.0f);
+				ImGui::ColorEdit3("Colour", &component.lock()->getColor().x);
+				ImGui::DragFloat("Intensity", &component.lock()->getIntensity(), 0.0f, 1000.0f);
+				ImGui::DragFloat("Maximum Distance", &component.lock()->getMaxDistance(), 0.0f, 1000.0f);
 			});
 
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
 			{
-				ImGui::Text(RenderComponent::s_name);
 				ImGui::Columns(2);
 				ImGui::Text("Mesh");
 				ImGui::NextColumn();
@@ -315,33 +317,87 @@ namespace Sogas
 				}
 				ImGui::EndColumns();
 
-				ImGui::Text("Material");
-				ImGui::Columns(2);
-				ImGui::Text("Shader");
-				ImGui::NextColumn();
-				if (ImGui::Button(component.lock()->getShader()->getName().c_str()))
-				{
-					std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
-					component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
-				}
-				ImGui::EndColumns();
-				
-				auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
-				glm::vec3 color = glm::vec3(materialProperties.color.x, materialProperties.color.y, materialProperties.color.z);
-				
-				DrawVec3Control("Colour", color);
-				ImGui::Columns(2);
-				ImGui::Text("Colour Texture");
-				ImGui::NextColumn();
+				//ImGui::Separator();
 
-				const char* colorTextureName = materialProperties.colorTexture ? materialProperties.colorTexture->getName().c_str() : "None";
-
-				if (ImGui::Button(colorTextureName))
+				if (ImGui::CollapsingHeader("Material"))
 				{
-					std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-					materialProperties.colorTexture = Texture2D::GET(textureName);
-				}
-				ImGui::EndColumns();
+					ImGui::Columns(2);
+					ImGui::Text("Shader");
+					ImGui::NextColumn();
+					if (ImGui::Button(component.lock()->getShader()->getName().c_str()))
+					{
+						std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
+						component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
+					}
+					ImGui::EndColumns();
+
+					auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
+					//glm::vec3 color = glm::vec3(materialProperties.color.x, materialProperties.color.y, materialProperties.color.z);
+
+					//DrawVec3Control("Base Colour", color);
+
+					//ImGui::Columns(2);
+					//ImGui::Text("Base Colour");
+					//ImGui::NextColumn();
+					ImGui::ColorEdit4("", &materialProperties.color.x);
+					//ImGui::EndColumns();
+
+					ImGui::DragFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
+					ImGui::SliderFloat("Roughness", &materialProperties.roughnessFactor, 0.0f, 1.0f);
+					ImGui::SliderFloat("Tilling", &materialProperties.tillingFactor, 0.0f, 100.0f);
+
+					DrawVec3Control("Emission", materialProperties.emissiveFactor);
+
+					const char* colorTextureName = materialProperties.colorTexture ? materialProperties.colorTexture->getName().c_str() : "None";
+					const char* normalTextureName = materialProperties.normalTexture ? materialProperties.normalTexture->getName().c_str() : "None";
+					const char* emissiveTextureName = materialProperties.emissiveTexture ? materialProperties.emissiveTexture->getName().c_str() : "None";
+					const char* metallicRoughnessTextureName = materialProperties.metallicRoughnessTexture ?
+						materialProperties.metallicRoughnessTexture->getName().c_str() : "None";
+
+					ImGui::Columns(2);
+					ImGui::Text("Colour Texture");
+					ImGui::NextColumn();
+
+					if (ImGui::Button(colorTextureName))
+					{
+						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+						materialProperties.colorTexture = Texture2D::GET(textureName);
+					}
+					ImGui::EndColumns();
+
+					ImGui::Columns(2);
+					ImGui::Text("Normal Texture");
+					ImGui::NextColumn();
+
+					if (ImGui::Button(normalTextureName))
+					{
+						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+						materialProperties.normalTexture = Texture2D::GET(textureName);
+					}
+					ImGui::EndColumns();
+
+					ImGui::Columns(2);
+					ImGui::Text("Emissive Texture");
+					ImGui::NextColumn();
+
+					if (ImGui::Button(emissiveTextureName))
+					{
+						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+						materialProperties.emissiveTexture = Texture2D::GET(textureName);
+					}
+					ImGui::EndColumns();
+
+					ImGui::Columns(2);
+					ImGui::Text("MetallicRoughness Texture");
+					ImGui::NextColumn();
+
+					if (ImGui::Button(metallicRoughnessTextureName))
+					{
+						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+						materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
+					}
+					ImGui::EndColumns();
+				}				
 			});
 	}
 }

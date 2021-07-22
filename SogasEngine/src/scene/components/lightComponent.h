@@ -20,8 +20,8 @@ namespace Sogas
 		virtual void from_json(const json& j) override;
 
 		inline glm::vec3& getColor() { return m_color; }
-		inline f32 getMaxDistance() { return m_maxDistance; }
-		inline f32 getIntensity() { return m_intensity; }
+		inline f32& getMaxDistance() { return m_maxDistance; }
+		inline f32& getIntensity() { return m_intensity; }
 
 		void setColor(const glm::vec3 color) { m_color = color; }
 

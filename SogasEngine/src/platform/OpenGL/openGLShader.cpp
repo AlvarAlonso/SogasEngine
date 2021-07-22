@@ -67,6 +67,13 @@ namespace Sogas
 		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
+	void OpenGLShader::setUniform4(const char* varname, const glm::vec4 input)
+	{
+		GLint location = getUniformLocation(varname);
+		glProgramUniform4f(m_ID, location, input.x, input.y, input.z, input.w);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
+	}
+
 	void OpenGLShader::setMatrix44(const char* varname, const glm::mat4 input)
 	{
 		GLint location = getUniformLocation(varname);

@@ -8,6 +8,7 @@ layout(location = 3) in vec2 a_uv;
 
 uniform mat4 u_viewProjectionMatrix;
 uniform vec3 u_cameraPosition;
+uniform vec4 u_color;
 uniform float u_offset;
 uniform int u_entityID;
 uniform mat4 u_model;
@@ -27,7 +28,7 @@ void main()
 	v_normal = (model * vec4(a_normal, 0.0)).xyz;
 	v_worldPosition = (model * vec4(a_position, 1.0)).xyz;
 	v_uv = a_uv;
-	v_color = a_color;
+	v_color = a_color * u_color.xyz;
 	v_entityID = u_entityID;
 	v_fragmentToCamera = normalize(v_worldPosition - u_cameraPosition);
 

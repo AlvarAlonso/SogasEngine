@@ -64,6 +64,7 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_view", s_sceneData->cameraPosition);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
 
 		if (material->getColorTexture())
