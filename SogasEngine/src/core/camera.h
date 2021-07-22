@@ -29,8 +29,11 @@ namespace Sogas
 		glm::mat4 getViewProjection();
 
 		void rotate(f32 xoffset, f32 yoffset, bool constrainPitch = true);
+		void orbit(f32 xoffset, f32 yoffset);
 		void move(e_cameraMovement dir, f32 dt);
+		void move(f32 xoffset, f32 yoffset);
 		void update(i32 keycode);
+		void zoom(const f32 factor);
 
 		inline void setPosition(glm::vec3 pos) { m_position = pos; }
 		inline glm::vec3 getPosition() const { return m_position; }
@@ -44,6 +47,8 @@ namespace Sogas
 		glm::vec3 m_front;
 		glm::vec3 m_up;
 		glm::vec3 m_right;
+
+		f32 m_orbitSpeed = 5.0f;
 
 		// TODO: to rotate the camera
 		f32 m_yaw = 90.0f;

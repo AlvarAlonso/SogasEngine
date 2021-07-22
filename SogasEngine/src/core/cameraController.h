@@ -25,12 +25,14 @@ namespace Sogas
 		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
 		bool onMouseButtonReleased(MouseButtonReleasedEvent& e);
 		bool onMouseMoved(MouseMoveEvent& e);
+		bool onMouseScrolled(MouseScrolledEvent& e);
 
 		std::shared_ptr<Camera> m_camera = nullptr;
 
 		bool m_rotation = true;
 		f32 m_speed = 0.1f;
 		f32 m_sensitivity = 10.0f;
+		f32 m_deltaTime = 0.0f;
 		glm::vec2 m_viewportSize{ 0.0f, 0.0f };
 		glm::vec2 m_mousePosition{ 0.0f, 0.0f };
 	};

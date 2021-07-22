@@ -45,6 +45,12 @@ namespace Sogas
         m_up = glm::normalize(glm::cross(m_front, m_right));
     }
 
+    void Camera::orbit(f32 xoffset, f32 yoffset)
+    {
+
+        glm::vec3 center = glm::normalize(m_position - m_front);
+    }
+
     void Camera::move(e_cameraMovement dir, f32 dt)
     {
         switch (dir)
@@ -70,5 +76,18 @@ namespace Sogas
         default:
             break;
         }
+    }
+
+    void Camera::move(f32 xoffset, f32 yoffset)
+    {
+        glm::vec3 newPosition = glm::vec3(m_position.x + xoffset, m_position.y + yoffset, m_position.z);
+        setPosition(newPosition);
+    }
+
+    void Camera::zoom(const f32 factor)
+    {
+        glm::vec3 zoom = m_front * factor * m_orbitSpeed;
+        m_position += zoom;
+        m_front += zoom;
     }
 }
