@@ -44,19 +44,20 @@ namespace Sogas
 		{
 			Time::deltaTime = (f32)glfwGetTime() - (f32)Time::time;
 			Time::time = glfwGetTime();
-
-			for (Layer* layer : m_layerStack)
+			if (!m_minimized)
 			{
-				layer->onUpdate(Time::deltaTime);
-			}
+				for (Layer* layer : m_layerStack)
+				{
+					layer->onUpdate(Time::deltaTime);
+				}
 
-			m_imguiLayer->begin();
-			for (Layer* layer : m_layerStack)
-			{
-				layer->onImguiRender();
+				m_imguiLayer->begin();
+				for (Layer* layer : m_layerStack)
+				{
+					layer->onImguiRender();
+				}
+				m_imguiLayer->end();
 			}
-			m_imguiLayer->end();
-
 			m_window->onUpdate();
 		}
 	}
