@@ -331,7 +331,7 @@ namespace Sogas
 					auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
 
 					ImGui::ColorEdit4("", &materialProperties.color.x);
-					ImGui::DragFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
+					ImGui::SliderFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Roughness", &materialProperties.roughnessFactor, 0.0f, 1.0f);
 					ImGui::SliderFloat("Tilling", &materialProperties.tillingFactor, 0.0f, 100.0f);
 
@@ -347,7 +347,7 @@ namespace Sogas
 					ImGui::Text("Colour Texture");
 					ImGui::NextColumn();
 
-					if (ImGui::Button("Color Texture"))
+					if (ImGui::Button(colorTextureName))
 					{
 						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
 						if (!textureName.empty())
