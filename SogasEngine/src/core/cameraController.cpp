@@ -37,48 +37,6 @@ namespace Sogas
 		{
 			m_camera->move(UP, dt);
 		}
-		/*if (Input::isKeyPressed(SGS_KEY_W))
-		{
-			m_camera->move(FORWARD, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_A))
-		{
-			m_camera->move(LEFT, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_S))
-		{
-			m_camera->move(BACKWARD, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_D))
-		{
-			m_camera->move(RIGHT, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_SPACE))
-		{
-			m_camera->move(UP, dt);
-		}
-
-		if (Input::isKeyPressed(SGS_KEY_LEFT_SHIFT))
-		{
-			m_camera->move(DOWN, dt);
-		}
-
-		if (m_rotation)
-		{
-			if (Input::isKeyPressed(SGS_KEY_Q))
-			{
-				m_camera->rotate(m_sensitivity * dt, 0);
-			}
-
-			if (Input::isKeyPressed(SGS_KEY_E))
-			{
-				m_camera->rotate(-m_sensitivity * dt, 0);
-			}
-		}*/
 	}
 
 	void CameraController::onEvent(Event& e)
@@ -124,7 +82,7 @@ namespace Sogas
 		if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_SHIFT))
 		{
 			//Application::getInstance()->hideCursor();
-			m_camera->move(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
+			m_camera->move(-deltaMouse.x * m_deltaTime, -deltaMouse.y * m_deltaTime);
 		}
 
 		m_mousePosition = Input::getMousePosition();

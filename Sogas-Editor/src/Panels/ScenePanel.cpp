@@ -316,8 +316,6 @@ namespace Sogas
 				}
 				ImGui::EndColumns();
 
-				//ImGui::Separator();
-
 				if (ImGui::CollapsingHeader("Material"))
 				{
 					ImGui::Columns(2);
@@ -349,10 +347,11 @@ namespace Sogas
 					ImGui::Text("Colour Texture");
 					ImGui::NextColumn();
 
-					if (ImGui::Button(colorTextureName))
+					if (ImGui::Button("Color Texture"))
 					{
 						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-						materialProperties.colorTexture = Texture2D::GET(textureName);
+						if (!textureName.empty())
+							materialProperties.colorTexture = Texture2D::GET(textureName);
 					}
 					ImGui::EndColumns();
 
@@ -363,7 +362,8 @@ namespace Sogas
 					if (ImGui::Button(normalTextureName))
 					{
 						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-						materialProperties.normalTexture = Texture2D::GET(textureName);
+						if (!textureName.empty())
+							materialProperties.normalTexture = Texture2D::GET(textureName);
 					}
 					ImGui::EndColumns();
 
@@ -374,7 +374,8 @@ namespace Sogas
 					if (ImGui::Button(emissiveTextureName))
 					{
 						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-						materialProperties.emissiveTexture = Texture2D::GET(textureName);
+						if(!textureName.empty())
+							materialProperties.emissiveTexture = Texture2D::GET(textureName);
 					}
 					ImGui::EndColumns();
 
@@ -385,7 +386,8 @@ namespace Sogas
 					if (ImGui::Button(metallicRoughnessTextureName))
 					{
 						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-						materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
+						if (!textureName.empty())
+							materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
 					}
 					ImGui::EndColumns();
 				}				

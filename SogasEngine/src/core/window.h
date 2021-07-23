@@ -16,8 +16,8 @@ namespace Sogas
 
 		windowProperties(
 			const char* title = "Sogas Engine",
-			u32 width = 1280,
-			u32 height = 720)
+			u32 width = 1600,
+			u32 height = 900)
 			: m_title(title), m_width(width), m_height(height)
 		{
 		}

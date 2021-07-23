@@ -47,7 +47,7 @@ void main()
 {
 	float maxDistance = 75;
 
-	vec3 L = u_lightPosition - v_worldPosition;
+	vec3 L = v_worldPosition - u_lightPosition;
 	float lightDistance = length(L);
 	L = normalize(L);
 
@@ -62,5 +62,5 @@ void main()
 	vec3 color = v_color * u_lightColor;
 	color *= texture(u_texture, uv).xyz;
 	outColor = NdotL * vec4(color, 1) * attenuation;
-	//outColor = vec4(1, 0, 0, 1);
+	outColor = vec4(1, 0, 0, 1);
 };

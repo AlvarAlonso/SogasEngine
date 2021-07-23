@@ -46,6 +46,8 @@ namespace Sogas
 		m_pCamera = std::make_shared<Camera>();
 
 		this->newScene();
+		Serializer serializer(m_pScene);
+		serializer.deserialize("../Assets/scenes/basic.sgs");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
@@ -302,6 +304,9 @@ namespace Sogas
 		if (e.getRepeatCount() > 0)
 			return false;
 
+		bool ctrl = Input::isKeyPressed(SGS_KEY_LEFT_CONTROL) || Input::isKeyPressed(SGS_KEY_RIGHT_CONTROL);
+		bool shift = Input::isKeyPressed(SGS_KEY_LEFT_SHIFT) || Input::isKeyPressed(SGS_KEY_RIGHT_SHIFT);
+
 		switch(e.getKeyCode())
 		{
 			// Gizmos
@@ -327,6 +332,28 @@ namespace Sogas
 			{
 				if (!ImGuizmo::IsUsing())
 					m_gizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
+			}
+			case SGS_KEY_N:
+			{
+				if(ctrl)
+					newScene();
+				break;
+			}
+			case SGS_KEY_S:
+			{
+				if (ctrl && shift) {
+					saveSceneAs();
+					break;
+				}
+				if (ctrl)
+					saveScene();
+				break;
+			}
+			case SGS_KEY_O:
+			{
+				if (ctrl)
+					openScene();
 				break;
 			}
 		}
