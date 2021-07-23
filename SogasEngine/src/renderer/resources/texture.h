@@ -16,6 +16,7 @@ namespace Sogas
 		virtual u32 getHeight() const = 0;
 
 		virtual void setData(void* data, u32 size) = 0;
+		virtual void setName(const std::string& name) = 0;
 		virtual u32 getID() const = 0;
 		virtual std::string& getName() = 0;
 
@@ -35,5 +36,6 @@ namespace Sogas
 		static std::shared_ptr<Texture2D> GET(const std::string& filepath);
 
 		virtual std::string& getName() = 0;
+		virtual void setName(const std::string& name) = 0;
 	};
 }

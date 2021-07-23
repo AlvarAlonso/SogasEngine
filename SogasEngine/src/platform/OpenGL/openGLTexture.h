@@ -17,6 +17,7 @@ namespace Sogas
 		virtual u32 getHeight() const override { return m_height; }
 
 		virtual void setData(void* data, u32 size) override;
+		virtual void setName(const std::string& name) override { m_path = name; };
 		virtual u32 getID() const override { return m_ID; };
 		virtual std::string& getName() override { return m_path; }
 

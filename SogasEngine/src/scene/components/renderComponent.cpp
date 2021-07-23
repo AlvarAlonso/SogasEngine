@@ -93,6 +93,7 @@ namespace Sogas
 				properties.colorTexture = Sogas::Texture2D::create(1, 1);
 				u32 defaultTextureData = 0xffffffff;
 				properties.colorTexture->setData(&defaultTextureData, sizeof(u32));
+				properties.colorTexture->setName("Default white");
 				material->setMaterialProperties(properties);
 			}
 			setMaterial(material);
