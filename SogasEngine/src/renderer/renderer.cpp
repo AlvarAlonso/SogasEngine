@@ -25,10 +25,8 @@ namespace Sogas
 	{
 		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 		RenderCommand::clear();
-		RenderCommand::setDepthBuffer(true);
-
-		// TODO Create enum with values to pass to depth and blend functions
-		glDepthFunc(GL_LEQUAL);
+		RenderCommand::setDepthFunc(DepthTypes::LEQUAL);
+		RenderCommand::enableDepthBuffer(true);
 
 		RenderCommand::setBlendFunc(BlendTypes::ZERO, BlendTypes::ZERO);
 		RenderCommand::enableBlend(true);

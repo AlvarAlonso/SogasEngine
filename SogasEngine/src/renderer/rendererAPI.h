@@ -17,17 +17,12 @@ namespace Sogas
 		virtual void clear() = 0;
 
 		virtual void setClearColor(const glm::vec4& colour) = 0;
-
-		virtual void setDepthBuffer(const bool& setOn) = 0;
-
+		virtual void enableDepthBuffer(const bool& depth) = 0;
+		virtual void setDepthFunc(const DepthTypes factor) = 0;
 		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive) = 0;
-
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive) = 0;
-
 		virtual void setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor) = 0;
-
 		virtual void enableBlend(bool blend) = 0;
-
 		virtual void setLineWidth(const f32 width) = 0;
 
 		inline static API getAPI() { return s_API; }

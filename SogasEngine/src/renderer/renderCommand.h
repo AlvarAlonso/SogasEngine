@@ -18,9 +18,14 @@ namespace Sogas
 			s_rendererAPI->setClearColor(color);
 		}
 
-		inline static void setDepthBuffer(const bool& setOn)
+		inline static void enableDepthBuffer(const bool& depth)
 		{
-			s_rendererAPI->setDepthBuffer(setOn);
+			s_rendererAPI->enableDepthBuffer(depth);
+		}
+
+		inline static void setDepthFunc(const DepthTypes factor)
+		{
+			s_rendererAPI->setDepthFunc(factor);
 		}
 
 		inline static void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES)

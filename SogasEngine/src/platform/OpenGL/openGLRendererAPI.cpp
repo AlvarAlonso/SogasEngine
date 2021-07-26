@@ -11,16 +11,25 @@ namespace Sogas
 	void OpenGLRendererAPI::clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
 	void OpenGLRendererAPI::setClearColor(const glm::vec4& colour)
 	{
 		glClearColor(colour.r, colour.g, colour.b, colour.a);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
-	void OpenGLRendererAPI::setDepthBuffer(const bool& setOn)
+	void OpenGLRendererAPI::enableDepthBuffer(const bool& depth)
 	{
-		setOn ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+		depth ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
+	}
+
+	void OpenGLRendererAPI::setDepthFunc(const DepthTypes factor)
+	{
+		glDepthFunc((GLenum)factor);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
 	void OpenGLRendererAPI::draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive)
@@ -103,15 +112,28 @@ namespace Sogas
 			df = GL_ONE_MINUS_CONSTANT_ALPHA; break;
 		}
 		glBlendFunc(sf, df);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
-	void OpenGLRendererAPI::enableBlend(bool blend)
+	/*
+	* @brief enable blending in openGL
+	* @value const bool
+	* @return void
+	*/
+	void OpenGLRendererAPI::enableBlend(const bool blend)
 	{
 		blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
+	/*
+	* @brief set the width value for lines in openGL
+	* @value const f32
+	* @return void
+	*/
 	void OpenGLRendererAPI::setLineWidth(const f32 width)
 	{
 		glLineWidth(width);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 }
