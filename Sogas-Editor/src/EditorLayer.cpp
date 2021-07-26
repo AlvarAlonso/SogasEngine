@@ -52,7 +52,9 @@ namespace Sogas
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
-		m_pCamera->setPosition(glm::vec3{ 0.0f, 0.0f, -5.0f });
+		//m_pCamera->lookat({ 20.0f, 10.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
+		//m_pCamera->lookat({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 10.0f });
+		m_pCamera->setPosition(glm::vec3{ 0.0f, 3.0f, -15.0f });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
@@ -404,7 +406,7 @@ namespace Sogas
 	*/
 	void Sogas::EditorLayer::openScene()
 	{
-		std::string filepath = FileDialog::openFile("Sogas Scene (*.sgs)\0*.sgs\0");
+		std::string filepath = FileDialog::openFile("Sogas Scene (*.sgs)\0*.sgs\0Sogas Scene (*.json)\0*.json\0");
 		
 		if (!filepath.empty())
 		{
@@ -444,7 +446,7 @@ namespace Sogas
 	*/
 	void Sogas::EditorLayer::saveSceneAs()
 	{
-		m_savePath = FileDialog::saveFile("Sogas Scene (*.sgs)\0*.sgs\0");
+		m_savePath = FileDialog::saveFile("Sogas Scene (*.sgs)\0*.sgs\0Sogas Scene (*json)\0*.json\0");
 
 		if (!m_savePath.empty())
 		{

@@ -37,17 +37,19 @@ in vec2 v_uv;
 in vec3 v_color;
 
 layout(location = 0) out vec4 outColor;
+layout(location = 1) out int idColor;
 
 uniform sampler2D u_texture;
 
 uniform vec3 u_lightPosition;
 uniform vec3 u_lightColor;
+uniform int u_entityID;
 
 void main()
 {
 	float maxDistance = 75;
 
-	vec3 L = v_worldPosition - u_lightPosition;
+	vec3 L = u_lightPosition - v_worldPosition;
 	float lightDistance = length(L);
 	L = normalize(L);
 
@@ -62,5 +64,6 @@ void main()
 	vec3 color = v_color * u_lightColor;
 	color *= texture(u_texture, uv).xyz;
 	outColor = NdotL * vec4(color, 1) * attenuation;
+	idColor = u_entityID;
 	//outColor = vec4(1, 0, 0, 1);
 };

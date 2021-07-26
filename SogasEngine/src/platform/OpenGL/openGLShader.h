@@ -6,7 +6,7 @@
 
 #include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 #include "renderer/shader.h"
-#include "../external/glm/glm/glm.hpp"
+//#include "../external/glm/glm/glm.hpp"
 
 namespace Sogas 
 {
@@ -33,12 +33,12 @@ namespace Sogas
 		virtual std::string getName() const { return m_filePath; }
 
 		// upload
-		void setUniform(const char* varname, bool input) { setUniform1(varname, input); }
-		void setUniform(const char* varname, int input) { setUniform1(varname, input); }
-		void setUniform(const char* varname, float input) { setUniform1(varname, input); }
-		void setUniform(const char* varname, glm::vec3 input) { setUniform3(varname, input); }
-		void setUniform(const char* varname, glm::vec4 input) { setUniform4(varname, input); }
-		void setUniform(const char* varname, glm::mat4 input) { setMatrix44(varname, input); }
+		virtual void setUniform(const char* varname, bool input)		override { setUniform1(varname, input); }
+		virtual void setUniform(const char* varname, int input)			override { setUniform1(varname, input); }
+		virtual void setUniform(const char* varname, float input)		override { setUniform1(varname, input); }
+		virtual void setUniform(const char* varname, glm::vec3 input)	override { setUniform3(varname, input); }
+		virtual void setUniform(const char* varname, glm::vec4 input)	override { setUniform4(varname, input); }
+		virtual void setUniform(const char* varname, glm::mat4 input)	override { setMatrix44(varname, input); }
 
 		virtual void setUniform1(const char* varname, const bool input1);
 		virtual void setUniform1(const char* varname, const int input1);

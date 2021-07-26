@@ -43,7 +43,7 @@ namespace Sogas
 		}
 		return Shader::s_loadedShaders[filepath];
 	}
-	std::shared_ptr<Shader> Shader::getDefault(std::string name)
+	std::shared_ptr<Shader> Shader::GETDefault(std::string name)
 	{
 
 		if (Shader::s_loadedShaders[name.c_str()])
@@ -99,9 +99,10 @@ namespace Sogas
 		s_loadedShaders[name.c_str()] = sh;
 
 		sh->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(sh)->setUniform4("u_color", glm::vec4(1.0f));
+		sh->setUniform("u_color", glm::vec4(1.0f));
 		sh->unbind();
 
 		return sh;
 	}
+
 }

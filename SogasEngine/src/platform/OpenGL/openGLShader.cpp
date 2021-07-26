@@ -24,13 +24,13 @@ namespace Sogas
 	OpenGLShader::~OpenGLShader()
 	{
 		glDeleteProgram(m_ID);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
 	void OpenGLShader::bind() const
 	{
 		glUseProgram(m_ID);
-		GLenum err = glGetError();
-		SGSASSERT(err == GL_NO_ERROR);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
 	void OpenGLShader::unbind() const

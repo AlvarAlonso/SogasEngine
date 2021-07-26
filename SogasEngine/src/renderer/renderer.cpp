@@ -59,19 +59,19 @@ namespace Sogas
 		auto& shader = renderComponent->getShader();
 		auto& material = renderComponent->getMaterial();
 		shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_view", s_sceneData->cameraPosition);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", transform);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
+		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
+		shader->setUniform("u_view", s_sceneData->cameraPosition);
+		shader->setUniform("u_model", transform);
+		shader->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
+		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
 
 		if (material->getColorTexture())
 		{
 			material->getColorTexture()->bind(0);
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);
+			shader->setUniform("u_texture", 0);
 		}
 		else
-			std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_texture", 0);	// TODO: use default texture ??
+			shader->setUniform("u_texture", 0);	// TODO: use default texture ??
 
 		auto lights = s_pScene->getByComponent<LightComponent>();
 
@@ -90,11 +90,11 @@ namespace Sogas
 
 				// Set light position
 				glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>())->getTranslation();
-				std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightPosition", lightPosition);
+				shader->setUniform("u_lightPosition", lightPosition);
 
 				// Set light colour
 				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
-				std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
+				shader->setUniform("u_lightColor", lightComponent->getColor());
 
 				renderComponent->getMesh()->m_vertexArray->bind();
 				if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())
@@ -110,12 +110,12 @@ namespace Sogas
 		RenderCommand::setLineWidth(1);
 		RenderCommand::enableBlend(false);
 
-		auto shader = Shader::getDefault("grid");
+		auto shader = Shader::GETDefault("grid");
 		shader->bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_color", glm::vec4(0.7f));
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", glm::mat4(1));
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_camera_position", s_sceneData->cameraPosition);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
+		shader->setUniform("u_color", glm::vec4(0.7f));
+		shader->setUniform("u_model", glm::mat4(1));
+		shader->setUniform("u_camera_position", s_sceneData->cameraPosition);
+		shader->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
 
 		grid->m_vertexArray->bind();
 		RenderCommand::draw(grid->m_vertexArray, Primitive::LINES);
@@ -123,6 +123,4 @@ namespace Sogas
 		RenderCommand::enableBlend(false);
 		shader->unbind();
 	}
-
-
 }

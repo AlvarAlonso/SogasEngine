@@ -34,6 +34,7 @@ namespace Sogas
 		void move(f32 xoffset, f32 yoffset);
 		void update(i32 keycode);
 		void zoom(const f32 factor);
+		void lookat(const glm::vec3 position, const glm::vec3 center);
 
 		inline void setPosition(glm::vec3 pos) { m_position = pos; }
 		inline glm::vec3 getPosition() const { return m_position; }

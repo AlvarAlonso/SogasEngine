@@ -91,4 +91,15 @@ namespace Sogas
         m_position += zoom;
         m_front += zoom;
     }
+
+    // TODO function not working
+    void Camera::lookat(const glm::vec3 position, const glm::vec3 center)
+    {
+        glm::mat4 transform = glm::lookAt(position, position + center, m_up);
+
+        m_position = position;
+        m_front = glm::normalize(glm::vec3(transform[2]));
+        m_right = glm::cross(m_front, glm::vec3(0, 1, 0));
+        //m_rotation = glm::eulerAngles(glm::quat_cast(transform));
+    }
 }
