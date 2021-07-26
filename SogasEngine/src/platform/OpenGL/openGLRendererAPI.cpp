@@ -1,8 +1,10 @@
 #include "sgspch.h"
 
 #include "openGLRendererAPI.h"
+#include "renderer/shader.h"
 
 #include "GL/glew.h"
+#include <glm/ext/matrix_transform.hpp>
 
 namespace Sogas 
 {
@@ -34,6 +36,15 @@ namespace Sogas
 		glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
+	void OpenGLRendererAPI::drawLines(const std::shared_ptr<VertexArray>& vertexArray)
+	{
+		for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())
+		{
+			//glPointSize(10);
+			glDrawArrays(GL_LINES, 0, vertexBuffer.get()->getSize());
+		}
+	}
+
 	void OpenGLRendererAPI::setBlendFunc(bool blend)
 	{
 		if (blend)
@@ -43,5 +54,10 @@ namespace Sogas
 	void OpenGLRendererAPI::enableBlend(bool blend)
 	{
 		blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+	}
+
+	void OpenGLRendererAPI::setLineWidth(const f32 width)
+	{
+		glLineWidth(width);
 	}
 }

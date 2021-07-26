@@ -103,4 +103,25 @@ namespace Sogas
 			}
 		}
 	}
+
+	void Renderer::renderGrid(std::shared_ptr<Mesh>& grid)
+	{
+		RenderCommand::setLineWidth(1);
+		RenderCommand::enableBlend(false);
+
+		auto shader = Shader::getDefault("grid");
+		shader->bind();
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_color", glm::vec4(0.7f));
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_model", glm::mat4(1));
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_camera_position", s_sceneData->cameraPosition);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
+
+		grid->m_vertexArray->bind();
+		RenderCommand::drawLines(grid->m_vertexArray);
+		
+		RenderCommand::enableBlend(false);
+		shader->unbind();
+	}
+
+
 }

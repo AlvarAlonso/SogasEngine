@@ -14,6 +14,8 @@
 
 #include "renderer/renderer.h"
 #include "renderer/framebuffer.h"
+#include "renderer/shader.h" // should not be in here, just for testing purposes
+#include "renderer/resources/mesh.h" // For grid in editor. Rethink if it should be in here
 
 // TODO: find a better place to define components
 #include "scene/entityFactory.h"
@@ -54,7 +56,7 @@ namespace Sogas
 		m_pCamera->setPosition(glm::vec3{ 0.0f, 0.0f, -5.0f });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
-	
+
 		m_scenePanel.setContext(m_pScene);
 	}
 
@@ -74,12 +76,23 @@ namespace Sogas
 		// TODO: implement onUpdate func
 		m_pScene->onUpdate(dt);
 
+		// TODO: Should grid be directly implemented by editor layer?
+
 		m_framebuffer->bind();
 
+
 		Renderer::beginScene(m_pScene, m_pCamera);
+		//RenderCommand::draw(m_pGrid->m_vertexArray);
 		m_framebuffer->clearAttachment(1, -1);
 		Renderer::render();
+		if (!m_pGrid)
+		{
+			m_pGrid = std::make_shared<Mesh>();
+			m_pGrid->createGrid(5);
+		}
+		Renderer::renderGrid(m_pGrid);
 		Renderer::endScene();
+
 
 		// TODO: Mouse picking
 

@@ -20,6 +20,7 @@ namespace Sogas
 		static std::shared_ptr<Shader> create(const std::string& filepath);
 
 		static std::shared_ptr<Shader> GET(const std::string filepath);
+		static std::shared_ptr<Shader> getDefault(std::string name);
 
 	};
 }

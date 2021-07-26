@@ -18,6 +18,7 @@ namespace Sogas
 	class Camera;
 	class Material;
 	class RenderComponent;
+	class Mesh;
 
 	class SGS Renderer
 	{
@@ -34,6 +35,7 @@ namespace Sogas
 		static void render();
 		static void endScene();
 		static void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
+		static void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application

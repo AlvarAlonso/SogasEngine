@@ -113,32 +113,10 @@ namespace Sogas
             }
         }
 
-        /*
-        std::vector<f32> aux;
-        for (auto& vert : vertices)
-        {
-            aux.push_back(vert.position.x);
-            aux.push_back(vert.position.y);
-            aux.push_back(vert.position.z);
-            aux.push_back(vert.normal.x);
-            aux.push_back(vert.normal.y);
-            aux.push_back(vert.normal.z);
-            aux.push_back(vert.color.x);
-            aux.push_back(vert.color.y);
-            aux.push_back(vert.color.z);
-            aux.push_back(vert.uv.x);
-            aux.push_back(vert.uv.y);
-        }
-        */
-
-        //m_vertexBuffer.reset(VertexBuffer::create(aux.data(), (u32)aux.size() * sizeof(f32)));
         size_t arraySize = vertices.size();
         size_t vertexSize = sizeof(Vertex);
-
         size_t size = arraySize * vertexSize;
-        u32 sizeU = (u32)size;
 
-        //u32 size = vertices.size() * sizeof(Vertex);
         m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
         VertexBufferLayout layout = {
             {ShaderDataType::Float3, "a_position"},
@@ -164,5 +142,43 @@ namespace Sogas
         }
 
         return s_loadedMeshes[filename];
+    }
+
+    void Mesh::createGrid(f32 dist)
+    {
+        i32 n_lines = 2000;
+        glm::vec4 color = { 0.5f, 0.5f, 0.5f, 1.0f };
+
+        struct gVertex {
+            glm::vec3 position;
+            glm::vec4 color;
+        };
+
+        std::vector<gVertex> vertices;
+
+        for (f32 i = n_lines * -0.5f; i <= n_lines * 0.5f; ++i)
+        {
+            glm::vec4 color = i32(i) % 10 == 0 ? glm::vec4(1.0f) : glm::vec4(0.75f);
+            vertices.push_back({ {i * dist, 0.0f, dist * n_lines * -0.5f}, color });
+            vertices.push_back({ {i * dist, 0.0f, dist * n_lines * +0.5f}, color });
+            vertices.push_back({ {dist * n_lines * +0.5f, 0.0f, dist * i}, color });
+            vertices.push_back({ {dist * n_lines * -0.5f, 0.0f, dist * i}, color });
+        }
+
+        //vertices.push_back({ {-10.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
+        //vertices.push_back({ { 0.0f, 10.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
+        //vertices.push_back({ { 1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
+
+        size_t arraySize = vertices.size();
+        size_t vertexSize = sizeof(gVertex);
+        size_t size = arraySize * vertexSize;
+
+        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
+        VertexBufferLayout layout = {
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float4, "a_color"}
+        };
+        m_vertexBuffer->setLayout(layout);
+        m_vertexArray->addVertexBuffer(m_vertexBuffer);
     }
 }

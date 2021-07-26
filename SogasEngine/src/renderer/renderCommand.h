@@ -33,6 +33,11 @@ namespace Sogas
 			s_rendererAPI->drawIndexed(vertexArray);
 		}
 
+		inline static void drawLines(const std::shared_ptr<VertexArray>& vertexArray)
+		{
+			s_rendererAPI->drawLines(vertexArray);
+		}
+
 		inline static void setBlendFunc(bool blend)
 		{
 			s_rendererAPI->setBlendFunc(blend);
@@ -41,6 +46,11 @@ namespace Sogas
 		inline static void enableBlend(bool blend)
 		{
 			s_rendererAPI->enableBlend(blend);
+		}
+
+		inline static void setLineWidth(const f32 width)
+		{
+			s_rendererAPI->setLineWidth(width);
 		}
 
 	private:
