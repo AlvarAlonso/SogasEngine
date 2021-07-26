@@ -12,7 +12,7 @@ namespace Sogas
 		virtual void setDepthBuffer(const bool& setOn) override;
 		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES) override;
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES) override;
-		virtual void setBlendFunc(bool blend) override;
+		virtual void setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor) override;
 		virtual void enableBlend(const bool blend) override;
 		virtual void setLineWidth(const f32 width) override;
 	};

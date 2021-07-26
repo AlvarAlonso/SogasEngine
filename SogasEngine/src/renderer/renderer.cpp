@@ -30,7 +30,7 @@ namespace Sogas
 		// TODO Create enum with values to pass to depth and blend functions
 		glDepthFunc(GL_LEQUAL);
 
-		RenderCommand::setBlendFunc(true);
+		RenderCommand::setBlendFunc(BlendTypes::ZERO, BlendTypes::ZERO);
 		RenderCommand::enableBlend(true);
 
 		s_pScene = scene;

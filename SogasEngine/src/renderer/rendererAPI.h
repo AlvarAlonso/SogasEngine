@@ -24,7 +24,7 @@ namespace Sogas
 
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive) = 0;
 
-		virtual void setBlendFunc(bool blend) = 0;
+		virtual void setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor) = 0;
 
 		virtual void enableBlend(bool blend) = 0;
 

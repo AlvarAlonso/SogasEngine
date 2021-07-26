@@ -36,10 +36,73 @@ namespace Sogas
 		glDrawElements((GLenum)primitive, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
-	void OpenGLRendererAPI::setBlendFunc(bool blend)
+	void OpenGLRendererAPI::setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor)
 	{
-		if (blend)
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		GLenum sf = GL_ZERO, df = GL_ZERO;
+		switch (sfactor)
+		{
+		case BlendTypes::ZERO:
+			sf = GL_ZERO; break;
+		case BlendTypes::ONE:
+			sf = GL_ONE; break;
+		case BlendTypes::SRC_COLOR:
+			sf = GL_SRC_COLOR; break;
+		case BlendTypes::ONE_MINUS_SRC_COLOR:
+			sf = GL_ONE_MINUS_SRC_COLOR; break;
+		case BlendTypes::DST_COLOR:
+			sf = GL_DST_COLOR; break;
+		case BlendTypes::ONE_MINUS_DST_COLOR:
+			sf = GL_ONE_MINUS_DST_COLOR; break;
+		case BlendTypes::SRC_ALPHA:
+			sf = GL_SRC_ALPHA; break;
+		case BlendTypes::ONE_MINUS_SRC_ALPHA:
+			sf = GL_ONE_MINUS_SRC_ALPHA; break;
+		case BlendTypes::DST_ALPHA:
+			sf = GL_DST_ALPHA; break;
+		case BlendTypes::ONE_MINUS_DST_ALPHA:
+			sf = GL_ONE_MINUS_DST_ALPHA; break;
+		case BlendTypes::CONSTANT_COLOR:
+			sf = GL_ONE_MINUS_CONSTANT_COLOR; break;
+		case BlendTypes::ONE_MINUS_CONSTANT_COLOR:
+			sf = GL_ONE_MINUS_CONSTANT_COLOR; break;
+		case BlendTypes::CONSTANT_ALPHA:
+			sf = GL_CONSTANT_ALPHA; break;
+		case BlendTypes::ONE_MINUS_CONSTANT_ALPHA:
+			sf = GL_ONE_MINUS_CONSTANT_ALPHA; break;
+		}
+
+		switch (dfactor)
+		{
+		case BlendTypes::ZERO:
+			df = GL_ZERO; break;
+		case BlendTypes::ONE:
+			df = GL_ONE; break;
+		case BlendTypes::SRC_COLOR:
+			df = GL_SRC_COLOR; break;
+		case BlendTypes::ONE_MINUS_SRC_COLOR:
+			df = GL_ONE_MINUS_SRC_COLOR; break;
+		case BlendTypes::DST_COLOR:
+			df = GL_DST_COLOR; break;
+		case BlendTypes::ONE_MINUS_DST_COLOR:
+			df = GL_ONE_MINUS_DST_COLOR; break;
+		case BlendTypes::SRC_ALPHA:
+			df = GL_SRC_ALPHA; break;
+		case BlendTypes::ONE_MINUS_SRC_ALPHA:
+			df = GL_ONE_MINUS_SRC_ALPHA; break;
+		case BlendTypes::DST_ALPHA:
+			df = GL_DST_ALPHA; break;
+		case BlendTypes::ONE_MINUS_DST_ALPHA:
+			df = GL_ONE_MINUS_DST_ALPHA; break;
+		case BlendTypes::CONSTANT_COLOR:
+			df = GL_ONE_MINUS_CONSTANT_COLOR; break;
+		case BlendTypes::ONE_MINUS_CONSTANT_COLOR:
+			df = GL_ONE_MINUS_CONSTANT_COLOR; break;
+		case BlendTypes::CONSTANT_ALPHA:
+			df = GL_CONSTANT_ALPHA; break;
+		case BlendTypes::ONE_MINUS_CONSTANT_ALPHA:
+			df = GL_ONE_MINUS_CONSTANT_ALPHA; break;
+		}
+		glBlendFunc(sf, df);
 	}
 
 	void OpenGLRendererAPI::enableBlend(bool blend)

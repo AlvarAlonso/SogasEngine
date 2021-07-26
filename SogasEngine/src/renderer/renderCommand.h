@@ -33,9 +33,9 @@ namespace Sogas
 			s_rendererAPI->drawIndexed(vertexArray, primitive);
 		}
 
-		inline static void setBlendFunc(bool blend)
+		inline static void setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor)
 		{
-			s_rendererAPI->setBlendFunc(blend);
+			s_rendererAPI->setBlendFunc(sfactor, dfactor);
 		}
 
 		inline static void enableBlend(bool blend)
