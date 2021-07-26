@@ -8,8 +8,6 @@
 
 namespace Sogas
 {
-	//enum class Primitive { POINTS = 0, LINES, LINE_STRIP, LINE_LOOP, TRIANGLES, TRIANGLES_STRIP, TRIANGLE_FAN };
-
 	class SGS RenderComponent : public EntityComponent
 	{
 	public:

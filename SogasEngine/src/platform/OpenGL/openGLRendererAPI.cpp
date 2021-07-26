@@ -45,6 +45,12 @@ namespace Sogas
 		glDrawElements((GLenum)primitive, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
+	/*
+	* @brief Functions that reveices 2 factors for blending funcion. Translates the value to openGL enum
+	* @param const BlendTypes source factor
+	* @param const BlendTypes destiny factor
+	* @return void
+	*/
 	void OpenGLRendererAPI::setBlendFunc(const BlendTypes sfactor, const BlendTypes dfactor)
 	{
 		GLenum sf = GL_ZERO, df = GL_ZERO;
@@ -117,7 +123,7 @@ namespace Sogas
 
 	/*
 	* @brief enable blending in openGL
-	* @value const bool
+	* @param const bool
 	* @return void
 	*/
 	void OpenGLRendererAPI::enableBlend(const bool blend)
@@ -128,7 +134,7 @@ namespace Sogas
 
 	/*
 	* @brief set the width value for lines in openGL
-	* @value const f32
+	* @param const f32
 	* @return void
 	*/
 	void OpenGLRendererAPI::setLineWidth(const f32 width)

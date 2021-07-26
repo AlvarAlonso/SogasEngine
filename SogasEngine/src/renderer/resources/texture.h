@@ -34,6 +34,7 @@ namespace Sogas
 		static std::shared_ptr<Texture2D> create(u32 width, u32 height);
 		static std::shared_ptr<Texture2D> create(const std::string& path);
 		static std::shared_ptr<Texture2D> GET(const std::string& filepath);
+		static std::shared_ptr<Texture2D> GET(const u32 width, const u32 height, const std::string& filepath);
 
 		virtual std::string& getName() = 0;
 		virtual void setName(const std::string& name) = 0;

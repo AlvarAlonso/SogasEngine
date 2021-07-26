@@ -62,5 +62,5 @@ void main()
 	vec3 color = v_color * u_lightColor;
 	color *= texture(u_texture, uv).xyz;
 	outColor = NdotL * vec4(color, 1) * attenuation;
-	outColor = vec4(1, 0, 0, 1);
+	//outColor = vec4(1, 0, 0, 1);
 };

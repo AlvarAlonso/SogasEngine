@@ -312,7 +312,8 @@ namespace Sogas
 				if (ImGui::Button(component.lock()->getMesh()->getMeshName().c_str()))
 				{
 					std::string meshName = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
-					component.lock()->setMesh(meshName.c_str());
+					if(!meshName.empty())
+						component.lock()->setMesh(meshName.c_str());
 				}
 				ImGui::EndColumns();
 
@@ -346,7 +347,8 @@ namespace Sogas
 					if (ImGui::Button(component.lock()->getShader()->getName().c_str()))
 					{
 						std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
-						component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
+						if(!shaderName.empty())
+							component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
 					}
 					ImGui::EndColumns();
 
@@ -371,11 +373,26 @@ namespace Sogas
 
 					if (ImGui::Button(colorTextureName))
 					{
-						std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-						if (!textureName.empty())
-							materialProperties.colorTexture = Texture2D::GET(textureName);
+						ImGui::OpenPopup("select_texture");
 					}
 					ImGui::EndColumns();
+
+					if (ImGui::BeginPopup("select_texture"))
+					{
+						if (ImGui::Selectable("Default white texture"))
+						{
+							materialProperties.colorTexture = Texture2D::GET("Default white");
+						}
+
+						if (ImGui::Selectable("Load textures"))
+						{
+							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+							if (!textureName.empty())
+								materialProperties.colorTexture = Texture2D::GET(textureName);
+						}
+						ImGui::EndPopup();
+					}
+
 
 					ImGui::Columns(2);
 					ImGui::Text("Normal Texture");

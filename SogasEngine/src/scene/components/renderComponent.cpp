@@ -95,10 +95,9 @@ namespace Sogas
 			else {
 				material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));
 				auto& properties = material->getMaterialProperties();
-				properties.colorTexture = Sogas::Texture2D::create(1, 1);
+				properties.colorTexture = Sogas::Texture2D::GET(1, 1, "Default white");
 				u32 defaultTextureData = 0xffffffff;
 				properties.colorTexture->setData(&defaultTextureData, sizeof(u32));
-				properties.colorTexture->setName("Default white");
 				material->setMaterialProperties(properties);
 			}
 			setMaterial(material);

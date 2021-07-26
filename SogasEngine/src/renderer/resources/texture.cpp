@@ -32,6 +32,7 @@ namespace Sogas
 		SGSASSERT_MSG(false, "Unknown renderer API!");
 		return nullptr;
 	}
+
 	std::shared_ptr<Texture2D> Texture2D::GET(const std::string& filepath)
 	{
 		if (!s_loadedTextures[filepath])
@@ -42,5 +43,18 @@ namespace Sogas
 			return texture;
 		}
 		return s_loadedTextures[filepath];
+	}
+
+	std::shared_ptr<Texture2D> Texture2D::GET(const u32 width, const u32 height, const std::string& name)
+	{
+		if (!s_loadedTextures[name])
+		{
+			std::shared_ptr<Texture2D> texture = Texture2D::create(width, height);
+			texture->m_filepath = name;
+			texture->setName(name);
+			s_loadedTextures[name] = texture;
+			return texture;
+		}
+		return s_loadedTextures[name];
 	}
 }
