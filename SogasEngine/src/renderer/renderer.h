@@ -13,10 +13,8 @@ struct statistics
 
 namespace Sogas 
 {
-	class Shader;
 	class Scene;
 	class Camera;
-	class Material;
 	class RenderComponent;
 	class Mesh;
 

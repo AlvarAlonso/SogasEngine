@@ -14,7 +14,6 @@
 
 #include "renderer/renderer.h"
 #include "renderer/framebuffer.h"
-#include "renderer/shader.h" // should not be in here, just for testing purposes
 #include "renderer/resources/mesh.h" // For grid in editor. Rethink if it should be in here
 
 // TODO: find a better place to define components
@@ -82,7 +81,6 @@ namespace Sogas
 
 
 		Renderer::beginScene(m_pScene, m_pCamera);
-		//RenderCommand::draw(m_pGrid->m_vertexArray);
 		m_framebuffer->clearAttachment(1, -1);
 		Renderer::render();
 		if (!m_pGrid)

@@ -39,6 +39,11 @@ namespace Sogas
 		};
 	}
 
+	/*
+	* @brief Deserialize RenderComponent from json data
+	* @param const json&
+	* @return void
+	*/
 	void RenderComponent::from_json(const json& jsonComponent)
 	{
 		// -----------------------

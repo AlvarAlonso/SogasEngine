@@ -23,19 +23,14 @@ namespace Sogas
 			s_rendererAPI->setDepthBuffer(setOn);
 		}
 
-		inline static void draw(const std::shared_ptr<VertexArray>& vertexArray)
+		inline static void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES)
 		{
-			s_rendererAPI->draw(vertexArray);
+			s_rendererAPI->draw(vertexArray, primitive);
 		}
 
-		inline static void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		inline static void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES)
 		{
-			s_rendererAPI->drawIndexed(vertexArray);
-		}
-
-		inline static void drawLines(const std::shared_ptr<VertexArray>& vertexArray)
-		{
-			s_rendererAPI->drawLines(vertexArray);
+			s_rendererAPI->drawIndexed(vertexArray, primitive);
 		}
 
 		inline static void setBlendFunc(bool blend)

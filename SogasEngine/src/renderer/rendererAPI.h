@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vertexArray.h"
+#include "scene/types.h"
 #include "glm/glm.hpp"
 
 namespace Sogas 
@@ -19,11 +20,9 @@ namespace Sogas
 
 		virtual void setDepthBuffer(const bool& setOn) = 0;
 
-		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive) = 0;
 
-		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
-
-		virtual void drawLines(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive) = 0;
 
 		virtual void setBlendFunc(bool blend) = 0;
 

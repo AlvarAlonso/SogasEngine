@@ -23,26 +23,17 @@ namespace Sogas
 		setOn ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLRendererAPI::draw(const std::shared_ptr<VertexArray>& vertexArray)
+	void OpenGLRendererAPI::draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive)
 	{
 		for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())
 		{
-			glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.get()->getSize());
+			glDrawArrays((GLenum)primitive, 0, vertexBuffer.get()->getSize());
 		}
 	}
 
-	void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+	void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive)
 	{
-		glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
-	}
-
-	void OpenGLRendererAPI::drawLines(const std::shared_ptr<VertexArray>& vertexArray)
-	{
-		for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())
-		{
-			//glPointSize(10);
-			glDrawArrays(GL_LINES, 0, vertexBuffer.get()->getSize());
-		}
+		glDrawElements((GLenum)primitive, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
 	void OpenGLRendererAPI::setBlendFunc(bool blend)

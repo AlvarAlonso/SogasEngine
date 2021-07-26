@@ -316,6 +316,28 @@ namespace Sogas
 				}
 				ImGui::EndColumns();
 
+				static u32 selectedPrimitive = 4;
+				const char* names[] = { "Points", "Lines", "Lines Strip", "Lines Fan", "Triangles", "Triangles Strip", "Triangles Fan" };
+
+				if (ImGui::Button("Primitive"))
+				{
+					ImGui::OpenPopup("select_primitive");
+				}
+				ImGui::SameLine();
+				ImGui::Text(names[selectedPrimitive]);
+
+				if (ImGui::BeginPopup("select_primitive"))
+				{
+					for (u32 i = 0; i < IM_ARRAYSIZE(names); i++)
+					{
+						if (ImGui::Selectable(names[i])) {
+							selectedPrimitive = i;
+							component.lock()->setPrimitive((Primitive)selectedPrimitive);
+						}
+					}
+					ImGui::EndPopup();
+				}
+
 				if (ImGui::CollapsingHeader("Material"))
 				{
 					ImGui::Columns(2);

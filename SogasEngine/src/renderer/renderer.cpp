@@ -99,7 +99,10 @@ namespace Sogas
 				std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_lightColor", lightComponent->getColor());
 
 				renderComponent->getMesh()->m_vertexArray->bind();
-				RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
+				if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())
+					RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+				else
+					RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
 			}
 		}
 	}
@@ -117,7 +120,7 @@ namespace Sogas
 		std::dynamic_pointer_cast<OpenGLShader>(shader)->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
 
 		grid->m_vertexArray->bind();
-		RenderCommand::drawLines(grid->m_vertexArray);
+		RenderCommand::draw(grid->m_vertexArray, Primitive::LINES);
 		
 		RenderCommand::enableBlend(false);
 		shader->unbind();

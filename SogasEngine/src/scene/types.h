@@ -21,6 +21,8 @@ namespace Sogas
 			return std::shared_ptr<T>();
 	}
 
+	enum class Primitive { POINTS = 0, LINES, LINE_STRIP, LINE_LOOP, TRIANGLES, TRIANGLES_STRIP, TRIANGLE_FAN };
+
 	class Entity;
 	class EntityComponent;
 
