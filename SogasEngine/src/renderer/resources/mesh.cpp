@@ -1,7 +1,7 @@
 #include "sgspch.h"
 
 #include "mesh.h"
-
+#include "renderer/shader.h"
 #include "../external/tinyobj/tiny_obj_loader.h"
 
 #include "core/logger.h"
@@ -68,6 +68,18 @@ namespace Sogas
         auto& attrib = reader.GetAttrib();
         auto& shapes = reader.GetShapes();
         auto& materials = reader.GetMaterials();
+
+        MaterialProperties props{};
+        if (!materials.empty())
+        {
+            auto& material = materials[0];
+            props.color = glm::vec4(material.diffuse[0], material.diffuse[1], material.diffuse[2], 1.0f);
+            props.metallicFactor = material.metallic;
+            props.roughnessFactor = material.shininess;
+        }
+
+        //auto shader = std::make_shared<Shader>("../SogasEngine/shaders/phong.shader");
+        m_pMaterial = std::make_shared<Material>(Shader::GET("../SogasEngine/shaders/phong.shader"), props);
 
         std::unordered_map<Vertex, u32> uniqueVertices{};
 

@@ -15,14 +15,12 @@ namespace Sogas
 	*/
 	RenderComponent::RenderComponent()
 	{
-		m_pMesh = Mesh::GET("../Assets/cube.obj");
-		m_pMaterial = std::make_shared<Material>(Shader::GET("../SogasEngine/shaders/basic.shader"));
+		m_pMesh = nullptr; // Mesh::GET("../Assets/cube.obj");
+		//m_pMaterial = nullptr; // std::make_shared<Material>(Shader::GET("../SogasEngine/shaders/phong.shader"));
 	}
 
 	bool RenderComponent::init()
 	{
-		//m_pMesh = nullptr;
-		//m_pMaterial = std::make_shared<Material>(new Material());
 		return true;
 	}
 
@@ -33,9 +31,11 @@ namespace Sogas
 	*/
 	void RenderComponent::to_json(json& j)
 	{
+		json material;
+		getMesh()->getMaterial()->to_json(material);
 		j = json{
 			{"Mesh", getMesh()->getMeshName() },
-			{"Material", nullptr}
+			{"Material", }
 		};
 	}
 
@@ -72,25 +72,7 @@ namespace Sogas
 			{
 				auto jsonMaterial = jsonComponent["Material"];
 
-				// Check if a valid shader is given
-				if (jsonMaterial.contains("Shader") &&
-					!jsonMaterial["Shader"].is_null() &&
-					jsonMaterial["Shader"].is_string())
-				{
-					material->setMaterialShader(Shader::GET(jsonMaterial["Shader"].get<std::string>()));
-				}
-				else
-				{
-					material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));
-				}
-
-				// Get the material properties
-				if (jsonMaterial.contains("ColorTexture") && jsonMaterial["ColorTexture"].is_string())
-				{
-					auto& properties = material->getMaterialProperties();
-					properties.colorTexture = Texture2D::create(jsonMaterial["ColorTexture"].get<std::string>());
-					material->setMaterialProperties(properties);
-				}
+				material->from_json(jsonMaterial);
 			}
 			else {
 				material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));

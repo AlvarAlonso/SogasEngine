@@ -2,8 +2,8 @@
 
 #include "defines.h"
 #include "renderer/VertexArray.h"
+#include "renderer/resources/material.h"
 #include <string>
-#include "scene/entity.h"
 
 namespace Sogas 
 {
@@ -16,6 +16,8 @@ namespace Sogas
 		Mesh();
 
 		inline std::string& getMeshName() { return m_filename; };
+		inline std::shared_ptr<Material>& getMaterial() { return m_pMaterial; }
+		inline void setMaterial(std::shared_ptr<Material>& material) { m_pMaterial = material; }
 
 		static std::shared_ptr<Mesh> GET(const std::string& filename);
 		void createGrid(f32 dist);
@@ -28,6 +30,7 @@ namespace Sogas
 
 		std::shared_ptr<VertexBuffer> m_vertexBuffer;
 		std::string m_filename;
+		std::shared_ptr<Material> m_pMaterial;
 	};
 }
 

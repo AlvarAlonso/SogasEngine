@@ -48,7 +48,7 @@ namespace Sogas
 
 		this->newScene();
 		Serializer serializer(m_pScene);
-		serializer.deserialize("../Assets/scenes/basic.sgs");
+		serializer.deserialize("../Assets/scenes/basic.json");
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));

@@ -3,6 +3,7 @@
 #include "core/assertions.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include <json/single_include/nlohmann/json.hpp>
 
 #include <memory>
 
@@ -10,6 +11,8 @@ namespace Sogas
 {
 	class Texture2D;
 	class Shader;
+
+	using json = nlohmann::json;
 
 	struct MaterialProperties
 	{
@@ -45,8 +48,10 @@ namespace Sogas
 		inline std::string getName() const { return m_name; }
 		inline std::shared_ptr<Shader>& getShader() { return m_pShader; };
 		inline MaterialProperties& getMaterialProperties() { return m_materialProperties; }
-
 		inline std::shared_ptr<Texture2D>& getColorTexture() { return m_materialProperties.colorTexture; }
+
+		void to_json(json& j);
+		void from_json(const json& j);
 	private:
 
 		std::string m_name;

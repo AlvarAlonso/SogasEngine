@@ -45,7 +45,8 @@ namespace Sogas
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>());
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>())->getTransform();
 
-			Renderer::submit(renderComponent, model);
+			if(renderComponent->getMesh() && renderComponent->getMaterial())
+				Renderer::submit(renderComponent, model);
 		}
 	}
 
@@ -78,7 +79,11 @@ namespace Sogas
 		if (lights.empty())
 		{
 			RenderCommand::enableBlend(false);
-			RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray);
+			renderComponent->getMesh()->m_vertexArray->bind();
+			if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())
+				RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+			else
+				RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
 		}
 		else
 		{
@@ -95,6 +100,8 @@ namespace Sogas
 				// Set light colour
 				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
 				shader->setUniform("u_lightColor", lightComponent->getColor());
+				shader->setUniform("u_lightIntensity", lightComponent->getIntensity());
+				shader->setUniform("u_maxLightDistance", lightComponent->getMaxDistance());
 
 				renderComponent->getMesh()->m_vertexArray->bind();
 				if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())

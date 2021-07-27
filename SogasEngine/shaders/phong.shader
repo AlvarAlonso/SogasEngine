@@ -43,27 +43,27 @@ uniform sampler2D u_texture;
 
 uniform vec3 u_lightPosition;
 uniform vec3 u_lightColor;
+uniform vec4 u_color;
+uniform float u_maxLightDistance;
+uniform float u_lightIntensity;
 uniform int u_entityID;
 
 void main()
 {
-	float maxDistance = 75;
-
 	vec3 L = u_lightPosition - v_worldPosition;
 	float lightDistance = length(L);
 	L = normalize(L);
 
-	float attenuation = maxDistance - lightDistance;
-	attenuation /= maxDistance;
+	float attenuation = u_maxLightDistance - lightDistance;
+	attenuation /= u_maxLightDistance;
 	attenuation = max(attenuation, 0.0);
 	attenuation = attenuation * attenuation;
 
 	vec3 N = normalize(v_normal);
 	float NdotL = clamp(dot(N, L), 0.0, 1.0);
 	vec2 uv = v_uv;
-	vec3 color = v_color * u_lightColor;
-	color *= texture(u_texture, uv).xyz;
-	outColor = NdotL * vec4(color, 1) * attenuation;
+	vec3 textureColor = texture(u_texture, uv).xyz;
+	vec3 color = v_color * u_color.xyz * u_lightColor;// *textureColor;
+	outColor = NdotL * vec4(color, 1) * u_lightIntensity * attenuation;
 	idColor = u_entityID;
-	//outColor = vec4(1, 0, 0, 1);
 };
