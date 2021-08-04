@@ -47,8 +47,10 @@ namespace Sogas
 
     void Camera::orbit(f32 xoffset, f32 yoffset)
     {
-        // TODO Orbit func
-        glm::vec3 center = glm::normalize(m_position - m_front);
+        glm::vec3 movement = m_right * xoffset + m_up * yoffset;
+        glm::vec3 newPosition = m_position + movement;
+        setPosition(newPosition);
+        m_front += movement;
     }
 
     void Camera::move(e_cameraMovement dir, f32 dt)
@@ -78,10 +80,10 @@ namespace Sogas
         }
     }
 
-    void Camera::move(f32 xoffset, f32 yoffset)
+    void Camera::pan(f32 xoffset, f32 yoffset)
     {
         glm::vec3 movement = m_right * xoffset + m_up * yoffset;
-        glm::vec3 newPosition = m_position + movement;//glm::vec3(m_position.x + xoffset, m_position.y + yoffset, m_position.z);
+        glm::vec3 newPosition = m_position + movement;
         setPosition(newPosition);
     }
 

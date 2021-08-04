@@ -31,7 +31,7 @@ namespace Sogas
 		void rotate(f32 xoffset, f32 yoffset, bool constrainPitch = true);
 		void orbit(f32 xoffset, f32 yoffset);
 		void move(e_cameraMovement dir, f32 dt);
-		void move(f32 xoffset, f32 yoffset);
+		void pan(f32 xoffset, f32 yoffset);
 		void update(i32 keycode);
 		void zoom(const f32 factor);
 		void lookat(const glm::vec3 position, const glm::vec3 center);

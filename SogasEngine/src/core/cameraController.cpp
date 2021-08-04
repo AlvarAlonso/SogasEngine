@@ -72,18 +72,25 @@ namespace Sogas
 	bool CameraController::onMouseMoved(MouseMoveEvent& e)
 	{
 		glm::vec2 deltaMouse = m_mousePosition - Input::getMousePosition();
-		if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE))
+		if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_SHIFT))
 		{
-			//Application::getInstance()->hideCursor();
+			m_camera->pan(-deltaMouse.x * m_deltaTime, -deltaMouse.y * m_deltaTime);
+		}
+		else if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_CONTROL))
+		{
+			// TODO fix zoom
+			m_camera->zoom(deltaMouse.y * m_deltaTime);
+		}
+		else if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_ALT))
+		{
 			m_camera->rotate(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
+		}
+		else if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE))
+		{
+			m_camera->orbit(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
 			Input::centerMouse();
 		}
 
-		if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_SHIFT))
-		{
-			//Application::getInstance()->hideCursor();
-			m_camera->move(-deltaMouse.x * m_deltaTime, -deltaMouse.y * m_deltaTime);
-		}
 
 		m_mousePosition = Input::getMousePosition();
 		//SGSDEBUG("Mouse is being moved [%f, %f]", m_mousePosition.x, m_mousePosition.y);
