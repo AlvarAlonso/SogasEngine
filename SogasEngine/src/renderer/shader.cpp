@@ -35,14 +35,22 @@ namespace Sogas
 
 	std::shared_ptr<Shader> Shader::GET(const std::string filepath)
 	{
-		if (!Shader::s_loadedShaders[filepath])
+		// extract shader name from the path string
+		auto lastSlash = filepath.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		auto lastDot = filepath.rfind('.');
+		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+		std::string shaderName = filepath.substr(lastSlash, count);
+
+		if (!Shader::s_loadedShaders[shaderName])
 		{
 			std::shared_ptr<Shader> shader = Shader::create(filepath);
-			s_loadedShaders[filepath] = shader;
+			s_loadedShaders[shaderName] = shader;
 			return shader;
 		}
-		return Shader::s_loadedShaders[filepath];
+		return Shader::s_loadedShaders[shaderName];
 	}
+
 	std::shared_ptr<Shader> Shader::GETDefault(std::string name)
 	{
 
@@ -104,5 +112,4 @@ namespace Sogas
 
 		return sh;
 	}
-
 }
