@@ -82,20 +82,34 @@ namespace Sogas
 
 		if (name == "grid")
 		{
-		fs = "uniform vec4 u_color;\n\
-				varying vec4 v_color;\n\
-				uniform vec3 u_camera_position;\n\
-				varying vec3 v_world_position;\n\
-				void main() {\n\
-					vec4 color = u_color * v_color;\n\
-					color.a *= pow( 1.0 - length(v_world_position.xz - u_camera_position.xz) / 5000.0, 4.5);\n\
-					if(v_world_position.x == 0.0)\n\
-						color.xyz = vec3(1.0, 0.5, 0.5);\n\
-					if(v_world_position.z == 0.0)\n\
-						color.xyz = vec3(0.5, 0.5, 1.0);\n\
-					vec3 E = normalize(v_world_position - u_camera_position);\n\
-					gl_FragColor = color;\n\
-				}";
+			vs = "attribute vec3 a_vertex; attribute vec4 a_color; \
+			uniform mat4 u_model;\n\
+			uniform mat4 u_viewprojection;\n\
+			varying vec3 v_position;\n\
+			varying vec3 v_world_position;\n\
+			varying vec4 v_color;\n\
+			void main()\n\
+			{\n\
+				v_position = a_vertex;\n\
+				v_color = a_color;\n\
+				v_world_position = (u_model * vec4(a_vertex, 1.0)).xyz;\n\
+				gl_Position = u_viewprojection * vec4(v_world_position, 1.0);\n\
+			}";
+
+			fs = "uniform vec4 u_color;\n\
+					varying vec4 v_color;\n\
+					uniform vec3 u_camera_position;\n\
+					varying vec3 v_world_position;\n\
+					void main() {\n\
+						vec4 color = u_color * v_color;\n\
+						color.a *= pow( 1.0 - length(v_world_position.xz - u_camera_position.xz) / 5000.0, 4.5);\n\
+						if(v_world_position.x == 0.0)\n\
+							color.xyz = vec3(1.0, 0.5, 0.5);\n\
+						if(v_world_position.z == 0.0)\n\
+							color.xyz = vec3(0.5, 0.5, 1.0);\n\
+						vec3 E = normalize(v_world_position - u_camera_position);\n\
+						gl_FragColor = color;\n\
+					}";
 		}
 
 		std::shared_ptr<Shader> sh = Shader::create(vs, fs);
