@@ -64,6 +64,8 @@ namespace Sogas
 		shader->setUniform("u_view", s_sceneData->cameraPosition);
 		shader->setUniform("u_model", transform);
 		shader->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
+		shader->setUniform("u_metalness", renderComponent->getMaterial()->getMaterialProperties().metallicFactor);
+		shader->setUniform("u_roughness", renderComponent->getMaterial()->getMaterialProperties().roughnessFactor);
 		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getId()));
 
 		if (material->getColorTexture())

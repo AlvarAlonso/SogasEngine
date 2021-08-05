@@ -310,7 +310,6 @@ namespace Sogas
 				ImGui::Columns(3);
 				ImGui::SetColumnWidth(0, 50.0f);
 				ImGui::SetColumnWidth(1, 250.0f);
-				//ImGui::SetColumnWidth(2, 25.0f);
 				ImGui::Text("Mesh");
 				ImGui::NextColumn();
 				ImGui::Text(component.lock()->getMesh() ? component.lock()->getMesh()->getMeshName().c_str() : "Null");
