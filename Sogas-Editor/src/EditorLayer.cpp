@@ -207,6 +207,7 @@ namespace Sogas
 		}
 
 		m_scenePanel.onImGuiRender();
+		m_assetsPanel.onImGuiRender();
 
 		// Hovered Entity
 		ImGui::Begin("Hovered Info");

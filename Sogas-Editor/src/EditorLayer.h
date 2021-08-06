@@ -5,6 +5,7 @@
 #include "core/layer.h"
 #include "scene/types.h"
 #include "Panels/ScenePanel.h"
+#include "Panels/AssetsPanel.h"
 #include "glm/glm.hpp"
 
 namespace Sogas 
@@ -63,6 +64,7 @@ namespace Sogas
 
 		// Panels
 		ScenePanel m_scenePanel;
+		AssetsPanel m_assetsPanel;
 
 		std::weak_ptr<Entity> m_hoveredEntity;
 		i32 m_entityIdHovered;

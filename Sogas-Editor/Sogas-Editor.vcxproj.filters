@@ -24,12 +24,18 @@
     <ClCompile Include="src\Panels\ScenePanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Panels\AssetsPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Panels\ScenePanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Panels\AssetsPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
