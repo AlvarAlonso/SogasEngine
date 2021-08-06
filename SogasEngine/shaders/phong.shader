@@ -30,11 +30,9 @@ void main()
 #shader fragment
 #version 330 core
 
-vec3 specularBRDF(float roughness, vec3 F0, float NdotH, float NdotV, float NdotL, float LdotH);
-float GeometrySmith(float NdotV, float NdotL, float roughness);
+float DistributionGGX(float NdotH);
+float GeometrySmith(float NdotV, float NdotL);
 vec3 FresnelSchlick(float VdotH, vec3 F0);
-float DistributionGGX(float NdotH, float roughness);
-float GeometrySchlickGGX(float NdotV, float roughness);
 
 in vec3 v_position;
 in vec3 v_normal;
@@ -57,6 +55,8 @@ uniform int u_entityID;
 uniform float u_metalness;
 uniform float u_roughness;
 
+const float PI = 3.1415926535897932384626433832795;
+
 void main()
 {
 	vec3 L				= u_lightPosition - v_worldPosition;
@@ -64,15 +64,15 @@ void main()
 	L					= normalize(L);
 
 	vec3 V				= normalize(u_cameraPosition - v_worldPosition);
-	vec3 H				= normalize(V + L);
 	vec3 N				= normalize(v_normal);
+	vec3 H				= normalize(V + L);
 	vec2 uv				= v_uv;
 
 	// Compute all necessary dot product
 	float NdotL = clamp(dot(N, L), 0.0, 1.0);
 	float NdotV = clamp(dot(N, V), 0.0, 1.0);
 	float NdotH = clamp(dot(N, H), 0.0, 1.0);
-	float VdotH = clamp(dot(V, H), 0.0, 1.0);
+	float HdotV = clamp(dot(H, V), 0.0, 1.0);
 
 	float attenuation	= u_maxLightDistance - lightDistance;
 	attenuation			/= u_maxLightDistance;
@@ -84,46 +84,36 @@ void main()
 
 	vec3 light = u_lightColor * u_lightIntensity * attenuation;
 
-	// We compute the ratio of diffuse and specular light based on the metalness of the material.
-	// A pure metal reflects all incoming light, thus it has no diffuse light (kd == 0).
-	float kd = (1.0 - u_metalness);
-	float ks = 1.0 - kd;
-
-	// We compute the Lambertian diffuse equation
-	vec3 diffuse = kd * NdotL * baseColor * light;
-
 	// We compute the reflection factor F0 taking into account the base colour and metalness
-	vec3 F0 = mix(vec3(0.5), baseColor, u_metalness);
+	vec3 F0 = mix(vec3(0.04), baseColor, u_metalness);
+
+	// Normal Distribution Function
+	float D = DistributionGGX(NdotH);
+
+	// Fresnel Equation
+	vec3 F = FresnelSchlick(HdotV, F0);
+
+	// Geometry Function
+	float G = GeometrySmith(NdotV, NdotL);
 
 	// Compute the Cook-Torrance specular
-	vec3 specular = ks * specularBRDF(u_roughness, F0, NdotH, NdotV, NdotL, VdotH);
+	vec3 specular = D * F * G;
+	specular /= max(4.0 * NdotL * NdotV, 0.0001);
 
-	/*outColor = vec4(diffuse, 1.0) + vec4(specular, 1.0);
-	if (DistributionGGX(NdotH, u_roughness) > 0.0)
-		outColor += vec4(1, 0, 0, 1);
-	vec3 s = FresnelSchlick(VdotH, F0);
-	if (s.x < 0.0 && s.y < 0.0 && s.z < 0.0)
-		outColor += vec4(0, 1, 0, 1);*/
+	// We compute the ratio of diffuse and specular light based on the metalness of the material.
+	// A pure metal reflects all incoming light, thus it has no diffuse light (kd == 0).
+	vec3 ks = F;
+	vec3 kd = vec3(1.0) - F;
+	kd *= 1.0 - u_metalness;
 
-	//if (GeometrySmith(NdotV, NdotL, 0.0) > 0.90)
-	//	outColor += vec4(0, 0, 1, 1);
-	//else
-	//	outColor += vec4(1, 0, 0, 1);
+	// We compute the Lambertian diffuse equation
+	vec3 diffuse = ( kd * baseColor ) / PI;
 
-	//if (GeometrySchlickGGX(NdotV, u_roughness) == 0.0)
-	//	outColor += vec4(0, 0, 1, 1);
+	vec3 direct = (diffuse + specular) * light * NdotL;
+	// TODO ambient should be done based on IBL
+	vec3 ambient = vec3(0.1) * baseColor;
 
-	if (u_roughness == 0.0)
-		outColor == vec4(1, 0, 0, 1);
-	if (u_roughness < 0.00001)
-		outColor == vec4(0, 1, 0, 1);
-	if (u_roughness > 0.5)
-		outColor == vec4(0, 0, 1, 1);
-	/*if (specular.x > 0.0 && specular.y > 0.0 && specular.z > 0.0)
-		outColor = vec4(1, 0, 0, 1);
-	else
-		outColor = vec4(0, 1, 0, 1);*/
-
+	outColor = vec4(direct + ambient, 1);
 	idColor = u_entityID;
 };
 
@@ -152,15 +142,14 @@ void main()
 * G: Geometry Function: describes the self-shadowing property of microfacets.
 */
 
-const float PI = 3.1415926535897932384626433832795;
 
 /*
 * Normal Distribution Function
 */
 
-float DistributionGGX(float NdotH, float roughness)
+float DistributionGGX(float NdotH)
 {
-	float a = roughness * roughness;
+	float a = u_roughness * u_roughness;
 	float NdotH2 = NdotH * NdotH;
 
 	float nom = a;
@@ -183,10 +172,10 @@ vec3 FresnelSchlick(float VdotH, vec3 F0)
 * Geometry Schlick Function GGX
 */
 
-float GeometrySchlickGGX(float NdotV, float roughness)
+float GeometrySchlickGGX(float NdotV, float k)
 {
 	float nom = NdotV;
-	float denom = NdotV * (1.0 - roughness) + roughness;
+	float denom = NdotV * (1.0 - k) + k;
 
 	return nom / denom;
 }
@@ -196,36 +185,34 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 * the light direction (geometry shadowing)
 */
 
-float GeometrySmith(float NdotV, float NdotL, float roughness)
+float GeometrySmith(float NdotV, float NdotL)
 {
-	float ggx1 = GeometrySchlickGGX(NdotV, roughness);
-	float ggx2 = GeometrySchlickGGX(NdotL, roughness);
+
+	float r = u_roughness + 1.0;
+	float k = (r * r) / 8.0;
+	float ggx1 = GeometrySchlickGGX(NdotV, k);
+	float ggx2 = GeometrySchlickGGX(NdotL, k);
 
 	return ggx1 * ggx2;
-	/*float k = pow(roughness + 1.0, 2.0) / 8.0;
-	float ggx1 = GeometrySchlickGGX(NdotL, k);
-	float ggx2 = GeometrySchlickGGX(NdotV, k);
-
-	return ggx1 * ggx2;*/
 }
 
 /*
 * Compute specular BRDF
 */
-
-vec3 specularBRDF(float roughness, vec3 F0, float NdotH, float NdotV, float NdotL, float LdotH)
-{
-	// Normal Distribution Function
-	float D = DistributionGGX(NdotH, roughness);
-
-	// Fresnel Equation
-	vec3 F = FresnelSchlick(LdotH, F0);
-
-	// Geometry Function
-	float G = GeometrySmith(NdotV, NdotL, roughness);
-
-	vec3 specular = D * F * G;
-	specular /= (4.0 * NdotL * NdotV);
-
-	return specular;
-}
+//
+//vec3 specularBRDF(float roughness, vec3 F0, float NdotH, float NdotV, float NdotL, float HdotV)
+//{
+//	// Normal Distribution Function
+//	float D = DistributionGGX(NdotH, roughness);
+//
+//	// Fresnel Equation
+//	vec3 F = FresnelSchlick(HdotV, F0);
+//
+//	// Geometry Function
+//	float G = GeometrySmith(NdotV, NdotL, roughness);
+//
+//	vec3 specular = D * F * G;
+//	specular /= max(4.0 * NdotL * NdotV, 0.0001);
+//
+//	return specular;
+//}

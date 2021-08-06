@@ -61,7 +61,7 @@ namespace Sogas
 		auto& material = renderComponent->getMaterial();
 		shader->bind();
 		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
-		shader->setUniform("u_view", s_sceneData->cameraPosition);
+		shader->setUniform("u_cameraPosition", s_sceneData->cameraPosition);
 		shader->setUniform("u_model", transform);
 		shader->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
 		shader->setUniform("u_metalness", renderComponent->getMaterial()->getMaterialProperties().metallicFactor);
