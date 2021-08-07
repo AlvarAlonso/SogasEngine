@@ -435,7 +435,7 @@ namespace Sogas
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.colorTexture = Texture2D::create(texturePath.string());
+								materialProperties.colorTexture = Texture2D::GET(texturePath.string());
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -483,7 +483,7 @@ namespace Sogas
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.emissiveTexture = Texture2D::create(texturePath.string());
+								materialProperties.emissiveTexture = Texture2D::GET(texturePath.string());
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -531,7 +531,7 @@ namespace Sogas
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.metallicRoughnessTexture = Texture2D::create(texturePath.string());
+								materialProperties.metallicRoughnessTexture = Texture2D::GET(texturePath.string());
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -579,7 +579,7 @@ namespace Sogas
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.occlusionTexture = Texture2D::create(texturePath.string());
+								materialProperties.occlusionTexture = Texture2D::GET(texturePath.string());
 							}
 							ImGui::EndDragDropTarget();
 						}
@@ -627,7 +627,7 @@ namespace Sogas
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.normalTexture = Texture2D::create(texturePath.string());
+								materialProperties.normalTexture = Texture2D::GET(texturePath.string());
 							}
 							ImGui::EndDragDropTarget();
 						}
