@@ -232,7 +232,7 @@ namespace Sogas
 
 		ImGui::PopID();
 	}
-	
+
 	void ScenePanel::drawEntityComponents(std::weak_ptr<Entity> entity)
 	{
 		StrongEntityPtr pEntity = entity.lock();
@@ -370,49 +370,50 @@ namespace Sogas
 
 						auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
 						ImGui::ColorEdit4("", &materialProperties.color.x);
-						if(materialProperties.colorTexture)
-						{
-							ImGui::ImageButton((ImTextureID)materialProperties.colorTexture->getID(), { 128, 128 });
-						}
-						else
-						{
-							ImGui::Button("Color Texture", { 128, 128 });
-						}
-
-						if(ImGui::BeginDragDropTarget())
-						{
-							if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
-							{
-								const wchar_t* path = (const wchar_t*)payload->Data;
-								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
-								materialProperties.colorTexture = Texture2D::create(texturePath.string());
-							}
-							ImGui::EndDragDropTarget();
-						}
-
 						ImGui::SliderFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
 						ImGui::SliderFloat("Roughness", &materialProperties.roughnessFactor, 0.0f, 1.0f);
 						ImGui::SliderFloat("Tilling", &materialProperties.tillingFactor, 0.0f, 100.0f);
 
 						DrawVec3Control("Emission", materialProperties.emissiveFactor);
 
+						ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
 						const char* colorTextureName = materialProperties.colorTexture ? materialProperties.colorTexture->getName().c_str() : "None";
 						const char* normalTextureName = materialProperties.normalTexture ? materialProperties.normalTexture->getName().c_str() : "None";
 						const char* emissiveTextureName = materialProperties.emissiveTexture ? materialProperties.emissiveTexture->getName().c_str() : "None";
 						const char* metallicRoughnessTextureName = materialProperties.metallicRoughnessTexture ?
 							materialProperties.metallicRoughnessTexture->getName().c_str() : "None";
+						
+						static f32 itemRightPadding = 16.0f;
+						static f32 thumbnailSize = 128.0f;
+						f32 cellSize = thumbnailSize + itemRightPadding;
 
-						ImGui::Columns(2);
-						ImGui::Text("Colour Texture");
-						ImGui::NextColumn();
+						f32 panelWidth = ImGui::GetContentRegionAvail().x;
+						i32 columnCount = (i32)(panelWidth / cellSize);
+						if (columnCount < 1)
+							columnCount = 1;
 
-						if (ImGui::Button(colorTextureName))
+						ImGui::Columns(columnCount, 0, false);
+
+
+						// COLOR TEXTURE
+
+						if (materialProperties.colorTexture)
 						{
-							ImGui::OpenPopup("select_texture");
+							if(ImGui::ImageButton((ImTextureID)materialProperties.colorTexture->getID(), { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_color_texture");
+							}
 						}
-						ImGui::EndColumns();
+						else
+						{
+							if(ImGui::Button("Color Texture", { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_color_texture");
+							}
+						}
 
-						if (ImGui::BeginPopup("select_texture"))
+						if (ImGui::BeginPopup("select_color_texture"))
 						{
 							if (ImGui::Selectable("Default white texture"))
 							{
@@ -428,42 +429,214 @@ namespace Sogas
 							ImGui::EndPopup();
 						}
 
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.colorTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::Text("Color Texture");
 
-						ImGui::Columns(2);
-						ImGui::Text("Normal Texture");
+
+						// EMISSIVE TEXTURE
+						
 						ImGui::NextColumn();
 
-						if (ImGui::Button(normalTextureName))
+						if (materialProperties.emissiveTexture)
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-							if (!textureName.empty())
-								materialProperties.normalTexture = Texture2D::GET(textureName);
+							if(ImGui::ImageButton((ImTextureID)materialProperties.emissiveTexture->getID(), { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_emissive_texture");
+							}
 						}
-						ImGui::EndColumns();
+						else
+						{
+							if(ImGui::Button("Emissive Texture", { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_emissive_texture");
+							}
+						}
 
-						ImGui::Columns(2);
+						if (ImGui::BeginPopup("select_emissive_texture"))
+						{
+							if (ImGui::Selectable("Default white texture"))
+							{
+								materialProperties.emissiveTexture = Texture2D::GET("Default white");
+							}
+
+							if (ImGui::Selectable("Load textures"))
+							{
+								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								if (!textureName.empty())
+									materialProperties.emissiveTexture = Texture2D::GET(textureName);
+							}
+							ImGui::EndPopup();
+						}
+
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.emissiveTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
 						ImGui::Text("Emissive Texture");
+						
+						
+						// METAL-ROUGHNESS TEXTURE
+
 						ImGui::NextColumn();
 
-						if (ImGui::Button(emissiveTextureName))
+						if (materialProperties.metallicRoughnessTexture)
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-							if(!textureName.empty())
-								materialProperties.emissiveTexture = Texture2D::GET(textureName);
+							if(ImGui::ImageButton((ImTextureID)materialProperties.metallicRoughnessTexture->getID(), { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_metal_roughness_texture");
+							}
 						}
-						ImGui::EndColumns();
+						else
+						{
+							if(ImGui::Button("Metal-Roughness Texture", { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_metal_roughness_texture");
+							}
+						}
 
-						ImGui::Columns(2);
-						ImGui::Text("MetallicRoughness Texture");
+						if (ImGui::BeginPopup("select_metal_roughness_texture"))
+						{
+							if (ImGui::Selectable("Default white texture"))
+							{
+								materialProperties.metallicRoughnessTexture = Texture2D::GET("Default white");
+							}
+
+							if (ImGui::Selectable("Load textures"))
+							{
+								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								if (!textureName.empty())
+									materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
+							}
+							ImGui::EndPopup();
+						}
+
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.metallicRoughnessTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::Text("Metal-Roughness Texture");
+
+
+						// OCCLUSION TEXTURE
+
 						ImGui::NextColumn();
 
-						if (ImGui::Button(metallicRoughnessTextureName))
+						if (materialProperties.occlusionTexture)
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
-							if (!textureName.empty())
-								materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
+							if(ImGui::ImageButton((ImTextureID)materialProperties.occlusionTexture->getID(), { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_occlusion_texture");
+							}
 						}
-						ImGui::EndColumns();
+						else
+						{
+							if(ImGui::Button("Occlusion Texture", { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_occlusion_texture");
+							}
+						}
+
+						if (ImGui::BeginPopup("select_occlusion_texture"))
+						{
+							if (ImGui::Selectable("Default white texture"))
+							{
+								materialProperties.occlusionTexture = Texture2D::GET("Default white");
+							}
+
+							if (ImGui::Selectable("Load textures"))
+							{
+								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								if (!textureName.empty())
+									materialProperties.occlusionTexture = Texture2D::GET(textureName);
+							}
+							ImGui::EndPopup();
+						}
+
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.occlusionTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::Text("Occlusion Texture");
+
+
+						// NORMAL TEXTURE
+
+						ImGui::NextColumn();
+
+						if (materialProperties.normalTexture)
+						{
+							if(ImGui::ImageButton((ImTextureID)materialProperties.normalTexture->getID(), { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_normal_texture");
+							}
+						}
+						else
+						{
+							if(ImGui::Button("Normal Texture", { 128, 128 }))
+							{
+								ImGui::OpenPopup("select_normal_texture");
+							}
+						}
+
+						if (ImGui::BeginPopup("select_normal_texture"))
+						{
+							if (ImGui::Selectable("Default white texture"))
+							{
+								materialProperties.normalTexture = Texture2D::GET("Default white");
+							}
+
+							if (ImGui::Selectable("Load textures"))
+							{
+								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								if (!textureName.empty())
+									materialProperties.normalTexture = Texture2D::GET(textureName);
+							}
+							ImGui::EndPopup();
+						}
+
+						if (ImGui::BeginDragDropTarget())
+						{
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.normalTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::Text("Normal Texture");
+						
+
+						ImGui::NextColumn();
+
+						ImGui::Columns(1);
 					}
 				}
 			});
