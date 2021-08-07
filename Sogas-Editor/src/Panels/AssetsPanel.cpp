@@ -9,6 +9,8 @@ namespace Sogas {
 	AssetsPanel::AssetsPanel()
 		: m_currentDirectory(s_assetsDirectory)
 	{
+		m_folderIcon = Texture2D::create("resources/folder-icon.png");
+		m_fileIcon = Texture2D::create("resources/file-icon.png");
 	}
 
 	void AssetsPanel::onImGuiRender()
@@ -40,7 +42,15 @@ namespace Sogas {
 			auto relativePath = std::filesystem::relative(path, s_assetsDirectory);
 			std::string relativeFilenameString = relativePath.filename().string();
 
-			ImGui::Button(relativeFilenameString.c_str(), {thumbnailSize, thumbnailSize});
+			if(directoryItem.is_directory())
+			{
+				ImGui::ImageButton((ImTextureID)m_folderIcon->getID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			}
+			else
+			{
+				ImGui::ImageButton((ImTextureID)m_fileIcon->getID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			}
+
 			if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				if (directoryItem.is_directory())
