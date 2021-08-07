@@ -4,10 +4,10 @@
 
 namespace Sogas {
 
-	static const std::filesystem::path s_assetsDirectory = "../Assets";
+	extern const std::filesystem::path g_assetsDirectory = "../Assets";
 
 	AssetsPanel::AssetsPanel()
-		: m_currentDirectory(s_assetsDirectory)
+		: m_currentDirectory(g_assetsDirectory)
 	{
 		m_folderIcon = Texture2D::create("resources/folder-icon.png");
 		m_fileIcon = Texture2D::create("resources/file-icon.png");
@@ -17,7 +17,7 @@ namespace Sogas {
 	{
 		ImGui::Begin("Assets");
 
-		if(m_currentDirectory != std::filesystem::path(s_assetsDirectory))
+		if(m_currentDirectory != std::filesystem::path(g_assetsDirectory))
 		{
 			if(ImGui::Button("Back"))
 			{
@@ -39,8 +39,10 @@ namespace Sogas {
 		for(auto& directoryItem : std::filesystem::directory_iterator(m_currentDirectory))
 		{
 			const auto& path = directoryItem.path();
-			auto relativePath = std::filesystem::relative(path, s_assetsDirectory);
+			auto relativePath = std::filesystem::relative(path, g_assetsDirectory);
 			std::string relativeFilenameString = relativePath.filename().string();
+
+			ImGui::PushID(relativeFilenameString.c_str());
 
 			if(directoryItem.is_directory())
 			{
@@ -51,6 +53,13 @@ namespace Sogas {
 				ImGui::ImageButton((ImTextureID)m_fileIcon->getID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 			}
 
+			if(ImGui::BeginDragDropSource())
+			{
+				const wchar_t* itemPath = relativePath.c_str();
+				ImGui::SetDragDropPayload("ASSETS_PANEL_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+				ImGui::EndDragDropSource();
+			}
+
 			if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 			{
 				if (directoryItem.is_directory())
@@ -59,6 +68,8 @@ namespace Sogas {
 			ImGui::Text(relativeFilenameString.c_str());
 
 			ImGui::NextColumn();
+
+			ImGui::PopID();
 		}
 
 		ImGui::Columns(1);
