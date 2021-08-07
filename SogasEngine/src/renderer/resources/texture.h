@@ -3,6 +3,7 @@
 #include "core/assertions.h"
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 namespace Sogas 
 {

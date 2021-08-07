@@ -30,6 +30,8 @@
 
 namespace Sogas 
 {
+	extern const std::filesystem::path g_assetsDirectory;
+
 	EditorLayer::EditorLayer()
 		: Layer("EditorLayer")
 	{
@@ -207,6 +209,7 @@ namespace Sogas
 		}
 
 		m_scenePanel.onImGuiRender();
+		m_assetsPanel.onImGuiRender();
 
 		// Hovered Entity
 		ImGui::Begin("Hovered Info");
@@ -252,6 +255,16 @@ namespace Sogas
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		
+		if(ImGui::BeginDragDropTarget())
+		{
+			if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				// TODO: open the scene
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		// Gizmos
 		StrongEntityPtr selectedEntity = m_scenePanel.getSelectedEntity().lock();
 		if(selectedEntity && m_gizmoType != -1)

@@ -83,12 +83,12 @@ namespace Sogas
 		}
 		else if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE) && Input::isKeyPressed(SGS_KEY_LEFT_ALT))
 		{
-			m_camera->rotate(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
 		}
 		else if (Input::isMouseButtonPressed(SGS_MOUSE_BUTTON_MIDDLE))
 		{
-			m_camera->orbit(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
-			Input::centerMouse();
+			m_camera->rotate(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
+			//m_camera->orbit(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
+			//Input::centerMouse();
 		}
 
 

@@ -12,8 +12,12 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <filesystem>
+
 namespace Sogas
 {
+	extern const std::filesystem::path g_assetsDirectory;
+
 	ScenePanel::ScenePanel(const std::shared_ptr<Scene>& scene)
 	{
 		setContext(scene);
@@ -364,8 +368,27 @@ namespace Sogas
 						ImGui::EndColumns();
 
 						auto& materialProperties = component.lock()->getMaterial()->getMaterialProperties();
-
 						ImGui::ColorEdit4("", &materialProperties.color.x);
+						if(materialProperties.colorTexture)
+						{
+							ImGui::ImageButton((ImTextureID)materialProperties.colorTexture->getID(), { 128, 128 });
+						}
+						else
+						{
+							ImGui::Button("Color Texture", { 128, 128 });
+						}
+
+						if(ImGui::BeginDragDropTarget())
+						{
+							if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							{
+								const wchar_t* path = (const wchar_t*)payload->Data;
+								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
+								materialProperties.colorTexture = Texture2D::create(texturePath.string());
+							}
+							ImGui::EndDragDropTarget();
+						}
+
 						ImGui::SliderFloat("Metallic", &materialProperties.metallicFactor, 0.0f, 1.0f);
 						ImGui::SliderFloat("Roughness", &materialProperties.roughnessFactor, 0.0f, 1.0f);
 						ImGui::SliderFloat("Tilling", &materialProperties.tillingFactor, 0.0f, 100.0f);
