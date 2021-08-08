@@ -6,7 +6,7 @@
 
 namespace Sogas 
 {
-	OpenGLTexture2D::OpenGLTexture2D(u32 width, u32 height)
+	OpenGLTexture2D::OpenGLTexture2D(u32 width, u32 height, void* data)
 		: m_width(width), m_height(height)
 	{
 		m_internalFormat = GL_RGBA8;
@@ -20,6 +20,10 @@ namespace Sogas
 
 		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTextureSubImage2D(m_ID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+
+		setData(data, height * width * 4);
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)

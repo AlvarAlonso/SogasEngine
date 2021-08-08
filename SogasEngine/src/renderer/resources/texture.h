@@ -32,7 +32,8 @@ namespace Sogas
 	public:
 		static std::unordered_map<std::string, std::shared_ptr<Texture2D>> s_loadedTextures;
 
-		static std::shared_ptr<Texture2D> create(u32 width, u32 height);
+		static bool loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name);
+		static std::shared_ptr<Texture2D> create(u32 width, u32 height, void* data = nullptr);
 		static std::shared_ptr<Texture2D> create(const std::string& path);
 		static std::shared_ptr<Texture2D> GET(const std::string& filepath);
 		static std::shared_ptr<Texture2D> GET(const u32 width, const u32 height, const std::string& filepath);

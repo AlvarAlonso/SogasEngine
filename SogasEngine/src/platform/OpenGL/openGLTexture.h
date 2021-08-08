@@ -9,7 +9,7 @@ namespace Sogas
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(u32 width, u32 height);
+		OpenGLTexture2D(u32 width, u32 height, void* data);
 		OpenGLTexture2D(const std::string& path);
 		virtual ~OpenGLTexture2D();
 
