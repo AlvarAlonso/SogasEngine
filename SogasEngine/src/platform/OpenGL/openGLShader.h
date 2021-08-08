@@ -19,7 +19,7 @@ namespace Sogas
 	class OpenGLShader : public Shader
 	{
 	private:
-		std::string m_filePath;
+		std::string m_filename;
 		std::unordered_map<std::string, i32> m_uniformLocationCache;
 	public:
 		u32 m_ID;
@@ -28,9 +28,10 @@ namespace Sogas
 		OpenGLShader(const std::string& filepath);
 		~OpenGLShader();
 
-		void bind() const;
-		void unbind() const;
-		virtual std::string getName() const { return m_filePath; }
+		virtual void bind() const;
+		virtual void unbind() const;
+		virtual void setName(const std::string name) override { m_filename = name; }
+		virtual std::string getName() const { return m_filename; }
 
 		// upload
 		virtual void setUniform(const char* varname, bool input)		override { setUniform1(varname, input); }

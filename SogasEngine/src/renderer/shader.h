@@ -16,6 +16,7 @@ namespace Sogas
 
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
+		virtual void setName(const std::string name) = 0;
 		virtual std::string getName() const = 0;
 
 		virtual void setUniform(const char* varname, bool input) = 0;

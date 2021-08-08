@@ -49,6 +49,7 @@ namespace Sogas
 			std::string path = findFile(filename, assetsPath);
 			if (!path.empty()) {
 				std::shared_ptr<Shader> shader = Shader::create(path);
+				shader->setName(filename);
 				s_loadedShaders[filename] = shader;
 				return shader;
 			}

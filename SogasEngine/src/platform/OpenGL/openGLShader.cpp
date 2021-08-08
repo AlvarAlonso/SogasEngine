@@ -14,7 +14,7 @@ namespace Sogas
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
-		: m_filePath(filepath), m_ID(0)
+		: m_ID(0)
 	{
 		ShaderProgramSource source = parseShader(filepath);
 		m_ID = createShader(source.vertexSource, source.fragmentSource);
@@ -155,7 +155,7 @@ namespace Sogas
 
 		// Let us know they compiled
 		if (vertexShader != 0 && fragmentShader != 0) {
-			SGSDEBUG("Shader %s compiled!", m_filePath.c_str());
+			SGSDEBUG("Shader %s compiled!", m_filename.c_str());
 		}
 
 		glAttachShader(program, vertexShader);
