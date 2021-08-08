@@ -1,13 +1,14 @@
 #include "sgspch.h"
 
 #include "shader.h"
-
+#include "core/utils.h"
 #include "renderer.h"
 #include "platform/OpenGL/openGLShader.h"
 
 namespace Sogas 
 {
 	std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::s_loadedShaders;
+	extern std::vector<std::string> assetsPath;
 
 	std::shared_ptr<Shader> Shader::create(const std::string& vertexSource, const std::string& fragmentSource)
 	{
@@ -33,22 +34,26 @@ namespace Sogas
 		return nullptr;
 	}
 
-	std::shared_ptr<Shader> Shader::GET(const std::string filepath)
+	std::shared_ptr<Shader> Shader::GET(const std::string filename)
 	{
 		// extract shader name from the path string
-		auto lastSlash = filepath.find_last_of("/\\");
-		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-		auto lastDot = filepath.rfind('.');
-		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-		std::string shaderName = filepath.substr(lastSlash, count);
+		//auto lastSlash = filepath.find_last_of("/\\");
+		//lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		//auto lastDot = filepath.rfind('.');
+		//auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+		//std::string shaderName = filepath.substr(lastSlash, count);
 
-		if (!Shader::s_loadedShaders[shaderName])
+
+		if (!Shader::s_loadedShaders[filename])
 		{
-			std::shared_ptr<Shader> shader = Shader::create(filepath);
-			s_loadedShaders[shaderName] = shader;
-			return shader;
+			std::string path = findFile(filename, assetsPath);
+			if (!path.empty()) {
+				std::shared_ptr<Shader> shader = Shader::create(path);
+				s_loadedShaders[filename] = shader;
+				return shader;
+			}
 		}
-		return Shader::s_loadedShaders[shaderName];
+		return Shader::s_loadedShaders[filename];
 	}
 
 	std::shared_ptr<Shader> Shader::GETDefault(std::string name)

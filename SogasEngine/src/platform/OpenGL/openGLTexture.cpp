@@ -22,12 +22,13 @@ namespace Sogas
 		glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
-		: m_path(path)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& name)
 	{
+		m_filename = name;
+
 		i32 width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		stbi_uc* data = stbi_load(name.c_str(), &width, &height, &channels, 0);
 
 		SGSASSERT_MSG(data, "Failed to load image!");
 

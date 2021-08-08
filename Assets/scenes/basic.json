@@ -9,15 +9,16 @@
                         "Color": {
                             "x": 0.0,
                             "y": 0.0,
-                            "z": 0.0
+                            "z": 0.0,
+                            "w": 0.0
                         },
                         "EmissiveFactor": null,
                         "MetallicFactor": 0.0,
                         "RoughnessFactor": 0.0,
-                        "Shader": "D:\\Projects\\SogasEngine\\SogasEngine\\shaders\\phong.shader",
+                        "Shader": "phong.shader",
                         "TillingFactor": 1.0
                     },
-                    "Mesh": "../Assets/cube.obj"
+                    "Mesh": "cube.obj"
                 },
                 "TransformComponent": {
                     "Rotation": {

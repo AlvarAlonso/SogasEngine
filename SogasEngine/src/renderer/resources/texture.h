@@ -24,7 +24,7 @@ namespace Sogas
 		virtual void bind(u32 slot = 0) const = 0;
 
 	protected:
-		std::string m_filepath;
+		std::string m_filename;
 	};
 
 	class SGS Texture2D : public Texture

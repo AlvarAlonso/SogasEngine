@@ -2,15 +2,19 @@
 
 #include "mesh.h"
 #include "renderer/shader.h"
-#include "../external/tinyobj/tiny_obj_loader.h"
-
+#include "core/utils.h"
 #include "core/logger.h"
+
+#include "../external/tinyobj/tiny_obj_loader.h"
 #include "glm/glm.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
 namespace Sogas 
 {
+
+    extern std::vector<std::string> assetsPath;
+
     struct Vertex
     {
         glm::vec3 position;
@@ -46,8 +50,6 @@ namespace Sogas
 
     void Mesh::load(const std::string& filename)
     {
-        m_filename = filename;
-
         std::vector<Vertex> vertices;
         std::vector<u32> indices;
 
@@ -79,7 +81,7 @@ namespace Sogas
         }
 
         //auto shader = std::make_shared<Shader>("../SogasEngine/shaders/phong.shader");
-        m_pMaterial = std::make_shared<Material>(Shader::GET("../SogasEngine/shaders/phong.shader"), props);
+        m_pMaterial = std::make_shared<Material>(Shader::GET("phong.shader"), props);
 
         std::unordered_map<Vertex, u32> uniqueVertices{};
 
@@ -143,12 +145,18 @@ namespace Sogas
         m_vertexArray->setIndexBuffer(m_indexBuffer);
     }
 
+    /*
+    * @brief This functions checks if the mesh is in the assets path and after being found, checks if it has been loaded.
+    * If already loaded, returns the found one. Loads the mesh otherwise.
+    */
     std::shared_ptr<Mesh> Mesh::GET(const std::string& filename)
     {
         if (!s_loadedMeshes[filename])
         {
+            std::string path = findFile(filename, assetsPath);
             std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-            mesh->load(filename);
+            mesh->load(path);
+            mesh->m_filename = filename;
             s_loadedMeshes[filename] = mesh;
             return mesh;
         }

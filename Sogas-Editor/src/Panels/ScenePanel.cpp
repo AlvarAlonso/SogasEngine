@@ -5,6 +5,7 @@
 #include "scene/components/transformComponent.h"
 #include "scene/components/lightComponent.h"
 
+#include "core/utils.h"
 #include "platform/utils/platformUtils.h"
 #include "renderer/shader.h"
 #include "renderer/resources/texture.h"
@@ -320,7 +321,8 @@ namespace Sogas
 				ImGui::NextColumn();
 				if (ImGui::Button("..."))
 				{
-					std::string meshName = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
+					std::string meshPath = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
+					std::string meshName = takeNameFromPath(meshPath);
 					if (!meshName.empty())
 						component.lock()->setMesh(meshName.c_str());
 				}
@@ -420,13 +422,15 @@ namespace Sogas
 
 							if (ImGui::Selectable("Load textures"))
 							{
-								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								// TODO load the texture name to path, reduce it to only the name and pass it to GET (It will use the utils::findFile to find the path to the texture)
+								std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								std::string textureName = takeNameFromPath(texturePath);
+
 								if (!textureName.empty())
 									materialProperties.colorTexture = Texture2D::GET(textureName);
 							}
 							ImGui::EndPopup();
 						}
-
 
 						ImGui::Columns(2);
 						ImGui::Text("Normal Texture");
@@ -434,7 +438,8 @@ namespace Sogas
 
 						if (ImGui::Button(normalTextureName))
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string textureName = takeNameFromPath(texturePath);
 							if (!textureName.empty())
 								materialProperties.normalTexture = Texture2D::GET(textureName);
 						}
@@ -446,7 +451,8 @@ namespace Sogas
 
 						if (ImGui::Button(emissiveTextureName))
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string textureName = takeNameFromPath(texturePath);
 							if(!textureName.empty())
 								materialProperties.emissiveTexture = Texture2D::GET(textureName);
 						}
@@ -458,7 +464,8 @@ namespace Sogas
 
 						if (ImGui::Button(metallicRoughnessTextureName))
 						{
-							std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0");
+							std::string textureName = takeNameFromPath(texturePath);
 							if (!textureName.empty())
 								materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
 						}

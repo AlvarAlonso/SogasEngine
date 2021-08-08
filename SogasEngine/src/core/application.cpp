@@ -19,6 +19,9 @@ namespace Sogas
 
 	static Camera* s_camera = nullptr;
 
+	// TODO Redefine how the path should be used or saved
+	std::vector<std::string> assetsPath;
+
 	Application::Application()
 	{
 		SGSASSERT(!s_application);
@@ -33,6 +36,14 @@ namespace Sogas
 		{
 			SGSFATAL("Failed to link GLEW against OpenGL context!");
 		}
+
+		assetsPath = {
+			"../Assets/",
+			"../Assets/meshes/",
+			"../Assets/textures/",
+			"../Assets/scenes/",
+			"../SogasEngine/shaders/"
+		};
 	}
 
 	void Application::run()
