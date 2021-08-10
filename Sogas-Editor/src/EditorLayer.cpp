@@ -90,6 +90,7 @@ namespace Sogas
 
 		Renderer::beginScene(m_pScene, m_pCamera);
 		m_framebuffer->clearAttachment(1, -1);
+		Renderer::renderEnvironment();
 		Renderer::render();
 		if (!m_pGrid)
 		{

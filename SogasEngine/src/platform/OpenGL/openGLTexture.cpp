@@ -1,7 +1,7 @@
 #include "sgspch.h"
 
+#include "core/logger.h"
 #include "openGLTexture.h"
-
 #include "stb_image/stb_image.h"
 
 namespace Sogas 
@@ -93,14 +93,45 @@ namespace Sogas
 	{
 		m_filename = filepath;
 
+		// TODO images are hardcoded right now
+		std::vector<std::string> faces{
+			"../Assets/textures/skybox/right.jpg",
+			"../Assets/textures/skybox/left.jpg",
+			"../Assets/textures/skybox/bottom.jpg",
+			"../Assets/textures/skybox/top.jpg",
+			"../Assets/textures/skybox/front.jpg",
+			"../Assets/textures/skybox/back.jpg"
+		};
+
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
+
 		i32 width, height, channels;
-		//for (u32 i = 0; i < )
-		//{
-		//
-		//}
+		stbi_set_flip_vertically_on_load(true);
+		for (u32 i = 0; i < faces.size(); ++i)
+		{
+			stbi_uc* data = stbi_load(faces[i].c_str(), &width, &height, &channels, 0);
+			if (data) {
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+				stbi_image_free(data);
+			}
+			else {
+				SGSWARN("Cubemap texture failed to load.");
+				stbi_image_free(data);
+			}
+		}
 
-		glGenTextures(1, &m_ID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
+		//stbi_set_flip_vertically_on_load(false);
 
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+
+	void OpenGLTextureCubeMap::bind(u32 slot) const
+	{
+		glBindTextureUnit(slot, m_ID);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 }

@@ -21,6 +21,8 @@ namespace Sogas
 	Renderer::API Renderer::s_API = Renderer::API::OpenGL;
 	RendererAPI* Renderer::s_RendererAPI = new OpenGLRendererAPI;
 
+	bool Renderer::environment = true;
+
 	void Renderer::beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
 	{
 		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
@@ -48,11 +50,17 @@ namespace Sogas
 			if(renderComponent->getMesh() && renderComponent->getMaterial())
 				Renderer::submit(renderComponent, model);
 		}
+
+		// Render the environment if active
+		//if (environment)
+		//{
+		//	renderEnvironment();
+		//}
 	}
 
 	void Renderer::endScene()
 	{
-
+		
 	}
 
 	void Renderer::submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform)
@@ -129,7 +137,35 @@ namespace Sogas
 		grid->m_vertexArray->bind();
 		RenderCommand::draw(grid->m_vertexArray, Primitive::LINES);
 		
+		RenderCommand::enableBlend(true);
+		shader->unbind();
+	}
+
+	void Renderer::renderEnvironment()
+	{
+		std::shared_ptr<Mesh> cube = Mesh::GET("cube.obj");
+
+		RenderCommand::enableDepthBuffer(false);
 		RenderCommand::enableBlend(false);
+		// TODO should get a default environment shader
+		auto shader = Shader::GET("environment.shader");
+		auto texture = TextureCubeMap::GET("hardcodedRightNow");
+		shader->bind();
+
+		shader->setUniform("u_model", glm::translate(glm::mat4(1), s_sceneData->cameraPosition));
+		shader->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
+
+		texture->bind(1);
+		shader->setUniform("u_cubemap", 1);
+
+		cube->m_vertexArray->bind();
+		if (cube->m_vertexArray->getIndexBuffer())
+			RenderCommand::drawIndexed(cube->m_vertexArray);
+		else
+			RenderCommand::draw(cube->m_vertexArray);
+
+		RenderCommand::enableDepthBuffer(true);
+		RenderCommand::enableBlend(true);
 		shader->unbind();
 	}
 }

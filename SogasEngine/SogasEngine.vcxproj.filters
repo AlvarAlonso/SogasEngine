@@ -1279,5 +1279,6 @@
     <None Include="external\glm\glm\gtx\wrap.inl" />
     <None Include="shaders\basic.shader" />
     <None Include="shaders\phong.shader" />
+    <None Include="shaders\environment.shader" />
   </ItemGroup>
 </Project>

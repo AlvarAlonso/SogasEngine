@@ -88,7 +88,7 @@ namespace Sogas
 		{
 			m_camera->rotate(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
 			//m_camera->orbit(deltaMouse.x * m_deltaTime, deltaMouse.y * m_deltaTime);
-			//Input::centerMouse();
+			Input::centerMouse();
 		}
 
 

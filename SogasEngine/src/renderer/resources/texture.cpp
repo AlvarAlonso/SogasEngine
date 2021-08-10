@@ -8,6 +8,7 @@
 namespace Sogas 
 {
 	std::unordered_map<std::string, std::shared_ptr<Texture2D>> Texture2D::s_loadedTextures;
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::s_cubeMapTexture;
 	extern std::vector<std::string> assetsPath;
 
 	bool Texture2D::loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name)
@@ -74,11 +75,12 @@ namespace Sogas
 	std::shared_ptr<TextureCubeMap> TextureCubeMap::GET(const std::string& filename)
 	{
 		// TODO create a map for cube map textures
-		std::string filepath = findFile(filename, assetsPath);
-		std::shared_ptr<TextureCubeMap> texture = std::make_shared<TextureCubeMap>();
-		texture->create(filepath);
+		//std::string filepath = findFile(filename, assetsPath);
+		
+		if(!s_cubeMapTexture)
+			s_cubeMapTexture = TextureCubeMap::create(filename);
 
-		return texture;
+		return s_cubeMapTexture;
 	}
 
 	std::shared_ptr<TextureCubeMap> TextureCubeMap::create(const std::string& filepath)
