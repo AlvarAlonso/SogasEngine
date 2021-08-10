@@ -6,7 +6,6 @@
 
 #include "../external/GLEW/glew-2.1.0/include/GL/glew.h"
 #include "renderer/shader.h"
-//#include "../external/glm/glm/glm.hpp"
 
 namespace Sogas 
 {

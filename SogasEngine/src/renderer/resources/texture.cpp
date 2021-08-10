@@ -70,4 +70,23 @@ namespace Sogas
 		}
 		return s_loadedTextures[name];
 	}
+
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::GET(const std::string& filename)
+	{
+		// TODO create a map for cube map textures
+		std::string filepath = findFile(filename, assetsPath);
+		std::shared_ptr<TextureCubeMap> texture = std::make_shared<TextureCubeMap>();
+		texture->create(filepath);
+
+		return texture;
+	}
+
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::create(const std::string& filepath)
+	{
+		switch (Renderer::getAPI())
+		{
+		case Renderer::API::None: SGSASSERT_MSG(false, "No graphics API selected");
+		case Renderer::API::OpenGL: return std::make_shared<OpenGLTextureCubeMap>(filepath);
+		}
+	}
 }

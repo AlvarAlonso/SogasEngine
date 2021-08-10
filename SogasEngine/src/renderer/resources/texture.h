@@ -41,4 +41,12 @@ namespace Sogas
 		virtual std::string& getName() = 0;
 		virtual void setName(const std::string& name) = 0;
 	};
+
+	class SGS TextureCubeMap : public Texture
+	{
+	public:
+		static std::shared_ptr<TextureCubeMap> GET(const std::string& filepath);
+	private:
+		std::shared_ptr<TextureCubeMap> create(const std::string& filepath);
+	};
 }

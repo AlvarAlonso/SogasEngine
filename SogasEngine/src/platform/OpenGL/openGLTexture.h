@@ -30,4 +30,12 @@ namespace Sogas
 		GLenum m_internalFormat;
 		GLenum m_dataFormat;
 	};
+
+	class OpenGLTextureCubeMap : public TextureCubeMap
+	{
+	public:
+		OpenGLTextureCubeMap(const std::string& filepath);
+	private:
+		u32 m_ID;
+	};
 }

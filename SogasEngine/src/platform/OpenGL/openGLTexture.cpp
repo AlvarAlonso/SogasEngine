@@ -88,4 +88,19 @@ namespace Sogas
 		glBindTextureUnit(slot, m_ID);
 		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
+
+	OpenGLTextureCubeMap::OpenGLTextureCubeMap(const std::string& filepath)
+	{
+		m_filename = filepath;
+
+		i32 width, height, channels;
+		//for (u32 i = 0; i < )
+		//{
+		//
+		//}
+
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
+
+	}
 }

@@ -36,14 +36,6 @@ namespace Sogas
 
 	std::shared_ptr<Shader> Shader::GET(const std::string filename)
 	{
-		// extract shader name from the path string
-		//auto lastSlash = filepath.find_last_of("/\\");
-		//lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-		//auto lastDot = filepath.rfind('.');
-		//auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-		//std::string shaderName = filepath.substr(lastSlash, count);
-
-
 		if (!Shader::s_loadedShaders[filename])
 		{
 			std::string path = findFile(filename, assetsPath);

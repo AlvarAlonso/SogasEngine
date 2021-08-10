@@ -48,7 +48,7 @@ namespace Sogas
 		m_materialProperties.metallicRoughnessTexture ? metallicRoughnessTexture = json{ "MetallicRoughnessTexture", m_materialProperties.metallicRoughnessTexture->getName() } : metallicRoughnessTexture = json{ "MetallicRoughnessTexture", nullptr};
 		m_materialProperties.occlusionTexture ? occlusionTexture = json{ "OcclusionTexture", m_materialProperties.occlusionTexture->getName() } : occlusionTexture = json{ "OcclusionTexture", nullptr};
 
-		jsonMaterial = {
+		jsonMaterial = json{
 			{"Shader", getShader()->getName()},
 			{"Color", color},
 			{"RoughnessFactor", m_materialProperties.roughnessFactor},

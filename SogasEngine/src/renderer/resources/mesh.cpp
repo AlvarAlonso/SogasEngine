@@ -185,10 +185,6 @@ namespace Sogas
             vertices.push_back({ {dist * n_lines * -0.5f, 0.0f, dist * i}, color });
         }
 
-        //vertices.push_back({ {-10.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-        //vertices.push_back({ { 0.0f, 10.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-        //vertices.push_back({ { 1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-
         size_t arraySize = vertices.size();
         size_t vertexSize = sizeof(gVertex);
         size_t size = arraySize * vertexSize;
