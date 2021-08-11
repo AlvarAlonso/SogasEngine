@@ -61,10 +61,6 @@ namespace Sogas
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
 		m_scenePanel.setContext(m_pScene);
-
-		u32 texData = 0xffffffff;
-		std::shared_ptr<Texture2D> whiteTexture = Texture2D::create(1, 1, &texData);
-		Texture2D::loadToMap(whiteTexture, "Default white");
 	}
 
 	void EditorLayer::onDetach()

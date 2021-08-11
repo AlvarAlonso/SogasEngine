@@ -5,6 +5,7 @@
 #include "renderer/renderer.h"
 #include "renderer/vertexArray.h"
 #include "renderer/shader.h"
+#include "renderer/resources/texture.h"
 #include "platform/OpenGL/openGLShader.h"
 #include "logger.h"
 #include "time.h"
@@ -33,6 +34,8 @@ namespace Sogas
 		{
 			SGSFATAL("Failed to link GLEW against OpenGL context!");
 		}
+
+		Texture2D::initTextureResources();
 	}
 
 	void Application::run()

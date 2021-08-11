@@ -78,7 +78,7 @@ namespace Sogas
 		if (jsonMaterial.contains("ColorTexture") && jsonMaterial["ColorTexture"].is_string())
 		{
 			auto& properties = getMaterialProperties();
-			properties.colorTexture = Texture2D::create(jsonMaterial["ColorTexture"].get<std::string>());
+			properties.colorTexture = Texture2D::GET(jsonMaterial["ColorTexture"].get<std::string>());
 			setMaterialProperties(properties);
 		}
 	}

@@ -8,6 +8,7 @@
 namespace Sogas 
 {
 	std::unordered_map<std::string, std::shared_ptr<Texture2D>> Texture2D::s_loadedTextures;
+	bool Texture2D::m_isInitialized = false;
 
 	bool Texture2D::loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name)
 	{
@@ -42,6 +43,19 @@ namespace Sogas
 
 		SGSASSERT_MSG(false, "Unknown renderer API!");
 		return nullptr;
+	}
+
+	bool Texture2D::initTextureResources()
+	{
+		if (m_isInitialized)
+			return false;
+
+		// default white texture
+		u32 texData = 0xffffffff;
+		std::shared_ptr<Texture2D> whiteTexture = create(1, 1, &texData);
+		Texture2D::loadToMap(whiteTexture, "Default white");
+
+		return true;
 	}
 
 	std::shared_ptr<Texture2D> Texture2D::GET(const std::string& filepath)
