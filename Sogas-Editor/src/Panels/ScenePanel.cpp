@@ -318,12 +318,13 @@ namespace Sogas
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
 			{
 				ImGui::Columns(3);
-				ImGui::SetColumnWidth(0, 50.0f);
-				ImGui::SetColumnWidth(1, 250.0f);
+				ImGui::SetColumnWidth(0, 75.0f);
+				ImGui::SetColumnWidth(1, 150.0f);
 				ImGui::Text("Mesh");
 				ImGui::NextColumn();
 				ImGui::Text(component.lock()->getMesh() ? component.lock()->getMesh()->getMeshName().c_str() : "Null");
 				ImGui::NextColumn();
+				ImGui::PushID("MeshButton");
 				if (ImGui::Button("..."))
 				{
 					std::string meshPath = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
@@ -332,6 +333,7 @@ namespace Sogas
 						component.lock()->setMesh(meshName.c_str());
 				}
 				ImGui::EndColumns();
+				ImGui::PopID();
 
 				if (component.lock()->getMesh())
 				{
@@ -365,12 +367,14 @@ namespace Sogas
 						ImGui::Text(component.lock()->getShader() ? component.lock()->getShader()->getName().c_str() : "Null");
 						ImGui::NextColumn();
 						
+						ImGui::PushID("ShaderButton");
 						if (ImGui::Button("..."))
 						{
 							std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
 							if (!shaderName.empty())
 								component.lock()->getMaterial()->setMaterialShader(Shader::GET(takeNameFromPath(shaderName)));
 						}
+						ImGui::PopID();
 
 						ImGui::EndColumns();
 
@@ -401,18 +405,31 @@ namespace Sogas
 
 						ImGui::Columns(columnCount, 0, false);
 
-
 						// COLOR TEXTURE
-						std::string tName;
+						static std::string tName;
 
+						if (ImGui::BeginPopup("select_texture"))
+						{
+							if (ImGui::Selectable("Default white texture"))
+							{
+								tName = "Default white";
+							}
+							if (ImGui::Selectable("Load Textures"))
+							{
+								tName = FileDialog::openFile("Texture Files (*.png; *.jpg)\0*.png;*.jpg\0");
+							}
+							ImGui::EndPopup();
+						}
+
+						std::string textureName;
 						if (materialProperties.colorTexture)
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.colorTexture->getID(), { 128, 128 }))
 							{
 								ImGui::OpenPopup("select_texture");
-								if (!textureName.empty()) {
-									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
-									textureName.clear();
+								if (!tName.empty()) {
+									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(tName));
+									tName.clear();
 								}
 							}
 						}
@@ -420,29 +437,29 @@ namespace Sogas
 						{
 							if(ImGui::Button("Color Texture", { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_color_texture");
-								if (!textureName.empty()) {
-									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
-									textureName.clear();
+								ImGui::OpenPopup("select_texture");
+								if (!tName.empty()) {
+									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(tName));
+									tName.clear();
 								}
 							}
 						}
 
-						if (ImGui::BeginPopup("select_color_texture"))
-						{
-							if (ImGui::Selectable("Default white texture"))
-							{
-								materialProperties.colorTexture = Texture2D::GET("Default white");
-							}
+						//if (ImGui::BeginPopup("select_color_texture"))
+						//{
+						//	if (ImGui::Selectable("Default white texture"))
+						//	{
+						//		materialProperties.colorTexture = Texture2D::GET("Default white");
+						//	}
 
-							if (ImGui::Selectable("Load textures"))
-							{
-								std::string textureName = FileDialog::openFile("Texture Files (*.png; *.jpg)\0*.png;*.jpg\0");
-								if (!textureName.empty())
-									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
-							}
-							ImGui::EndPopup();
-						}
+						//	if (ImGui::Selectable("Load textures"))
+						//	{
+						//		std::string textureName = FileDialog::openFile("Texture Files (*.png; *.jpg)\0*.png;*.jpg\0");
+						//		if (!textureName.empty())
+						//			materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
+						//	}
+						//	ImGui::EndPopup();
+						//}
 
 						if (ImGui::BeginDragDropTarget())
 						{
@@ -465,32 +482,32 @@ namespace Sogas
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.emissiveTexture->getID(), { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_emissive_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 						else
 						{
 							if(ImGui::Button("Emissive Texture", { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_emissive_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 
-						if (ImGui::BeginPopup("select_emissive_texture"))
-						{
-							if (ImGui::Selectable("Default white texture"))
-							{
-								materialProperties.emissiveTexture = Texture2D::GET("Default white");
-							}
+						//if (ImGui::BeginPopup("select_emissive_texture"))
+						//{
+						//	if (ImGui::Selectable("Default white texture"))
+						//	{
+						//		materialProperties.emissiveTexture = Texture2D::GET("Default white");
+						//	}
 
-							if (ImGui::Selectable("Load textures"))
-							{
-								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
-								if (!textureName.empty())
-									materialProperties.emissiveTexture = Texture2D::GET(textureName);
-							}
-							ImGui::EndPopup();
-						}
+						//	if (ImGui::Selectable("Load textures"))
+						//	{
+						//		std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//		if (!textureName.empty())
+						//			materialProperties.emissiveTexture = Texture2D::GET(textureName);
+						//	}
+						//	ImGui::EndPopup();
+						//}
 
 						if (ImGui::BeginDragDropTarget())
 						{
@@ -513,35 +530,35 @@ namespace Sogas
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.metallicRoughnessTexture->getID(), { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_metal_roughness_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 						else
 						{
 							if(ImGui::Button("Metal-Roughness Texture", { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_metal_roughness_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 
-						if (ImGui::BeginPopup("select_metal_roughness_texture"))
-						{
-							if (ImGui::Selectable("Default white texture"))
-							{
-								materialProperties.metallicRoughnessTexture = Texture2D::GET("Default white");
-							}
+						//if (ImGui::BeginPopup("select_metal_roughness_texture"))
+						//{
+						//	if (ImGui::Selectable("Default white texture"))
+						//	{
+						//		materialProperties.metallicRoughnessTexture = Texture2D::GET("Default white");
+						//	}
 
-							if (ImGui::Selectable("Load textures"))
-							{
-								// TODO load the texture name to path, reduce it to only the name and pass it to GET (It will use the utils::findFile to find the path to the texture)
-								std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
-								std::string textureName = takeNameFromPath(texturePath);
+						//	if (ImGui::Selectable("Load textures"))
+						//	{
+						//		// TODO load the texture name to path, reduce it to only the name and pass it to GET (It will use the utils::findFile to find the path to the texture)
+						//		std::string texturePath = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//		std::string textureName = takeNameFromPath(texturePath);
 
-								if (!textureName.empty())
-									materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
-							}
-							ImGui::EndPopup();
-						}
+						//		if (!textureName.empty())
+						//			materialProperties.metallicRoughnessTexture = Texture2D::GET(textureName);
+						//	}
+						//	ImGui::EndPopup();
+						//}
 
 						if (ImGui::BeginDragDropTarget())
 						{
@@ -564,32 +581,32 @@ namespace Sogas
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.occlusionTexture->getID(), { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_occlusion_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 						else
 						{
 							if(ImGui::Button("Occlusion Texture", { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_occlusion_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 
-						if (ImGui::BeginPopup("select_occlusion_texture"))
-						{
-							if (ImGui::Selectable("Default white texture"))
-							{
-								materialProperties.occlusionTexture = Texture2D::GET("Default white");
-							}
+						//if (ImGui::BeginPopup("select_occlusion_texture"))
+						//{
+						//	if (ImGui::Selectable("Default white texture"))
+						//	{
+						//		materialProperties.occlusionTexture = Texture2D::GET("Default white");
+						//	}
 
-							if (ImGui::Selectable("Load textures"))
-							{
-								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
-								if (!textureName.empty())
-									materialProperties.occlusionTexture = Texture2D::GET(textureName);
-							}
-							ImGui::EndPopup();
-						}
+						//	if (ImGui::Selectable("Load textures"))
+						//	{
+						//		std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//		if (!textureName.empty())
+						//			materialProperties.occlusionTexture = Texture2D::GET(textureName);
+						//	}
+						//	ImGui::EndPopup();
+						//}
 
 						if (ImGui::BeginDragDropTarget())
 						{
@@ -612,55 +629,32 @@ namespace Sogas
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.normalTexture->getID(), { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_normal_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 						else
 						{
 							if(ImGui::Button("Normal Texture", { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_normal_texture");
+								ImGui::OpenPopup("select_texture");
 							}
 						}
 
-						if (ImGui::BeginPopup("select_normal_texture"))
-						{
-							if (ImGui::Selectable("Default white texture"))
-							{
-								materialProperties.normalTexture = Texture2D::GET("Default white");
-							}
-
-							if (ImGui::Selectable("Load textures"))
-							{
-								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
-								if (!textureName.empty())
-									materialProperties.normalTexture = Texture2D::GET(textureName);
-							}
-							ImGui::EndPopup();
-						}
-
-						//if (ImGui::BeginPopup("select_texture"))
+						//if (ImGui::BeginPopup("select_normal_texture"))
 						//{
-						//	if (ImGui::Selectable("Default white texture")
+						//	if (ImGui::Selectable("Default white texture"))
 						//	{
-						//		textureName = "Default white";
+						//		materialProperties.normalTexture = Texture2D::GET("Default white");
 						//	}
 
 						//	if (ImGui::Selectable("Load textures"))
 						//	{
-						//		textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//		std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//		if (!textureName.empty())
+						//			materialProperties.normalTexture = Texture2D::GET(textureName);
 						//	}
 						//	ImGui::EndPopup();
 						//}
-
-						if (ImGui::BeginPopup("select_texture"))
-						{
-							if (ImGui::Selectable("Default white texture")
-							{
-								tName = "Default white";
-							}
-							ImGui::EndPopup();
-						}
 
 						if (ImGui::BeginDragDropTarget())
 						{
