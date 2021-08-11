@@ -59,10 +59,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SGSEXPORT; GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\json\single_include\;$(SolutionDir)$(ProjectName)\external\glm\;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\external\lua\LuaPlus\lua53-luaplus\src\;$(SolutionDir)$(ProjectName)\external\lua\LuaPlus\;$(SolutionDir)$(ProjectName)\external\json\single_include\;$(SolutionDir)$(ProjectName)\external\glm\;$(SolutionDir)$(ProjectName)\src\;$(SolutionDir)$(ProjectName)\external\GLEW\glew-2.1.0\include;$(SolutionDir)$(ProjectName)\external\imgui\;$(SolutionDir)$(ProjectName)\external\;$(SolutionDir)ImGui\;$(SolutionDir)$(ProjectName)\external\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
-      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4251;4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +105,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
+    <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\json\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="src\json\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="src\json\nlohmann\detail\conversions\from_json.hpp" />
@@ -490,6 +491,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
+    <ClCompile Include="src\core\utils.cpp" />
     <ClCompile Include="src\renderer\renderCommand.cpp" />
     <ClCompile Include="src\renderer\resources\mesh.cpp" />
     <ClCompile Include="src\core\camera.cpp" />

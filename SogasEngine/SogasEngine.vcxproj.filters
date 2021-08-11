@@ -48,6 +48,7 @@
     <ClCompile Include="src\renderer\renderCommand.cpp" />
     <ClCompile Include="src\scene\serializer.cpp" />
     <ClCompile Include="src\platform\utils\platformUtils.cpp" />
+    <ClCompile Include="src\core\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -438,6 +439,7 @@
     <ClInclude Include="src\platform\utils\platformUtils.h" />
     <ClInclude Include="src\platform\windows\windowsUtils.cpp" />
     <ClInclude Include="src\platform\windows\windowsUtils.h" />
+    <ClInclude Include="src\core\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

@@ -33,9 +33,10 @@ namespace Sogas
 	{
 		json material;
 		getMesh()->getMaterial()->to_json(material);
-		j = json{
-			{"Mesh", getMesh()->getMeshName() },
-			{"Material", }
+		j = json
+		{
+			{"Mesh", getMesh()->getMeshName()},
+			{"Material", material}
 		};
 	}
 
@@ -75,7 +76,7 @@ namespace Sogas
 				material->from_json(jsonMaterial);
 			}
 			else {
-				material->setMaterialShader(Shader::GET("../SogasEngine/shaders/basic.shader"));
+				material->setMaterialShader(Shader::GET("basic.shader"));
 				auto& properties = material->getMaterialProperties();
 				properties.colorTexture = Sogas::Texture2D::GET(1, 1, "Default white");
 				u32 defaultTextureData = 0xffffffff;
