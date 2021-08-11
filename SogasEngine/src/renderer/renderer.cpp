@@ -50,12 +50,6 @@ namespace Sogas
 			if(renderComponent->getMesh() && renderComponent->getMaterial())
 				Renderer::submit(renderComponent, model);
 		}
-
-		// Render the environment if active
-		//if (environment)
-		//{
-		//	renderEnvironment();
-		//}
 	}
 
 	void Renderer::endScene()
@@ -145,9 +139,10 @@ namespace Sogas
 	{
 		std::shared_ptr<Mesh> cube = Mesh::GET("cube.obj");
 
-		RenderCommand::enableDepthBuffer(false);
+		RenderCommand::enableDepthBuffer(true);
+		RenderCommand::setDepthFunc(DepthTypes::LEQUAL);
 		RenderCommand::enableBlend(false);
-		// TODO should get a default environment shader
+
 		auto shader = Shader::GET("environment.shader");
 		auto texture = TextureCubeMap::GET("hardcodedRightNow");
 		shader->bind();

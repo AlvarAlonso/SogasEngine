@@ -90,7 +90,6 @@ namespace Sogas
 
 		Renderer::beginScene(m_pScene, m_pCamera);
 		m_framebuffer->clearAttachment(1, -1);
-		Renderer::renderEnvironment();
 		Renderer::render();
 		if (!m_pGrid)
 		{
@@ -98,6 +97,7 @@ namespace Sogas
 			m_pGrid->createGrid(5);
 		}
 		Renderer::renderGrid(m_pGrid);
+		Renderer::renderEnvironment();
 		Renderer::endScene();
 
 
