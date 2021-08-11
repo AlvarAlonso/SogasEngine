@@ -61,10 +61,6 @@ namespace Sogas
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
 		m_scenePanel.setContext(m_pScene);
-
-		u32 texData = 0xffffffff;
-		std::shared_ptr<Texture2D> whiteTexture = Texture2D::create(1, 1, &texData);
-		Texture2D::loadToMap(whiteTexture, "Default white");
 	}
 
 	void EditorLayer::onDetach()
@@ -74,6 +70,16 @@ namespace Sogas
 	void EditorLayer::onUpdate(f32 dt)
 	{
 		// TODO: Framebuffer resize function
+
+		// Resize
+		if(FramebufferSpecs specs = m_framebuffer->getSpecification();
+			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
+			(specs.width != m_viewportSize.x || specs.height != m_viewportSize.y))
+		{
+			m_framebuffer->resize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
+			m_cameraController->setViewportSize(m_viewportSize.x, m_viewportSize.y);
+			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
+		}
 
 		if (m_viewportFocused)
 		{
@@ -233,6 +239,7 @@ namespace Sogas
 		ImGui::Text("Frame Count: %i", ImGui::GetFrameCount());
 		ImGui::Text("Delta time: %f ms", io.DeltaTime);
 		ImGui::Text("Framerate %.2f fps", io.Framerate);
+		ImGui::Text("Aspect Ratio: %f", m_pCamera->getAspectRatio());
 		ImGui::End();
 
 		// Viewport panel
@@ -249,17 +256,9 @@ namespace Sogas
 		m_viewportHovered = ImGui::IsWindowHovered();
 		Application::getInstance()->getImGuiLayer()->blockEvents(!m_viewportFocused || !m_viewportHovered);
 
-		//ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		//m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-		// TODO: Should also resize the aspect ratio of the camera
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_viewportSize != *((glm::vec2*) & viewportPanelSize))
-		{
-			m_framebuffer->resize((u32)viewportPanelSize.x, (u32)viewportPanelSize.y);
-			m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-			m_cameraController.get()->setViewportSize(m_viewportSize.x, m_viewportSize.y);
-		}
+		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		

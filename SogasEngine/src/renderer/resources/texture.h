@@ -32,14 +32,22 @@ namespace Sogas
 	public:
 		static std::unordered_map<std::string, std::shared_ptr<Texture2D>> s_loadedTextures;
 
-		static bool loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name);
-		static std::shared_ptr<Texture2D> create(u32 width, u32 height, void* data = nullptr);
-		static std::shared_ptr<Texture2D> create(const std::string& path);
+		// TODO: all render resources should be initialized by a renderer class
+		static bool initTextureResources();
+
 		static std::shared_ptr<Texture2D> GET(const std::string& filepath);
 		static std::shared_ptr<Texture2D> GET(const u32 width, const u32 height, const std::string& filepath);
 
 		virtual std::string& getName() = 0;
 		virtual void setName(const std::string& name) = 0;
+
+	private:
+		static bool m_isInitialized;
+
+	private:
+		static bool loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name);
+		static std::shared_ptr<Texture2D> create(u32 width, u32 height, void* data = nullptr);
+		static std::shared_ptr<Texture2D> create(const std::string& path);
 	};
 
 	class SGS TextureCubeMap : public Texture

@@ -13,7 +13,7 @@
 namespace Sogas 
 {
 
-    extern std::vector<std::string> assetsPath;
+    extern std::vector<std::string> g_assetsPath;
 
     struct Vertex
     {
@@ -153,7 +153,7 @@ namespace Sogas
     {
         if (!s_loadedMeshes[filename])
         {
-            std::string path = findFile(filename, assetsPath);
+            std::string path = findFile(filename, g_assetsPath);
             std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
             mesh->load(path);
             mesh->m_filename = filename;

@@ -5,6 +5,7 @@
 #include "renderer/renderer.h"
 #include "renderer/vertexArray.h"
 #include "renderer/shader.h"
+#include "renderer/resources/texture.h"
 #include "platform/OpenGL/openGLShader.h"
 #include "logger.h"
 #include "time.h"
@@ -21,7 +22,7 @@ namespace Sogas
 	static Camera* s_camera = nullptr;
 
 	// TODO Redefine how the path should be used or saved
-	std::vector<std::string> assetsPath;
+	std::vector<std::string> g_assetsPath;
 
 	Application::Application()
 	{
@@ -37,6 +38,8 @@ namespace Sogas
 		{
 			SGSFATAL("Failed to link GLEW against OpenGL context!");
 		}
+
+		Texture2D::initTextureResources();
 
 		LuaPlus::LuaState* pLuaState = LuaPlus::LuaState::Create();
 		pLuaState->DoFile("../Assets/scripts/pene.lua");
@@ -59,7 +62,7 @@ namespace Sogas
 		//LuaPlus::LuaState::Destroy(pLuaState);
 		//delete pLuaState;
 
-		assetsPath = {
+		g_assetsPath = {
 			"../Assets/",
 			"../Assets/meshes/",
 			"../Assets/textures/",

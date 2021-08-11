@@ -7,6 +7,12 @@
 
 namespace Sogas 
 {
+    Camera::Camera(glm::vec3 pos, f32 fov, f32 aspectRatio)
+        : m_position(pos), m_fov(fov), m_front(glm::vec3(0.0f, 0.0f, 1.0f)), m_up(glm::vec3(0, 1, 0)), m_right(glm::vec3(1, 0, 0)), m_aspectRatio(aspectRatio)
+    {
+
+    }
+
     glm::mat4 Camera::getView()
     {
         return glm::lookAt(m_position, m_position + m_front, m_up);
@@ -14,8 +20,14 @@ namespace Sogas
 
     glm::mat4 Camera::getProjection()
     {
-        f32 aspect = (f32)Application::getInstance()->getWindow().getWidth() / (f32)Application::getInstance()->getWindow().getHeight();
-        return glm::perspective(glm::radians(m_fov), aspect, 0.001f, 1000.0f);
+        if(m_fixedAspectRatio)
+        {
+            return glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.001f, 1000.0f);
+        }
+        else
+        {
+            return glm::perspective(glm::radians(m_fov), m_aspectRatio, 0.001f, 1000.0f);
+        }
     }
 
     glm::mat4 Camera::getViewProjection()

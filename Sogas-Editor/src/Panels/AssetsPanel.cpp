@@ -9,8 +9,8 @@ namespace Sogas {
 	AssetsPanel::AssetsPanel()
 		: m_currentDirectory(g_assetsDirectory)
 	{
-		m_folderIcon = Texture2D::create("resources/folder-icon.png");
-		m_fileIcon = Texture2D::create("resources/file-icon.png");
+		m_folderIcon = Texture2D::GET("resources/folder-icon.png");
+		m_fileIcon = Texture2D::GET("resources/file-icon.png");
 	}
 
 	void AssetsPanel::onImGuiRender()

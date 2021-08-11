@@ -8,7 +8,7 @@
 namespace Sogas 
 {
 	std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::s_loadedShaders;
-	extern std::vector<std::string> assetsPath;
+	extern std::vector<std::string> g_assetsPath;
 
 	std::shared_ptr<Shader> Shader::create(const std::string& vertexSource, const std::string& fragmentSource)
 	{
@@ -38,7 +38,7 @@ namespace Sogas
 	{
 		if (!Shader::s_loadedShaders[filename])
 		{
-			std::string path = findFile(filename, assetsPath);
+			std::string path = findFile(filename, g_assetsPath);
 			if (!path.empty()) {
 				std::shared_ptr<Shader> shader = Shader::create(path);
 				shader->setName(filename);
