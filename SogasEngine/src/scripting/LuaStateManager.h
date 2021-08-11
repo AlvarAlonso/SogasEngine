@@ -17,14 +17,18 @@ namespace Sogas
 		static void destroy();
 		static LuaStateManager* GET();
 
-		void executeFile(const std::string& filename);
-		void executeString(const std::string& string);
+		void doFile(const std::string& filename);
+		void doString(const std::string& string);
 
 		LuaPlus::LuaObject getGlobals();
 		LuaPlus::LuaState* getLuaState() const;
 
 	private:
-		explicit LuaStateManager();
+		bool init();
+		void executeFile(const char* filename);
+		void executeString(const char* string);
+
+		explicit LuaStateManager() = default;
 		~LuaStateManager() = default;
 	};
 }
