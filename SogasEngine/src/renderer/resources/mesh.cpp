@@ -164,9 +164,8 @@ namespace Sogas
         return s_loadedMeshes[filename];
     }
 
-    void Mesh::createGrid(f32 dist)
+    void Mesh::createGrid(f32 dist, i32 n_lines)
     {
-        i32 n_lines = 2000;
         glm::vec4 color = { 0.5f, 0.5f, 0.5f, 1.0f };
 
         struct gVertex {
@@ -188,31 +187,6 @@ namespace Sogas
         size_t arraySize = vertices.size();
         size_t vertexSize = sizeof(gVertex);
         size_t size = arraySize * vertexSize;
-
-        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
-        VertexBufferLayout layout = {
-            {ShaderDataType::Float3, "a_position"},
-            {ShaderDataType::Float4, "a_color"}
-        };
-        m_vertexBuffer->setLayout(layout);
-        m_vertexArray->addVertexBuffer(m_vertexBuffer);
-    }
-
-    void Mesh::createTestGrid()
-    {
-        struct gVertex {
-            glm::vec3 position;
-            glm::vec4 color;
-        };
-
-        std::vector<gVertex> vertices;
-
-        vertices.push_back({ {-1, 0, -1}, glm::vec4(1.0) });
-        vertices.push_back({ {-1, 0,  1}, glm::vec4(1.0) });
-        vertices.push_back({ { 1, 0, -1}, glm::vec4(1.0) });
-        vertices.push_back({ { 1, 0,  1}, glm::vec4(1.0) });
-
-        size_t size = vertices.size() * sizeof(gVertex);
 
         m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
         VertexBufferLayout layout = {

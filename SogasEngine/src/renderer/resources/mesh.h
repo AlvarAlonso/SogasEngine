@@ -20,8 +20,7 @@ namespace Sogas
 		inline void setMaterial(std::shared_ptr<Material>& material) { m_pMaterial = material; }
 
 		static std::shared_ptr<Mesh> GET(const std::string& filename);
-		void createGrid(f32 dist);
-		void createTestGrid();
+		void createGrid(f32 dist = 5.0f, i32 n_lines = 20);
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<IndexBuffer> m_indexBuffer;
