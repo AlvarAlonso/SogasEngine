@@ -22,11 +22,10 @@ namespace Sogas
 		Sogas::to_json(rotation, getRotation());
 		Sogas::to_json(scale, getScale());
 
-		j = json{
-			{"Translation", translation},
-			{"Rotation", rotation},
-			{"Scale", scale}
-		};
+		j["Translation"] = translation;
+		j["Rotation"] = rotation;
+		j["Scale"] = scale;
+
 	}
 
 	void TransformComponent::from_json(const json& jsonTransform)

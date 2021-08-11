@@ -369,7 +369,7 @@ namespace Sogas
 						{
 							std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
 							if (!shaderName.empty())
-								component.lock()->getMaterial()->setMaterialShader(Shader::GET(shaderName));
+								component.lock()->getMaterial()->setMaterialShader(Shader::GET(takeNameFromPath(shaderName)));
 						}
 
 						ImGui::EndColumns();
@@ -430,7 +430,7 @@ namespace Sogas
 							{
 								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
 								if (!textureName.empty())
-									materialProperties.colorTexture = Texture2D::GET(textureName);
+									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
 							}
 							ImGui::EndPopup();
 						}

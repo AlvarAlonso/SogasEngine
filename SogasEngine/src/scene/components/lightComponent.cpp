@@ -17,12 +17,9 @@ namespace Sogas
 		json color;
 		Sogas::to_json(color, getColor());
 
-		j = json
-		{
-			{ "Color", color },
-			{ "MaxDistance", getMaxDistance() },
-			{ "Intensity", getIntensity() }
-		};
+		j["Color"]			= color;
+		j["MaxDistance"]	= getMaxDistance();
+		j["Intensity"]		= getIntensity();
 	}
 
 	void LightComponent::from_json(const json& jsonLight)

@@ -67,7 +67,7 @@ namespace Sogas
 		{
 			std::string path = findFile(filename, g_assetsPath);
 			std::shared_ptr<Texture2D> texture = Texture2D::create(path);
-			texture->m_filename = filename;
+			texture->setName(filename);
 			s_loadedTextures[filename] = texture;
 			return texture;
 		}

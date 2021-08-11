@@ -33,11 +33,9 @@ namespace Sogas
 	{
 		json material;
 		getMesh()->getMaterial()->to_json(material);
-		j = json
-		{
-			{"Mesh", getMesh()->getMeshName()},
-			{"Material", material}
-		};
+
+		j["Mesh"] = getMesh()->getMeshName();
+		j["Material"] = material;
 	}
 
 	/*

@@ -40,27 +40,19 @@ namespace Sogas
 		json color, emissive;
 		Sogas::to_json(color, m_materialProperties.color);
 		Sogas::to_json(emissive, m_materialProperties.emissiveFactor);
+		
+		jsonMaterial["Shader"]			= getShader()->getName();
+		jsonMaterial["Color"]			= color;
+		jsonMaterial["RoughnessFactor"] = m_materialProperties.roughnessFactor;
+		jsonMaterial["MetallicFactor"]	= m_materialProperties.metallicFactor;
+		jsonMaterial["TillingFactor"]	= m_materialProperties.tillingFactor;
+		jsonMaterial["EmissiveFactor"]	= emissive;
 
-		json colorTexture, normalTexture, emissiveTexture, metallicRoughnessTexture, occlusionTexture;
-		m_materialProperties.colorTexture ? colorTexture = json{ "ColorTexture", m_materialProperties.colorTexture->getName() } : json{ "ColorTexture", nullptr };
-		m_materialProperties.normalTexture ? normalTexture = json{ "NormalTexture", m_materialProperties.normalTexture->getName() } : normalTexture = json{ "NormalTexture", nullptr};
-		m_materialProperties.emissiveTexture ? emissiveTexture = json{ "EmissiveTexture", m_materialProperties.emissiveTexture->getName() } : emissiveTexture = json{ "EmissiveTexture", nullptr};
-		m_materialProperties.metallicRoughnessTexture ? metallicRoughnessTexture = json{ "MetallicRoughnessTexture", m_materialProperties.metallicRoughnessTexture->getName() } : metallicRoughnessTexture = json{ "MetallicRoughnessTexture", nullptr};
-		m_materialProperties.occlusionTexture ? occlusionTexture = json{ "OcclusionTexture", m_materialProperties.occlusionTexture->getName() } : occlusionTexture = json{ "OcclusionTexture", nullptr};
-
-		jsonMaterial = json{
-			{"Shader", getShader()->getName()},
-			{"Color", color},
-			{"RoughnessFactor", m_materialProperties.roughnessFactor},
-			{"MetallicFactor", m_materialProperties.metallicFactor},
-			{"TillingFactor", m_materialProperties.tillingFactor},
-			{"EmissiveFactor", emissive},
-			colorTexture,
-			normalTexture,
-			emissiveTexture,
-			metallicRoughnessTexture,
-			occlusionTexture
-		};
+		m_materialProperties.colorTexture ? jsonMaterial["ColorTexture"] = m_materialProperties.colorTexture->getName() : jsonMaterial["ColorTexture"] = nullptr;
+		m_materialProperties.normalTexture ? jsonMaterial["NormalTexture"] = m_materialProperties.normalTexture->getName() : jsonMaterial["NormalTexture"] = nullptr;
+		m_materialProperties.emissiveTexture ? jsonMaterial["EmissiveTexture"] = m_materialProperties.emissiveTexture->getName() : jsonMaterial["EmissiveTexture"] = nullptr;
+		m_materialProperties.metallicRoughnessTexture ? jsonMaterial["MetallicRoughnessTexture"] = m_materialProperties.metallicRoughnessTexture->getName() : jsonMaterial["MetallicRoughnessTexture"] = nullptr;
+		m_materialProperties.occlusionTexture ? jsonMaterial["OcclusionTexture"] = m_materialProperties.occlusionTexture->getName() : jsonMaterial["OcclusionTexture"] = nullptr;
 	}
 
 	void Material::from_json(const json& jsonMaterial)

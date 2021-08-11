@@ -66,13 +66,10 @@ namespace Sogas
 		if (has<LightComponent>())
 			getComponent<LightComponent>().lock()->to_json(light);
 
-		j = json
-		{
-			{"Name", !getName().empty() ? getName() : "Entity" },
-			{TransformComponent::s_name, transform},
-			{RenderComponent::s_name, render},
-			{LightComponent::s_name, light}
-		};
+		j["Name"] = !getName().empty() ? getName() : "Entity";
+		j[TransformComponent::s_name] = transform;
+		j[RenderComponent::s_name] = render;
+		j[LightComponent::s_name] = light;
 	}
 
 	void Entity::from_json(const json& jsonEntity)

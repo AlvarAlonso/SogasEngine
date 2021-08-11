@@ -28,8 +28,6 @@ namespace Sogas
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& name)
 	{
-		m_filename = name;
-
 		i32 width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
 		stbi_uc* data = stbi_load(name.c_str(), &width, &height, &channels, 0);
@@ -91,8 +89,6 @@ namespace Sogas
 
 	OpenGLTextureCubeMap::OpenGLTextureCubeMap(const std::string& filepath)
 	{
-		m_filename = filepath;
-
 		// TODO images are hardcoded right now
 		std::vector<std::string> faces{
 			"../Assets/textures/skybox/right.jpg",
