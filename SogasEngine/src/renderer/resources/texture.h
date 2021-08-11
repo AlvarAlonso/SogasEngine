@@ -18,8 +18,8 @@ namespace Sogas
 
 		virtual void setData(void* data, u32 size) = 0;
 		virtual void setName(const std::string& name) = 0;
-		virtual u32 getID() const = 0;
 		virtual std::string& getName() = 0;
+		virtual u32 getID() const = 0;
 
 		virtual void bind(u32 slot = 0) const = 0;
 
@@ -48,5 +48,18 @@ namespace Sogas
 		static bool loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name);
 		static std::shared_ptr<Texture2D> create(u32 width, u32 height, void* data = nullptr);
 		static std::shared_ptr<Texture2D> create(const std::string& path);
+	};
+
+	class SGS TextureCubeMap : public Texture
+	{
+	public:
+		static std::shared_ptr<TextureCubeMap> s_cubeMapTexture;
+
+		static std::shared_ptr<TextureCubeMap> GET(const std::string& filepath);
+
+		virtual std::string& getName() = 0;
+		virtual void setName(const std::string& name) = 0;
+	private:
+		static std::shared_ptr<TextureCubeMap> create(const std::string& filepath);
 	};
 }

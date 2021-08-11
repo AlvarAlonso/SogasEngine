@@ -1,7 +1,6 @@
 
 #include "sgspch.h"
 #include "scene.h"
-
 #include "components/transformComponent.h"
 #include "components/renderComponent.h"
 #include "components/lightComponent.h"
@@ -13,6 +12,7 @@ namespace Sogas
 	{
 		m_pEntityFactory.reset();
 		m_pEntityFactory = std::make_unique<EntityFactory>();
+		m_pEnvironment = std::make_shared<Environment>();
 	}
 
 	Scene::Scene(const char* filename)

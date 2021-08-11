@@ -45,8 +45,6 @@ namespace Sogas
 		std::unique_ptr<CameraController> m_cameraController;
 		std::shared_ptr<Camera> m_pCamera;
 
-		//std::unique_ptr<Scene> m_currentScene;
-
 		std::shared_ptr<Scene> m_pScene;
 		std::shared_ptr<Mesh> m_pGrid;	// Should grid be defined in editor?
 
