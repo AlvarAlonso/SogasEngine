@@ -365,7 +365,7 @@ namespace Sogas
 						ImGui::Text(component.lock()->getShader() ? component.lock()->getShader()->getName().c_str() : "Null");
 						ImGui::NextColumn();
 						
-						if (ImGui::Button("...!"))
+						if (ImGui::Button("..."))
 						{
 							std::string shaderName = FileDialog::openFile("Shader (*.shader)\0*.shader\0");
 							if (!shaderName.empty())
@@ -403,12 +403,17 @@ namespace Sogas
 
 
 						// COLOR TEXTURE
+						std::string tName;
 
 						if (materialProperties.colorTexture)
 						{
 							if(ImGui::ImageButton((ImTextureID)materialProperties.colorTexture->getID(), { 128, 128 }))
 							{
-								ImGui::OpenPopup("select_color_texture");
+								ImGui::OpenPopup("select_texture");
+								if (!textureName.empty()) {
+									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
+									textureName.clear();
+								}
 							}
 						}
 						else
@@ -416,6 +421,10 @@ namespace Sogas
 							if(ImGui::Button("Color Texture", { 128, 128 }))
 							{
 								ImGui::OpenPopup("select_color_texture");
+								if (!textureName.empty()) {
+									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
+									textureName.clear();
+								}
 							}
 						}
 
@@ -428,7 +437,7 @@ namespace Sogas
 
 							if (ImGui::Selectable("Load textures"))
 							{
-								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+								std::string textureName = FileDialog::openFile("Texture Files (*.png; *.jpg)\0*.png;*.jpg\0");
 								if (!textureName.empty())
 									materialProperties.colorTexture = Texture2D::GET(takeNameFromPath(textureName));
 							}
@@ -626,6 +635,29 @@ namespace Sogas
 								std::string textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
 								if (!textureName.empty())
 									materialProperties.normalTexture = Texture2D::GET(textureName);
+							}
+							ImGui::EndPopup();
+						}
+
+						//if (ImGui::BeginPopup("select_texture"))
+						//{
+						//	if (ImGui::Selectable("Default white texture")
+						//	{
+						//		textureName = "Default white";
+						//	}
+
+						//	if (ImGui::Selectable("Load textures"))
+						//	{
+						//		textureName = FileDialog::openFile("Texture (*.png)\0*.png\0Texture (*.jpg)\0*.jpg\0");
+						//	}
+						//	ImGui::EndPopup();
+						//}
+
+						if (ImGui::BeginPopup("select_texture"))
+						{
+							if (ImGui::Selectable("Default white texture")
+							{
+								tName = "Default white";
 							}
 							ImGui::EndPopup();
 						}

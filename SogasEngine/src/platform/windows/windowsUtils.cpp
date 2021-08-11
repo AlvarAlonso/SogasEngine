@@ -6,7 +6,6 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-//#include "windowsUtils.h"
 #include "platform/utils/platformUtils.h"
 #include "core/application.h"
 
@@ -24,6 +23,7 @@ namespace Sogas
 		ofn.lpstrFilter		= filter;
 		ofn.nFilterIndex	= 1;
 		ofn.Flags			= OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		//ofn.lpstrInitialDir = 
 
 		if (GetOpenFileName(&ofn) == TRUE)
 		{
