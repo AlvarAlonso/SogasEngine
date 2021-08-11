@@ -4,11 +4,14 @@
 
 #include "entity.h"
 #include "entityFactory.h"
+#include "environment.h"
 #include <json/single_include/nlohmann/json.hpp>
 
 namespace Sogas 
 {
 	using json = nlohmann::json;
+
+	class Environment;
 
 	class SGS Scene
 	{
@@ -22,6 +25,8 @@ namespace Sogas
 		void onUpdate(f32 dt);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
+		std::weak_ptr<Environment> getEnvironment() { return m_pEnvironment; }
+
 		StrongEntityPtr findEntityById(EntityId entityId);
 
 		void to_json(json& j);
@@ -66,9 +71,13 @@ namespace Sogas
 			return returnVector;
 		}
 
+	public:
+		bool m_renderEnvironment{ true };
+
 	private:
 		std::vector<StrongEntityPtr> m_entities;
 		std::unique_ptr<EntityFactory> m_pEntityFactory;
+		std::shared_ptr<Environment> m_pEnvironment;
 	};
 
 }

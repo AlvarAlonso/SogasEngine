@@ -21,6 +21,7 @@ namespace Sogas
 
 		static std::shared_ptr<Mesh> GET(const std::string& filename);
 		void createGrid(f32 dist);
+		void createTestGrid();
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<IndexBuffer> m_indexBuffer;

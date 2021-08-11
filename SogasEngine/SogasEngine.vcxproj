@@ -476,6 +476,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\scene\components\entityComponent.h" />
     <ClInclude Include="src\scene\entityFactory.h" />
     <ClInclude Include="src\scene\components\lightComponent.h" />
+    <ClInclude Include="src\scene\environment.h" />
     <ClInclude Include="src\scene\objectFactoryTemplate.h" />
     <ClInclude Include="src\scene\components\renderComponent.h" />
     <ClInclude Include="src\scene\scene.h" />
@@ -525,6 +526,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="src\scene\entityFactory.cpp" />
     <ClCompile Include="src\scene\components\lightComponent.cpp" />
     <ClCompile Include="src\scene\components\renderComponent.cpp" />
+    <ClCompile Include="src\scene\environment.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\scene\components\transformComponent.cpp" />
     <ClCompile Include="src\scene\serializer.cpp" />

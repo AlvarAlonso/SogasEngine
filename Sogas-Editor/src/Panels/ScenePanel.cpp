@@ -74,6 +74,11 @@ namespace Sogas
 		}
 
 		ImGui::End();
+
+		ImGui::Begin("Environment");
+		ImGui::Checkbox("Show Environment", &m_context->m_renderEnvironment);
+
+		ImGui::End();
 	}
 
 	void ScenePanel::setSelectedEntity(StrongEntityPtr entity)

@@ -94,10 +94,14 @@ namespace Sogas
 		if (!m_pGrid)
 		{
 			m_pGrid = std::make_shared<Mesh>();
-			m_pGrid->createGrid(5);
+			//m_pGrid->createGrid(5);
+			m_pGrid->createTestGrid();
 		}
 		Renderer::renderGrid(m_pGrid);
-		Renderer::renderEnvironment();
+		if (m_pScene->m_renderEnvironment)
+		{
+			Renderer::renderEnvironment(m_pScene->getEnvironment());
+		}
 		Renderer::endScene();
 
 

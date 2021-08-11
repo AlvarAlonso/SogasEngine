@@ -135,29 +135,29 @@ namespace Sogas
 		shader->unbind();
 	}
 
-	void Renderer::renderEnvironment()
+	void Renderer::renderEnvironment(std::weak_ptr<Environment> environment)
 	{
-		std::shared_ptr<Mesh> cube = Mesh::GET("cube.obj");
-
 		RenderCommand::enableDepthBuffer(true);
 		RenderCommand::setDepthFunc(DepthTypes::LEQUAL);
 		RenderCommand::enableBlend(false);
 
 		auto shader = Shader::GET("environment.shader");
-		auto texture = TextureCubeMap::GET("hardcodedRightNow");
+		//auto texture = TextureCubeMap::GET("hardcodedRightNow");
 		shader->bind();
 
 		shader->setUniform("u_model", glm::translate(glm::mat4(1), s_sceneData->cameraPosition));
 		shader->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
 
+		auto texture = environment.lock()->getTexture();
 		texture->bind(1);
 		shader->setUniform("u_cubemap", 1);
 
-		cube->m_vertexArray->bind();
-		if (cube->m_vertexArray->getIndexBuffer())
-			RenderCommand::drawIndexed(cube->m_vertexArray);
+		std::shared_ptr<Mesh> mesh = environment.lock()->getMesh();
+		mesh->m_vertexArray->bind();
+		if (mesh->m_vertexArray->getIndexBuffer())
+			RenderCommand::drawIndexed(mesh->m_vertexArray);
 		else
-			RenderCommand::draw(cube->m_vertexArray);
+			RenderCommand::draw(mesh->m_vertexArray);
 
 		RenderCommand::enableDepthBuffer(true);
 		RenderCommand::enableBlend(true);
