@@ -4,9 +4,14 @@
 #include "core/utils.h"
 #include "LuaStateManager.h"
 
-LuaStateManager* LuaStateManager::GET()
+namespace Sogas
 {
-	// TODO: assertion
+	LuaStateManager* LuaStateManager::s_pInstance = nullptr;
 
-	return s_pInstance;
+	LuaStateManager* LuaStateManager::GET()
+	{
+		// TODO: assertion
+
+		return s_pInstance;
+	}
 }
