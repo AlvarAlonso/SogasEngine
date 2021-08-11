@@ -185,13 +185,34 @@ namespace Sogas
             vertices.push_back({ {dist * n_lines * -0.5f, 0.0f, dist * i}, color });
         }
 
-        //vertices.push_back({ {-10.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-        //vertices.push_back({ { 0.0f, 10.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-        //vertices.push_back({ { 1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f} });
-
         size_t arraySize = vertices.size();
         size_t vertexSize = sizeof(gVertex);
         size_t size = arraySize * vertexSize;
+
+        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
+        VertexBufferLayout layout = {
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float4, "a_color"}
+        };
+        m_vertexBuffer->setLayout(layout);
+        m_vertexArray->addVertexBuffer(m_vertexBuffer);
+    }
+
+    void Mesh::createTestGrid()
+    {
+        struct gVertex {
+            glm::vec3 position;
+            glm::vec4 color;
+        };
+
+        std::vector<gVertex> vertices;
+
+        vertices.push_back({ {-1, 0, -1}, glm::vec4(1.0) });
+        vertices.push_back({ {-1, 0,  1}, glm::vec4(1.0) });
+        vertices.push_back({ { 1, 0, -1}, glm::vec4(1.0) });
+        vertices.push_back({ { 1, 0,  1}, glm::vec4(1.0) });
+
+        size_t size = vertices.size() * sizeof(gVertex);
 
         m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
         VertexBufferLayout layout = {

@@ -8,6 +8,7 @@
 namespace Sogas 
 {
 	std::unordered_map<std::string, std::shared_ptr<Texture2D>> Texture2D::s_loadedTextures;
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::s_cubeMapTexture;
 	extern std::vector<std::string> assetsPath;
 
 	bool Texture2D::loadToMap(std::shared_ptr<Texture2D> texture, const std::string& name)
@@ -69,5 +70,25 @@ namespace Sogas
 			return texture;
 		}
 		return s_loadedTextures[name];
+	}
+
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::GET(const std::string& filename)
+	{
+		// TODO create a map for cube map textures
+		//std::string filepath = findFile(filename, assetsPath);
+		
+		if(!s_cubeMapTexture)
+			s_cubeMapTexture = TextureCubeMap::create(filename);
+
+		return s_cubeMapTexture;
+	}
+
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::create(const std::string& filepath)
+	{
+		switch (Renderer::getAPI())
+		{
+		case Renderer::API::None: SGSASSERT_MSG(false, "No graphics API selected");
+		case Renderer::API::OpenGL: return std::make_shared<OpenGLTextureCubeMap>(filepath);
+		}
 	}
 }
