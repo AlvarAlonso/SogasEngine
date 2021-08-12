@@ -6,7 +6,7 @@
 
 namespace Sogas 
 {
-	class SGS LuaStateManager
+	class LuaStateManager
 	{
 	private:
 		static LuaStateManager* s_pInstance;

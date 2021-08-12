@@ -103,6 +103,8 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\scripting\EntityScript.h" />
+    <ClInclude Include="src\scene\components\entityScriptComponent.h" />
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
     <ClInclude Include="src\scripting\LuaStateManager.h" />
@@ -489,6 +491,8 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\scripting\EntityScript.cpp" />
+    <ClCompile Include="src\scene\components\entityScriptComponent.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "entityComponent.h"
-
-class EntityScript;
+#include "scripting/EntityScript.h"
 
 namespace Sogas
 {
@@ -16,8 +15,8 @@ namespace Sogas
 
 		virtual bool init() override;
 		virtual const char* getName() const override { return s_name; }
-		virtual void to_json(json& j) override;
-		virtual void from_json(const json& j) override;
+		//virtual void to_json(json& j) override;
+		//virtual void from_json(const json& j) override;
 
 	private:
 		bool m_started = false;
