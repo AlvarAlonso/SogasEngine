@@ -10,12 +10,13 @@ namespace Sogas
 		LuaPlus::LuaObject m_startFunction;
 		LuaPlus::LuaObject m_updateFunction;
 		LuaPlus::LuaObject m_destroyFunction;
-		LuaPlus::LuaObject m_script;
+		LuaPlus::LuaObject m_self;
 
 	public:
 		static void registerEntityScript();
 
 	private:
-		static void createScriptData();
+		static LuaPlus::LuaObject createFromScriptData(LuaPlus::LuaObject self, LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass);
+		bool populateDataFromScript(LuaPlus::LuaObject scriptClass, LuaPlus::LuaObject constructionData);
 	};
 }
