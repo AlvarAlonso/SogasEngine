@@ -9,6 +9,8 @@ namespace Sogas
 {
 	LuaStateManager* LuaStateManager::s_pInstance = nullptr;
 
+	const std::string sogasCoreLuaAPIPath = "resources/sogasCoreAPI.lua";
+
 	bool LuaStateManager::create()
 	{
 		if(s_pInstance)
@@ -65,8 +67,11 @@ namespace Sogas
 		m_pLuaState->GetGlobals().RegisterDirect("executeFile", (*this), &LuaStateManager::executeFile);
 		m_pLuaState->GetGlobals().RegisterDirect("executeString", (*this), &LuaStateManager::executeString);
 		
+		initSogasCoreLuaAPI();
+
 		return true;
 	}
+
 	void LuaStateManager::executeFile(const char* filename)
 	{
 		i32 error = m_pLuaState->DoFile(filename);
@@ -79,5 +84,10 @@ namespace Sogas
 		i32 error = m_pLuaState->DoString(string);
 		if (error)
 			SGSERROR("LuaState error: %i", error);
+	}
+
+	bool LuaStateManager::initSogasCoreLuaAPI()
+	{
+		doFile(sogasCoreLuaAPIPath);
 	}
 }

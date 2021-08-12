@@ -28,6 +28,8 @@ namespace Sogas
 		void executeFile(const char* filename);
 		void executeString(const char* string);
 
+		bool initSogasCoreLuaAPI();
+
 		explicit LuaStateManager() = default;
 		~LuaStateManager() = default;
 	};
