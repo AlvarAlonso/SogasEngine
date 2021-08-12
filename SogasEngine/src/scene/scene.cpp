@@ -137,10 +137,10 @@ namespace Sogas
 					auto entity = m_pEntityFactory->createEntity(name.c_str());
 
 					if(jsonEntity.contains(RenderComponent::s_name) && !jsonEntity[RenderComponent::s_name].is_null())
-						entity->addComponent(m_pEntityFactory->createComponent(RenderComponent::s_name));
+						addComponent<RenderComponent>(entity);
 
-					if(jsonEntity.contains(LightComponent::s_name) && !jsonEntity[LightComponent::s_name].is_null())
-						entity->addComponent(m_pEntityFactory->createComponent(LightComponent::s_name));
+					if (jsonEntity.contains(LightComponent::s_name) && !jsonEntity[LightComponent::s_name].is_null())
+						addComponent<LightComponent>(entity);
 
 					entity->from_json(jsonEntity);
 

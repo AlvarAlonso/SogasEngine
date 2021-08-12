@@ -48,7 +48,9 @@ namespace Sogas
 
 			// TODO: name from type may not be the same as stored in static s_name
 			// Should find a more robust way to create a specific component type
-			entity->addComponent(m_pEntityFactory->createComponent(T::s_name));
+			StrongEntityComponentPtr pComponent = m_pEntityFactory->createComponent(T::s_name);
+			entity->addComponent(pComponent);
+			pComponent->setOwner(entity);
 		}
 
 		/*

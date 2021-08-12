@@ -32,7 +32,6 @@ namespace Sogas
 
 	private:
 		std::shared_ptr<Mesh> m_pMesh;
-		//std::shared_ptr<Material> m_pMaterial;
 		Primitive m_primitive = Primitive::TRIANGLES;
 	};
 }

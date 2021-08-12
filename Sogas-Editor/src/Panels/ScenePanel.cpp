@@ -39,7 +39,6 @@ namespace Sogas
 		EntityId entityToDestroy = 0;
 		for (auto &entity : m_context.get()->getEntities())
 		{
-			//ImGui::Text(entity->getName().c_str());
 			EntityId id = drawEntityNode(entity);
 			
 			if(id != 0)

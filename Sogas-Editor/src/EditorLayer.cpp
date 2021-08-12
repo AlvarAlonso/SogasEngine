@@ -262,9 +262,9 @@ namespace Sogas
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		
-		if(ImGui::BeginDragDropTarget())
+		if (ImGui::BeginDragDropTarget())
 		{
-			if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
 				// TODO: open the scene

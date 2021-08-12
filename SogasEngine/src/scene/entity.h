@@ -22,15 +22,14 @@ namespace Sogas
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
 
 	private:
-		std::string m_name;
+		std::string m_name{ "entity" };
+		std::string m_type{ "unknown" };
 		EntityId m_id{ 0 }; // default ID, it must count as an invalid ID
 		EntityComponentsMap m_components{};
-		std::string m_type;
 
 	public:
-		Entity() = default; // TODO: comprovar que aixo es correcte
 		explicit Entity(EntityId id);
-		Entity(const Entity& other) = default;
+		//Entity(const Entity& other) = default;
 		~Entity(void);
 
 		bool init();
@@ -46,7 +45,7 @@ namespace Sogas
 		void		from_json(const json& j);
 
 		const EntityComponentsMap* getComponents() { return &m_components; }
-		const std::vector<StrongEntityComponentPtr>& getComponentsVector();
+		const std::vector<StrongEntityComponentPtr>& getComponentsVector();	// TODO This vector returns a local address, check definition
 		void addComponent(StrongEntityComponentPtr pComponent);
 		void removeComponent(const char* componentName);
 
