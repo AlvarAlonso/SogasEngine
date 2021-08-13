@@ -5,7 +5,7 @@
 
 namespace Sogas
 {
-	class EntityScript
+	class SGS EntityScript
 	{
 	private:
 		LuaPlus::LuaObject m_startFunction;
