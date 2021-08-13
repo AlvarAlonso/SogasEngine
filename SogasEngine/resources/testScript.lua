@@ -1,20 +1,21 @@
-TestScript = class(ENTITY_SCRIPT, nil);
+Script = class(ENTITY_SCRIPT, nil);
 
 frame = 1;
 
-function TestScript:Start()
+function Script:Start()
     x = "started";
     return 0;
 end
 
-function TestScript:Update()
+function Script:Update()
     frame = frame + 1;
     return 0;
 end
 
-function TestScript:OnDestroy()
+function Script:OnDestroy()
     y = "destroyed";
     return 0;
 end
 
-testScript = TestScript:Create(nil);
+-- this should be created in C++
+--testScript = Script:Create(nil);

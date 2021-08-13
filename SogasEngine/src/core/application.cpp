@@ -48,8 +48,9 @@ namespace Sogas
 
 		LuaStateManager::create();
 		EntityScript::registerEntityScript();
+		EntityScript::initializeScriptClasses();
 
-		m_entityScript.createFromScript();
+		//m_entityScript.createFromScript();
 
 		g_assetsPath = {
 			"../Assets/",
@@ -84,8 +85,6 @@ namespace Sogas
 				}
 				m_imguiLayer->end();
 			}
-			// TODO: hardcoded, to be deleted
-			//m_entityScript.update();
 
 			m_window->onUpdate();
 		}

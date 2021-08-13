@@ -7,6 +7,10 @@ namespace Sogas
 
 	bool EntityScriptComponent::init()
 	{
+		m_entityScript = new EntityScript();
+		m_entityScript->createFromScript("Script");
+		m_entityScript->start();
+
 		return true;
 	}
 
