@@ -41,27 +41,10 @@ namespace Sogas
 
 		Texture2D::initTextureResources();
 
-		LuaPlus::LuaState* pLuaState = LuaPlus::LuaState::Create();
-		pLuaState->DoFile("../Assets/scripts/pene.lua");
-		LuaPlus::LuaObject peneObj = pLuaState->GetGlobals().GetByName("X");
-		pLuaState->DoString("X = Pene phrase!");
-		pLuaState->SetGlobal("X = Pene phrase!");
-		LuaPlus::LuaObject object;
-		object.AssignString(pLuaState, "Watch my penis!");
-
-		if (peneObj.IsString())
-		{
-			SGSDEBUG("This is the output from a lua file:\n %s", peneObj.GetString());
+		if (!Renderer::get()->init()) {
+			SGSFATAL("Renderer could not initiate. Shuting down now.");
 		}
-
-		if (object.IsString())
-		{
-			std::string var = object.GetString();
-		}
-
-		//LuaPlus::LuaState::Destroy(pLuaState);
-		//delete pLuaState;
-
+		
 		g_assetsPath = {
 			"../Assets/",
 			"../Assets/meshes/",
@@ -153,6 +136,7 @@ namespace Sogas
 
 	void Application::shutdown()
 	{
+		Renderer::get()->shutdown();
 		glfwTerminate();
 		delete this;
 	}

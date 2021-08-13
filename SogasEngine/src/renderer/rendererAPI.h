@@ -14,8 +14,11 @@ namespace Sogas
 			None = 0, OpenGL = 1, Vulkan = 2
 		};
 	public:
-		virtual void clear() = 0;
 
+		virtual bool init() = 0;
+		virtual void shutdown() = 0;
+
+		virtual void clear() = 0;
 		virtual void setClearColor(const glm::vec4& colour) = 0;
 		virtual void enableDepthBuffer(const bool& depth) = 0;
 		virtual void setDepthFunc(const DepthTypes factor) = 0;

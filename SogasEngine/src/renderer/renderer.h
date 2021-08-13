@@ -30,16 +30,33 @@ namespace Sogas
 
 		inline static API getAPI() { return s_API; }
 
-		static void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
-		static void render();
-		static void endScene();
-		static void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
-		static void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
-		static void renderEnvironment(std::weak_ptr<Environment> environment);
+		static Renderer* get()
+		{
+			if (!m_handle) {
+				m_handle = new Renderer();
+			}
+			return m_handle;
+		};
+
+		Renderer() = default; // TODO make user able to chose rendering API.
+
+		bool init(); // TODO pass necessary information to init renderer module.
+		void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
+		void draw();
+		void endScene();
+		void shutdown();
+
+		// TODO these should be a command
+		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
+		void renderEnvironment(std::weak_ptr<Environment> environment);
+		void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
+		//void render();
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application
 		static RendererAPI* s_RendererAPI;
+
+		static Renderer* m_handle;
 
 		static bool environment;
 

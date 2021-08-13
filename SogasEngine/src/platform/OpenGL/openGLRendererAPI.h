@@ -7,6 +7,9 @@ namespace Sogas
 	class OpenGLRendererAPI : public RendererAPI
 	{
 	public:
+		virtual bool init() override { return true; }
+		virtual void shutdown() override {};
+
 		virtual void clear() override;
 		virtual void setClearColor(const glm::vec4& colour) override;
 		virtual void enableDepthBuffer(const bool& depth) override;

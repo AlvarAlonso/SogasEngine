@@ -24,6 +24,12 @@ namespace Sogas
 	RendererAPI* Renderer::s_RendererAPI = new OpenGLRendererAPI;
 
 	bool Renderer::environment = true;
+	Renderer* Renderer::m_handle = nullptr;
+
+	bool Renderer::init()
+	{
+		return s_RendererAPI->init();
+	}
 
 	void Renderer::beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
 	{
@@ -40,7 +46,7 @@ namespace Sogas
 		s_sceneData->cameraPosition = pCamera->getPosition();
 	}
 
-	void Renderer::render()
+	void Renderer::draw()
 	{
 		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent<RenderComponent>();
 
@@ -164,5 +170,10 @@ namespace Sogas
 		RenderCommand::enableDepthBuffer(true);
 		RenderCommand::enableBlend(true);
 		shader->unbind();
+	}
+
+	void Renderer::shutdown()
+	{
+		s_RendererAPI->shutdown();
 	}
 }

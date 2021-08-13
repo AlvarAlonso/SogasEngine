@@ -93,21 +93,20 @@ namespace Sogas
 
 		m_framebuffer->bind();
 
-
-		Renderer::beginScene(m_pScene, m_pCamera);
+		Renderer::get()->beginScene(m_pScene, m_pCamera);
 		m_framebuffer->clearAttachment(1, -1);
-		Renderer::render();
+		Renderer::get()->draw();
 		if (!m_pGrid)
 		{
 			m_pGrid = std::make_shared<Mesh>();
 			m_pGrid->createGrid();
 		}
-		Renderer::renderGrid(m_pGrid);
+		Renderer::get()->renderGrid(m_pGrid);
 		if (m_pScene->m_renderEnvironment)
 		{
-			Renderer::renderEnvironment(m_pScene->getEnvironment());
+			Renderer::get()->renderEnvironment(m_pScene->getEnvironment());
 		}
-		Renderer::endScene();
+		Renderer::get()->endScene();
 
 
 		// TODO: Mouse picking
