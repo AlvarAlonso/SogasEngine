@@ -102,10 +102,6 @@ namespace Sogas
 			m_pGrid->createGrid();
 		}
 		Renderer::get()->renderGrid(m_pGrid);
-		if (m_pScene->m_renderEnvironment)
-		{
-			Renderer::get()->renderEnvironment(m_pScene->getEnvironment());
-		}
 		Renderer::get()->endScene();
 
 

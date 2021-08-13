@@ -41,9 +41,9 @@ namespace Sogas
 		RenderCommand::setBlendFunc(BlendTypes::ZERO, BlendTypes::ZERO);
 		RenderCommand::enableBlend(true);
 
-		s_pScene = scene;
-		s_sceneData->viewprojectionMatrix = pCamera->getViewProjection();
-		s_sceneData->cameraPosition = pCamera->getPosition();
+		s_pScene							= scene;
+		s_sceneData->viewprojectionMatrix	= pCamera->getViewProjection();
+		s_sceneData->cameraPosition			= pCamera->getPosition();
 	}
 
 	void Renderer::draw()
@@ -57,6 +57,10 @@ namespace Sogas
 
 			if(renderComponent->getMesh() && renderComponent->getMaterial())
 				Renderer::submit(renderComponent, model);
+		}
+
+		if (s_pScene->m_renderEnvironment) {
+			renderEnvironment(s_pScene->getEnvironment());
 		}
 	}
 
@@ -150,7 +154,6 @@ namespace Sogas
 		RenderCommand::enableBlend(false);
 
 		auto shader = Shader::GET("environment.shader");
-		//auto texture = TextureCubeMap::GET("hardcodedRightNow");
 		shader->bind();
 
 		shader->setUniform("u_model", glm::translate(glm::mat4(1), s_sceneData->cameraPosition));

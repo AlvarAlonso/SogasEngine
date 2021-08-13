@@ -46,11 +46,13 @@ namespace Sogas
 		void endScene();
 		void shutdown();
 
+		// TODO render grid should be private and called inside draw(), not in the application layer
+		void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
+
 		// TODO these should be a command
+	private:
 		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
 		void renderEnvironment(std::weak_ptr<Environment> environment);
-		void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
-		//void render();
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application
