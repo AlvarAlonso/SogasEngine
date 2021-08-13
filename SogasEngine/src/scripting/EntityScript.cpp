@@ -46,7 +46,7 @@ namespace Sogas
 		LuaPlus::LuaFunction<i32> func(m_updateFunction);
 		func(m_self);
 
-		i32 frame = LuaStateManager::GET()->getGlobals().GetByName("frame").ToInteger();
+		//i32 frame = LuaStateManager::GET()->getGlobals().GetByName("frame").ToInteger();
 	}
 
 	void EntityScript::onDestroy()

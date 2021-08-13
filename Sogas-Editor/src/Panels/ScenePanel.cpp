@@ -4,6 +4,7 @@
 #include "scene/components/cameraComponent.h"
 #include "scene/components/transformComponent.h"
 #include "scene/components/lightComponent.h"
+#include "scene/components/entityScriptComponent.h"
 
 #include "core/utils.h"
 #include "platform/utils/platformUtils.h"
@@ -273,7 +274,12 @@ namespace Sogas
 
 				ImGui::CloseCurrentPopup();
 			}
-
+			
+			if(ImGui::MenuItem("Script"))
+			{
+				m_context->addComponent<EntityScriptComponent>(pEntity);
+			}
+			
 			if(ImGui::MenuItem("Light"))
 			{
 				if(!m_selectedEntity.lock()->has<LightComponent>())
@@ -313,6 +319,12 @@ namespace Sogas
 				ImGui::ColorEdit3("Colour", &component.lock()->getColor().x);
 				ImGui::SliderFloat("Intensity", &component.lock()->getIntensity(), 0.0f, 100.0f);
 				ImGui::SliderFloat("Maximum Distance", &component.lock()->getMaxDistance(), 0.0f, 500.0f);
+			});
+
+		
+		drawComponent<EntityScriptComponent>("Script", entity.lock(), [](auto& component)
+			{
+				ImGui::Text("Using an entity script");
 			});
 
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)

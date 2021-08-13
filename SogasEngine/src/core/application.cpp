@@ -85,7 +85,7 @@ namespace Sogas
 				m_imguiLayer->end();
 			}
 			// TODO: hardcoded, to be deleted
-			m_entityScript.update();
+			//m_entityScript.update();
 
 			m_window->onUpdate();
 		}
