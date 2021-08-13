@@ -15,6 +15,47 @@ namespace Sogas
 		metaTableObject.RegisterDirect("Create", &EntityScript::createFromScriptData);
 	}
 
+	void EntityScript::createFromScript()
+	{
+		// TODO: This is hardcoded
+		LuaStateManager::GET()->doFile("../SogasEngine/resources/testScript.lua");
+
+		LuaPlus::LuaObject luaGlobals = LuaStateManager::GET()->getGlobals();
+		LuaPlus::LuaObject script = luaGlobals.GetByName("testScript");
+		LuaPlus::LuaObject nilValue;
+		i32 frame = luaGlobals.GetByName("frame").ToInteger();
+		//nilValue.SetNil(nilValue);
+
+		if (!script.IsTable())
+			SGSERROR("A Lua script must be a table!");
+
+		populateDataFromScript(script, nilValue);
+	}
+
+	void EntityScript::start()
+	{
+		if (!m_startFunction.IsNil())
+		{
+			LuaPlus::LuaFunction<i32> func(m_startFunction);
+			func(m_self);
+		}
+	}
+
+	void EntityScript::update()
+	{
+		LuaPlus::LuaFunction<i32> func(m_updateFunction);
+		func(m_self);
+	}
+
+	void EntityScript::onDestroy()
+	{
+		if(!m_destroyFunction.IsNil())
+		{
+			LuaPlus::LuaFunction<i32> func(m_destroyFunction);
+			func(m_self);
+		}
+	}
+
 	LuaPlus::LuaObject EntityScript::createFromScriptData(LuaPlus::LuaObject self, LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass)
 	{
 		EntityScript* pInstance = new EntityScript();

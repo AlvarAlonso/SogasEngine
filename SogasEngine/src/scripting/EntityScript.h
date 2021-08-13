@@ -1,5 +1,6 @@
 #pragma once
 
+#include "defines.h"
 #include "LuaStateManager.h"
 
 namespace Sogas
@@ -14,6 +15,11 @@ namespace Sogas
 
 	public:
 		static void registerEntityScript();
+		void createFromScript();
+
+		void start();
+		void update();
+		void onDestroy();
 
 	private:
 		static LuaPlus::LuaObject createFromScriptData(LuaPlus::LuaObject self, LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass);

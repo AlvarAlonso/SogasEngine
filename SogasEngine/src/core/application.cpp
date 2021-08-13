@@ -11,6 +11,7 @@
 #include "time.h"
 #include "camera.h"
 #include "scripting/LuaStateManager.h"
+#include "scripting/EntityScript.h"
 
 #include "input.h"
 
@@ -23,6 +24,9 @@ namespace Sogas
 
 	// TODO Redefine how the path should be used or saved
 	std::vector<std::string> g_assetsPath;
+
+	// TODO: remove test attributes
+	EntityScript m_entityScript;
 
 	Application::Application()
 	{
@@ -43,6 +47,9 @@ namespace Sogas
 		Texture2D::initTextureResources();
 
 		LuaStateManager::create();
+		EntityScript::registerEntityScript();
+
+		m_entityScript.createFromScript();
 
 		g_assetsPath = {
 			"../Assets/",

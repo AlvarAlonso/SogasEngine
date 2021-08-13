@@ -39,3 +39,4 @@ Vec3 = class(nil,
     })
 
 v = Vec3:Create({x = 5, y = 8, z = 7});
+
