@@ -17,6 +17,7 @@ namespace Sogas
 		virtual const char* getName() const override { return s_name; }
 		virtual void to_json(json& j) override;
 		virtual void from_json(const json& j) override;
+		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(); }
 
 		void setEntityScript(EntityScript* entityScript) { m_entityScript = entityScript; }
 
