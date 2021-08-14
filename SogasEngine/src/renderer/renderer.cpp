@@ -56,7 +56,7 @@ namespace Sogas
 			glm::mat4 model = makeStrongPtr(renderable->getComponent<TransformComponent>())->getTransform();
 
 			if(renderComponent->getMesh() && renderComponent->getMaterial())
-				Renderer::submit(renderComponent, model);
+				submit(renderComponent, model);
 		}
 
 		if (s_pScene->m_renderEnvironment) {

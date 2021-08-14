@@ -1,6 +1,7 @@
 #include "AssetsPanel.h"
 #include "imgui.h"
 #include "defines.h"
+#include "core/utils.h"
 
 namespace Sogas {
 
@@ -56,8 +57,24 @@ namespace Sogas {
 			if(ImGui::BeginDragDropSource())
 			{
 				const wchar_t* itemPath = relativePath.c_str();
-				ImGui::SetDragDropPayload("ASSETS_PANEL_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
-				ImGui::EndDragDropSource();
+				std::string folder = takeNameFromPath(relativePath.parent_path().string());
+
+				if (folder == "scenes") {
+					ImGui::SetDragDropPayload("ASSETS_PANEL_SCENE", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
+				else if (folder == "textures") {
+					ImGui::SetDragDropPayload("ASSETS_PANEL_TEXTURE", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
+				else if (folder == "meshes") {
+					ImGui::SetDragDropPayload("ASSETS_PANEL_MESH", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
+				else if (folder == "scripts") {
+					ImGui::SetDragDropPayload("ASSETS_PANEL_SCRIPT", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
 			}
 
 			if(ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))

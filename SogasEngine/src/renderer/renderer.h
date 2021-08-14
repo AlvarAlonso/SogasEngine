@@ -38,7 +38,6 @@ namespace Sogas
 			return m_handle;
 		};
 
-		Renderer() = default; // TODO make user able to chose rendering API.
 
 		bool init(); // TODO pass necessary information to init renderer module.
 		void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
@@ -49,8 +48,9 @@ namespace Sogas
 		// TODO render grid should be private and called inside draw(), not in the application layer
 		void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
 
-		// TODO these should be a command
+		// TODO these should be a command ???
 	private:
+		Renderer() = default; // TODO make user able to chose rendering API.
 		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
 		void renderEnvironment(std::weak_ptr<Environment> environment);
 

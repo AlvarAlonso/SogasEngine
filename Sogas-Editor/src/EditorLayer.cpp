@@ -27,6 +27,7 @@
 #include "scene/components/lightComponent.h"
 
 #include "Panels/ScenePanel.h"
+#include <core/utils.h>
 
 namespace Sogas 
 {
@@ -103,7 +104,6 @@ namespace Sogas
 		}
 		Renderer::get()->renderGrid(m_pGrid);
 		Renderer::get()->endScene();
-
 
 		// TODO: Mouse picking
 
@@ -259,10 +259,28 @@ namespace Sogas
 		
 		if (ImGui::BeginDragDropTarget())
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_SCENE"))
 			{
+				// Loads a scene from a scene file dragged to the viewport.
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				// TODO: open the scene
+				std::filesystem::path scenePath = std::filesystem::path(g_assetsDirectory) / path;
+				m_pScene = std::make_shared<Scene>();
+				m_scenePanel.setContext(m_pScene);
+				Serializer serializer(m_pScene);
+				serializer.deserialize(scenePath.string());
+			}
+			else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_MESH"))
+			{
+				/*
+				* Creates a new entity with a render component attached and the corresponding dragged mesh to the viewport.
+				*/
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::filesystem::path meshPath = std::filesystem::path(g_assetsDirectory) / path;
+				std::string meshName = takeNameFromPath(meshPath.string());
+				StrongEntityPtr newEntity = m_pScene->createEntity();
+				m_pScene->addComponent<RenderComponent>(newEntity);
+				auto renderComponent = newEntity->getComponent<RenderComponent>();
+				renderComponent.lock()->setMesh(meshName.c_str());				
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -281,7 +299,6 @@ namespace Sogas
 			glm::mat4 cameraView = m_pCamera->getView();
 
 			// Entity transform
-			//std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>(TransformComponent::s_name);
 			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>();
 
 			glm::mat4 transform = transformComponent.lock()->getTransform();

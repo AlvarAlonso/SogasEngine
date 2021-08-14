@@ -324,6 +324,18 @@ namespace Sogas
 				ImGui::Text(component.lock()->getMesh() ? component.lock()->getMesh()->getMeshName().c_str() : "Null");
 				ImGui::NextColumn();
 				ImGui::PushID("MeshButton");
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_MESH"))
+					{
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::filesystem::path meshPath = std::filesystem::path(g_assetsDirectory) / path;
+						std::string meshName = takeNameFromPath(meshPath.string());
+						component.lock()->setMesh(meshName.c_str());
+					}
+					ImGui::EndDragDropTarget();
+				}
+
 				if (ImGui::Button("..."))
 				{
 					std::string meshPath = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
@@ -462,7 +474,7 @@ namespace Sogas
 
 						if (ImGui::BeginDragDropTarget())
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_TEXTURE"))
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
@@ -510,7 +522,7 @@ namespace Sogas
 
 						if (ImGui::BeginDragDropTarget())
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_TEXTURE"))
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
@@ -561,7 +573,7 @@ namespace Sogas
 
 						if (ImGui::BeginDragDropTarget())
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_TEXTURE"))
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
@@ -609,7 +621,7 @@ namespace Sogas
 
 						if (ImGui::BeginDragDropTarget())
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_TEXTURE"))
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
@@ -657,7 +669,7 @@ namespace Sogas
 
 						if (ImGui::BeginDragDropTarget())
 						{
-							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_ITEM"))
+							if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSETS_PANEL_TEXTURE"))
 							{
 								const wchar_t* path = (const wchar_t*)payload->Data;
 								std::filesystem::path texturePath = std::filesystem::path(g_assetsDirectory) / path;
