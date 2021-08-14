@@ -31,15 +31,13 @@ namespace Sogas
 		LuaPlus::LuaObject luaGlobals = LuaStateManager::GET()->getGlobals();
 		LuaPlus::LuaObject scriptClass = luaGlobals.GetByName(scriptClassName.c_str());
 		LuaPlus::LuaObject nilValue;
-		i32 frame = luaGlobals.GetByName("frame").ToInteger();
-		//nilValue.SetNil(nilValue);
+
+		i32 x = scriptClass.GetByName("x").ToInteger();
 
 		if (!scriptClass.IsTable())
 			SGSERROR("A Lua script must be a table!");
 
 		createScript(nilValue, scriptClass);
-
-		bool cpp = m_self.GetByName("cpp").GetBoolean();
 	}
 
 	void EntityScript::start()
@@ -64,7 +62,7 @@ namespace Sogas
 			m_firstUpdate = true;
 		}
 
-		//i32 x = LuaStateManager::GET()->getGlobals().GetByName("scriptClassCounter").ToInteger();
+		i32 x = m_self.GetByName("x").ToInteger();
 
 		//SGSINFO("[%i]: Current script class counter value: %i. ", m_id, scriptClassCounter);
 		//SGSINFO("[%i]: Current test script class counter value: %i. ", m_id, testScriptClassCounter);
@@ -90,11 +88,14 @@ namespace Sogas
 		m_self.AssignNewTable(LuaStateManager::GET()->getLuaState());
 		if(populateDataFromScript(scriptClass, constructionData))
 		{
-			LuaPlus::LuaObject metaTableObject = LuaStateManager::GET()->getGlobals().Lookup("ENTITY_SCRIPT");
-			SGSASSERT(!metaTableObject.IsNil());
+			//LuaPlus::LuaObject metaTableObject = LuaStateManager::GET()->getGlobals().Lookup("ENTITY_SCRIPT");
+			//SGSASSERT(!metaTableObject.IsNil());
 
 			m_self.SetLightUserdata("__object", this);
-			m_self.SetMetatable(metaTableObject);
+			scriptClass.SetObject("__index", scriptClass);
+			//m_self.SetMetatable(metaTableObject);
+			m_self.SetMetatable(scriptClass);
+			i32 x = scriptClass.GetByName("x").ToInteger();
 		}
 		else
 		{

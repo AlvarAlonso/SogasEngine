@@ -19,14 +19,14 @@ end
 
 -- Entity script classes
 
-TestScript = class(Script, { x = 0});
+TestScript = class(Script, { x = 5});
 
 function TestScript:Start()
     return 0;
 end
 
 function TestScript:Update()
-    x = x + 1;
+    self.x = self.x + 1;
     return 0;
 end
 
