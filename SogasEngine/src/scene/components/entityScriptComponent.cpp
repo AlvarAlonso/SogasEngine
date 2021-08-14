@@ -8,6 +8,7 @@ namespace Sogas
 	bool EntityScriptComponent::init()
 	{
 		m_entityScript = new EntityScript();
+		// TODO: this is hardcoded
 		m_entityScript->createFromScript("TestScript");
 		m_entityScript->start();
 

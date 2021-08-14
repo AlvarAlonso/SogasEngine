@@ -50,8 +50,6 @@ namespace Sogas
 		EntityScript::registerEntityScript();
 		EntityScript::initializeScriptClasses();
 
-		//m_entityScript.createFromScript();
-
 		g_assetsPath = {
 			"../Assets/",
 			"../Assets/meshes/",
