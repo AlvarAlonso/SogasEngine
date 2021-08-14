@@ -1,19 +1,36 @@
+-- Base Script Class for all the entity scripts in the game
 Script = class(ENTITY_SCRIPT, nil);
 
-frame = 1;
+scriptClassCounter = 0;
 
 function Script:Start()
-    x = "started";
     return 0;
 end
 
 function Script:Update()
-    frame = frame + 1;
+    scriptClassCounter = scriptClassCounter + 1;
     return 0;
 end
 
 function Script:OnDestroy()
-    y = "destroyed";
+    return 0;
+end
+
+
+-- Entity script classes
+
+TestScript = class(Script, { x = 0});
+
+function TestScript:Start()
+    return 0;
+end
+
+function TestScript:Update()
+    x = x + 1;
+    return 0;
+end
+
+function TestScript:OnDestroy()
     return 0;
 end
 

@@ -38,6 +38,8 @@ namespace Sogas
 			SGSERROR("A Lua script must be a table!");
 
 		createScript(nilValue, scriptClass);
+
+		bool cpp = m_self.GetByName("cpp").GetBoolean();
 	}
 
 	void EntityScript::start()
@@ -62,9 +64,10 @@ namespace Sogas
 			m_firstUpdate = true;
 		}
 
-		i32 currentUpdate = LuaStateManager::GET()->getGlobals().GetByName("frame").ToInteger();
+		//i32 x = LuaStateManager::GET()->getGlobals().GetByName("scriptClassCounter").ToInteger();
 
-		SGSINFO("[%i]: Current frame value: %i. ", m_id, currentUpdate);
+		//SGSINFO("[%i]: Current script class counter value: %i. ", m_id, scriptClassCounter);
+		//SGSINFO("[%i]: Current test script class counter value: %i. ", m_id, testScriptClassCounter);
 
 		LuaPlus::LuaFunction<i32> func(m_updateFunction);
 		func(m_self);
