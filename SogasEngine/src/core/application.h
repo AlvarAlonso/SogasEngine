@@ -17,10 +17,6 @@
 
 namespace Sogas 
 {
-	class Entity;
-	class Shader;
-	class VertexArray;
-
 	class SGS Application
 	{
 	public:

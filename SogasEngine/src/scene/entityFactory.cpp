@@ -9,6 +9,7 @@
 #include "components/transformComponent.h"
 #include "components/cameraComponent.h"
 #include "components/lightComponent.h"
+#include "components/entityScriptComponent.h"
 
 namespace Sogas
 {
@@ -23,6 +24,7 @@ namespace Sogas
 		m_componentFactory.registerComponent<RenderComponent>(EntityComponent::getIdFromName(RenderComponent::s_name));
 		m_componentFactory.registerComponent<CameraComponent>(EntityComponent::getIdFromName(CameraComponent::s_name));
 		m_componentFactory.registerComponent<LightComponent>(EntityComponent::getIdFromName(LightComponent::s_name));
+		m_componentFactory.registerComponent<EntityScriptComponent>(EntityComponent::getIdFromName(EntityScriptComponent::s_name));
 	}
 
 	StrongEntityPtr EntityFactory::createEntity(const char* entityResource)

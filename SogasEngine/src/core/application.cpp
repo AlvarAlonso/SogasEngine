@@ -10,7 +10,8 @@
 #include "logger.h"
 #include "time.h"
 #include "camera.h"
-#include "LuaPlus.h"
+#include "scripting/LuaStateManager.h"
+#include "scripting/EntityScript.h"
 
 #include "input.h"
 
@@ -24,9 +25,13 @@ namespace Sogas
 	// TODO Redefine how the path should be used or saved
 	std::vector<std::string> g_assetsPath;
 
+	// TODO: remove test attributes
+	EntityScript m_entityScript;
+
 	Application::Application()
 	{
-		SGSASSERT(!s_application);
+		
+		(!s_application);
 		s_application = this;
 		m_window = std::unique_ptr<Window>(Window::create());
 		m_window->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
@@ -45,6 +50,10 @@ namespace Sogas
 			SGSFATAL("Renderer could not initiate. Shuting down now.");
 		}
 		
+		LuaStateManager::create();
+		EntityScript::registerEntityScript();
+		EntityScript::initializeScriptClasses();
+
 		g_assetsPath = {
 			"../Assets/",
 			"../Assets/meshes/",
@@ -78,6 +87,7 @@ namespace Sogas
 				}
 				m_imguiLayer->end();
 			}
+
 			m_window->onUpdate();
 		}
 	}

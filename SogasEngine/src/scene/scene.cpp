@@ -5,6 +5,7 @@
 #include "components/renderComponent.h"
 #include "components/lightComponent.h"
 #include "components/cameraComponent.h"
+#include "components/entityScriptComponent.h"
 
 namespace Sogas
 {
@@ -72,7 +73,15 @@ namespace Sogas
 	// and textures to bind them when updating/rendering
 	void Scene::onUpdate(f32 dt)
 	{
+		for(auto& entity : m_entities)
+		{
+			auto scriptComponent = entity->getComponent<EntityScriptComponent>();
 
+			if (scriptComponent.lock())
+			{
+				scriptComponent.lock()->update(dt);
+			}
+		}
 		//for (auto& entity : m_entities)
 		//{
 		//	auto tComponent = entity->getComponent<TransformComponent>(TransformComponent::s_name);
