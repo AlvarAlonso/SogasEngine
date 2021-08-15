@@ -30,7 +30,6 @@ namespace Sogas
 	private:
 		void createScript(LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass);
 
-		static LuaPlus::LuaObject createFromScriptData(LuaPlus::LuaObject self, LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass);
 		bool populateDataFromScript(LuaPlus::LuaObject scriptClass, LuaPlus::LuaObject constructionData);
 		
 		// for debugging

@@ -92,10 +92,6 @@ namespace Sogas
 		
 		// TODO: Check error
 
-		LuaPlus::LuaObject globals = m_pLuaState->GetGlobals();
-		LuaPlus::LuaObject v = globals.GetByName("v");
-		i32 x = v.GetByName("x").ToInteger();
-
 		return true;
 	}
 }
