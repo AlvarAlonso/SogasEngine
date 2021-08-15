@@ -13,7 +13,7 @@ namespace Sogas
 
 	class Environment;
 
-	class SGS Scene
+	class SGS Scene : public std::enable_shared_from_this<Scene>
 	{
 	public:
 		Scene();
@@ -26,6 +26,8 @@ namespace Sogas
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		std::weak_ptr<Environment> getEnvironment() { return m_pEnvironment; }
+		void setSelectedEntity(StrongEntityPtr entity) { m_selectedEntity = entity; }
+		StrongEntityPtr getSelectedEntity(void) { return m_selectedEntity ? m_selectedEntity : nullptr; }
 
 		StrongEntityPtr findEntityById(EntityId entityId);
 
@@ -80,6 +82,7 @@ namespace Sogas
 		std::vector<StrongEntityPtr> m_entities;
 		std::unique_ptr<EntityFactory> m_pEntityFactory;
 		std::shared_ptr<Environment> m_pEnvironment;
+		StrongEntityPtr m_selectedEntity;
 	};
 
 }

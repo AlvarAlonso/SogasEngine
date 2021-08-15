@@ -1288,5 +1288,6 @@
     <None Include="shaders\basic.shader" />
     <None Include="shaders\phong.shader" />
     <None Include="shaders\environment.shader" />
+    <None Include="shaders\outline.shader" />
   </ItemGroup>
 </Project>

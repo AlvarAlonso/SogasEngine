@@ -414,6 +414,7 @@ namespace Sogas
 			if (m_viewportHovered && !ImGuizmo::IsOver() && !Input::isKeyPressed(SGS_KEY_LEFT_ALT))
 			{
 				m_scenePanel.setSelectedEntity(m_hoveredEntity.lock());
+				m_pScene->setSelectedEntity(m_hoveredEntity.lock());
 			}
 		}
 

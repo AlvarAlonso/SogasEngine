@@ -44,6 +44,7 @@ namespace Sogas
 	StrongEntityPtr Scene::createEntity(const std::string& name)
 	{
 		StrongEntityPtr entity = m_pEntityFactory->createEntity(name.c_str());
+		entity->setScene(shared_from_this());
 		m_entities.push_back(entity);
 		return entity;
 	}
@@ -144,6 +145,7 @@ namespace Sogas
 					std::string name = jsonEntity["Name"].get<std::string>();
 
 					auto entity = m_pEntityFactory->createEntity(name.c_str());
+					entity->setScene(shared_from_this());
 
 					if(jsonEntity.contains(RenderComponent::s_name) && !jsonEntity[RenderComponent::s_name].is_null())
 						addComponent<RenderComponent>(entity);

@@ -32,6 +32,12 @@ namespace Sogas
 		SGSASSERT(glGetError() == GL_NO_ERROR);
 	}
 
+	void OpenGLRendererAPI::enableDepthMask(const bool& mask)
+	{
+		mask ? glDepthMask(true) : glDepthMask(false);
+		SGSASSERT(glGetError() == GL_NO_ERROR);
+	}
+
 	void OpenGLRendererAPI::draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive)
 	{
 		for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())

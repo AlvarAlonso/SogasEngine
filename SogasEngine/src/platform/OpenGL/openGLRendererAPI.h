@@ -13,6 +13,7 @@ namespace Sogas
 		virtual void clear() override;
 		virtual void setClearColor(const glm::vec4& colour) override;
 		virtual void enableDepthBuffer(const bool& depth) override;
+		virtual void enableDepthMask(const bool& mask) override;
 		virtual void setDepthFunc(const DepthTypes factor) override;
 		virtual void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES) override;
 		virtual void drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES) override;

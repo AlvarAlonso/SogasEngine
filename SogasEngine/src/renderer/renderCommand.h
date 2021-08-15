@@ -28,6 +28,11 @@ namespace Sogas
 			s_rendererAPI->setDepthFunc(factor);
 		}
 
+		inline static void enableDepthMask(const bool& mask)
+		{
+			s_rendererAPI->enableDepthMask(mask);
+		}
+
 		inline static void draw(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive = Primitive::TRIANGLES)
 		{
 			s_rendererAPI->draw(vertexArray, primitive);

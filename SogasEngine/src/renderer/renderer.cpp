@@ -50,6 +50,11 @@ namespace Sogas
 	{
 		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent<RenderComponent>();
 
+		// TODO This should be after all renderables have been drown, the problem is that the objects highlighted outline would not be seen.
+		if (s_pScene->m_renderEnvironment) {
+			renderEnvironment(s_pScene->getEnvironment());
+		}
+
 		for (const auto& renderable : renderables)
 		{
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>());
@@ -59,9 +64,6 @@ namespace Sogas
 				submit(renderComponent, model);
 		}
 
-		if (s_pScene->m_renderEnvironment) {
-			renderEnvironment(s_pScene->getEnvironment());
-		}
 	}
 
 	void Renderer::endScene()
@@ -71,8 +73,33 @@ namespace Sogas
 
 	void Renderer::submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform)
 	{
-		auto& shader = renderComponent->getShader();
+
 		auto& material = renderComponent->getMaterial();
+		std::shared_ptr<Shader> shader;
+		// TODO This is a bug right now, first outline is black and all outlines not shown while environmnet is true.
+		// Outline pass - Only do this if component is selected
+		if (renderComponent->getOwner().lock()->isSelected())
+		{
+			shader = Shader::GET("outline.shader");
+			RenderCommand::enableDepthBuffer(true);
+			RenderCommand::enableDepthMask(false);
+			shader->bind();
+			shader->setUniform("u_viewprojection", s_sceneData->viewprojectionMatrix);
+			shader->setUniform("u_model", glm::scale(transform, glm::vec3(1.1f)));
+
+			renderComponent->getMesh()->m_vertexArray->bind();
+			if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())
+				RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+			else
+				RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+			renderComponent->getMesh()->m_vertexArray->unbind();
+			shader->unbind();
+			RenderCommand::enableDepthBuffer(true);
+			RenderCommand::enableDepthMask(true);
+		}
+		
+		// Shading path
+		shader = renderComponent->getShader();
 		shader->bind();
 		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		shader->setUniform("u_cameraPosition", s_sceneData->cameraPosition);
@@ -80,7 +107,7 @@ namespace Sogas
 		shader->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
 		shader->setUniform("u_metalness", renderComponent->getMaterial()->getMaterialProperties().metallicFactor);
 		shader->setUniform("u_roughness", renderComponent->getMaterial()->getMaterialProperties().roughnessFactor);
-		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getOwner().lock()->getId()));
+		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getOwner().lock()->getId())); 
 
 		if (material->getColorTexture())
 		{

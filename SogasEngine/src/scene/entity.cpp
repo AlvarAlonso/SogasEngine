@@ -7,6 +7,8 @@
 #include "components/transformComponent.h"
 #include "core/application.h"
 
+#include "scene.h"
+
 #include "imgui.h"
 #include <ImGuizmo.h>
 
@@ -108,6 +110,13 @@ namespace Sogas
 			auto jsonLight = jsonEntity[LightComponent::s_name];
 			makeStrongPtr(getComponent<LightComponent>())->from_json(jsonLight);
 		}
+	}
+
+	bool Entity::isSelected()
+	{
+		if(m_pScene->getSelectedEntity())
+			return m_pScene->getSelectedEntity()->getId() == m_id ? true : false;
+		return false;
 	}
 
 	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()

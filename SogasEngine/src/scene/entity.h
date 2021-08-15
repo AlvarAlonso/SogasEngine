@@ -17,6 +17,8 @@ namespace Sogas
 
 	using json = nlohmann::json;
 
+	class Scene;
+
 	class SGS Entity {
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
@@ -26,6 +28,7 @@ namespace Sogas
 		std::string m_type{ "unknown" };
 		EntityId m_id{ 0 }; // default ID, it must count as an invalid ID
 		EntityComponentsMap m_components{};
+		std::shared_ptr<Scene> m_pScene;
 
 	public:
 		explicit Entity(EntityId id);
@@ -41,6 +44,9 @@ namespace Sogas
 		std::string getName() const { return m_name; }
 		EntityId	getId() const { return m_id; }
 		std::string getType() const { return m_type; }
+		void setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
+		bool		isSelected();
+
 		void		to_json(json& j);
 		void		from_json(const json& j);
 
