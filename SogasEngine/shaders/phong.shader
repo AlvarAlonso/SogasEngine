@@ -19,7 +19,8 @@ void main()
 {
 	mat4 model = u_model;
 	v_position = a_position;
-	v_normal = (model * vec4(a_normal, 0.0)).xyz;
+	// TODO matrix inverse is a costly operation, should be performed in CPU.
+	v_normal = mat3(transpose(inverse(model))) * a_normal;
 	v_worldPosition = (model * vec4(a_position, 1.0)).xyz;
 	v_uv = a_uv;
 	v_color = a_color;
