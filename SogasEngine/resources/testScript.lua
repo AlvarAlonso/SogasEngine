@@ -15,7 +15,7 @@ end
 
 -- Entity script classes
 
-TestScript = class(Script, { x = 5});
+TestScript = class(Script, { x = 5, y = 3, z = 1});
 
 function TestScript:Start()
     return 0;

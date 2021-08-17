@@ -29,12 +29,11 @@ namespace Sogas
 
 		LuaPlus::LuaObject luaGlobals = LuaStateManager::GET()->getGlobals();
 		LuaPlus::LuaObject scriptClass = luaGlobals.GetByName(scriptClassName.c_str());
-		LuaPlus::LuaObject nilValue;
 
 		if (!scriptClass.IsTable())
 			SGSERROR("A Lua script must be a table!");
 
-		createScript(nilValue, scriptClass);
+		createScript(scriptClass);
 	}
 
 	void EntityScript::start()
@@ -73,10 +72,10 @@ namespace Sogas
 	}
 
 	// TODO: refactor making it static and using smart pointers
-	void EntityScript::createScript(LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass)
+	void EntityScript::createScript(LuaPlus::LuaObject scriptClass)
 	{
 		m_self.AssignNewTable(LuaStateManager::GET()->getLuaState());
-		if(populateDataFromScript(scriptClass, constructionData))
+		if(populateDataFromScript(scriptClass))
 		{
 			m_self.SetLightUserdata("__object", this);
 			m_self.SetObject("__index", scriptClass);
@@ -90,7 +89,7 @@ namespace Sogas
 		}
 	}
 
-	bool EntityScript::populateDataFromScript(LuaPlus::LuaObject scriptClass, LuaPlus::LuaObject constructionData)
+	bool EntityScript::populateDataFromScript(LuaPlus::LuaObject scriptClass)
 	{
 		if(scriptClass.IsTable())
 		{
@@ -117,21 +116,39 @@ namespace Sogas
 			currentFunction = scriptClass.GetByName("OnDestroy");
 			if (currentFunction.IsFunction())
 				m_destroyFunction = currentFunction;
-		}
-		else
-		{
-			SGSERROR("scriptClass must be a table when populating the script data.");
-		}
 
-		if(constructionData.IsTable())
-		{
-			for(LuaPlus::LuaTableIterator it(constructionData); it; it.Next())
+			// script class attributes
+			for (LuaPlus::LuaTableIterator it(scriptClass); it; it.Next())
 			{
+				if (it.GetKey().IsFunction())
+					continue;
+
 				const char* key = it.GetKey().GetString();
 				LuaPlus::LuaObject val = it.GetValue();
 
 				m_self.SetObject(key, val);
+
+				if (val.IsInteger())
+				{
+					m_scriptVariables[std::string(key)] = (i32)val.GetInteger();
+				}
+				else if (val.IsNumber())
+				{
+					m_scriptVariables[std::string(key)] = (f32)val.GetFloat();
+				}
+				else if (val.IsString())
+				{
+					m_scriptVariables[std::string(key)] = (std::string)val.GetString();
+				}
+				else if (val.IsBoolean())
+				{
+					m_scriptVariables[std::string(key)] = (bool)val.GetBoolean();
+				}
 			}
+		}
+		else
+		{
+			SGSERROR("scriptClass must be a table when populating the script data.");
 		}
 
 		return true;

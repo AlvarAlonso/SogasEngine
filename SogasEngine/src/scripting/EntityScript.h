@@ -3,6 +3,11 @@
 #include "defines.h"
 #include "LuaStateManager.h"
 
+#include <map>
+#include <variant>
+
+typedef std::map<std::string, std::variant<std::string, i32, f32, bool>> ScriptVariablesMap;
+
 namespace Sogas
 {
 	class SGS EntityScript
@@ -12,6 +17,8 @@ namespace Sogas
 		LuaPlus::LuaObject m_updateFunction;
 		LuaPlus::LuaObject m_destroyFunction;
 		LuaPlus::LuaObject m_self;
+
+		ScriptVariablesMap m_scriptVariables;
 
 		std::string m_filepath;
 
@@ -28,9 +35,9 @@ namespace Sogas
 		void onDestroy();
 
 	private:
-		void createScript(LuaPlus::LuaObject constructionData, LuaPlus::LuaObject scriptClass);
+		void createScript(LuaPlus::LuaObject scriptClass);
 
-		bool populateDataFromScript(LuaPlus::LuaObject scriptClass, LuaPlus::LuaObject constructionData);
+		bool populateDataFromScript(LuaPlus::LuaObject scriptClass);
 		
 		// for debugging
 		i32 m_id = 0;
