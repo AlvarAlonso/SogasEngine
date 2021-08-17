@@ -6,7 +6,24 @@
 #include <map>
 #include <variant>
 
-typedef std::map<std::string, std::variant<std::string, i32, f32, bool>> ScriptVariablesMap;
+enum class VariableType
+{
+	UNDEFINED = 0,
+	STRING,
+	INTEGER,
+	FLOAT,
+	BOOLEAN
+};
+
+typedef std::variant<std::string, i32, f32, bool> EntityScriptVariant;
+
+struct EntityScriptVariable
+{
+	VariableType type;
+	EntityScriptVariant value;
+};
+
+typedef std::map<std::string, EntityScriptVariable> ScriptVariablesMap;
 
 namespace Sogas
 {
@@ -33,6 +50,8 @@ namespace Sogas
 		void start();
 		void update();
 		void onDestroy();
+
+		ScriptVariablesMap& getScriptVariables() { return m_scriptVariables; }
 
 	private:
 		void createScript(LuaPlus::LuaObject scriptClass);

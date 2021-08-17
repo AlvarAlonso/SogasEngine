@@ -4,6 +4,8 @@
 #include "core/assertions.h"
 #include "core/logger.h"
 
+#include "imgui.h"
+
 namespace Sogas
 {
 	void EntityScript::initializeScriptClasses()
@@ -128,21 +130,31 @@ namespace Sogas
 
 				m_self.SetObject(key, val);
 
+				EntityScriptVariable scriptVariable;
+
 				if (val.IsInteger())
 				{
-					m_scriptVariables[std::string(key)] = (i32)val.GetInteger();
+					scriptVariable.type = VariableType::INTEGER;
+					scriptVariable.value = (i32)val.GetInteger();
+					m_scriptVariables[std::string(key)] = scriptVariable;
 				}
 				else if (val.IsNumber())
 				{
-					m_scriptVariables[std::string(key)] = (f32)val.GetFloat();
+					scriptVariable.type = VariableType::FLOAT;
+					scriptVariable.value = (f32)val.GetFloat();
+					m_scriptVariables[std::string(key)] = scriptVariable;
 				}
 				else if (val.IsString())
 				{
-					m_scriptVariables[std::string(key)] = (std::string)val.GetString();
+					scriptVariable.type = VariableType::STRING;
+					scriptVariable.value = (std::string)val.GetString();
+					m_scriptVariables[std::string(key)] = scriptVariable;
 				}
 				else if (val.IsBoolean())
 				{
-					m_scriptVariables[std::string(key)] = (bool)val.GetBoolean();
+					scriptVariable.type = VariableType::BOOLEAN;
+					scriptVariable.value = (bool)val.GetBoolean();
+					m_scriptVariables[std::string(key)] = scriptVariable;
 				}
 			}
 		}
