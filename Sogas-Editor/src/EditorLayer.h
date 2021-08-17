@@ -8,6 +8,8 @@
 #include "Panels/AssetsPanel.h"
 #include "glm/glm.hpp"
 
+#define SOGAS_EDITOR
+
 namespace Sogas 
 {
 	class CameraController;

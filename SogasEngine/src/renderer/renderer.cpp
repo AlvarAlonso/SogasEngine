@@ -50,10 +50,12 @@ namespace Sogas
 	{
 		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent<RenderComponent>();
 
+//#ifdef SOGAS_EDITOR
 		// TODO This should be after all renderables have been drown, the problem is that the objects highlighted outline would not be seen.
 		if (s_pScene->m_renderEnvironment) {
 			renderEnvironment(s_pScene->getEnvironment());
 		}
+//#endif
 
 		for (const auto& renderable : renderables)
 		{
@@ -63,7 +65,6 @@ namespace Sogas
 			if(renderComponent->getMesh() && renderComponent->getMaterial())
 				submit(renderComponent, model);
 		}
-
 	}
 
 	void Renderer::endScene()
