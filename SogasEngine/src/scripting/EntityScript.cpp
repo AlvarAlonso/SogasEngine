@@ -1,6 +1,7 @@
 #include "sgspch.h"
 #include "EntityScript.h"
 #include "LuaStateManager.h"
+#include "LuaScriptAPI.h"
 #include "core/assertions.h"
 #include "core/logger.h"
 
@@ -22,6 +23,7 @@ namespace Sogas
 		metaTableObject.SetObject("__index", metaTableObject);
 		metaTableObject.SetObject("base", metaTableObject);
 		metaTableObject.SetBoolean("cpp", true);
+		registerScriptFunctions();
 	}
 
 	void EntityScript::createFromScript(const std::string& scriptClassName)
@@ -60,6 +62,8 @@ namespace Sogas
 			SGSINFO("[%i] first update!", m_id);
 		}
 
+		f32 x = m_self.GetByName("x").GetFloat();
+
 		LuaPlus::LuaFunction<i32> func(m_updateFunction);
 		func(m_self);
 	}
@@ -89,6 +93,18 @@ namespace Sogas
 			m_self.AssignNil(LuaStateManager::GET()->getLuaState());
 			delete this;
 		}
+	}
+
+	void EntityScript::registerScriptFunctions()
+	{
+		LuaStateManager::GET()->getGlobals().RegisterDirect("IsKeyPressed", &LuaScriptAPI::isKeyPressed);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("IsMouseButtonPressed", &LuaScriptAPI::isMouseButtonPressed);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("IsMouseButtonReleased", &LuaScriptAPI::isMouseButtonReleased);
+		//LuaStateManager::GET()->getGlobals().RegisterDirect("GetMousePosition", &LuaScriptAPI::getMousePosition);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("SetMousePosition", &LuaScriptAPI::setMousePosition);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("CenterMouse", &LuaScriptAPI::centerMouse);
+
+		//metaTableObject.RegisterDirect("isKeyPressed", &LuaScriptAPI::isKeyPressed);
 	}
 
 	bool EntityScript::populateDataFromScript(LuaPlus::LuaObject scriptClass)
@@ -122,7 +138,7 @@ namespace Sogas
 			// script class attributes
 			for (LuaPlus::LuaTableIterator it(scriptClass); it; it.Next())
 			{
-				if (it.GetKey().IsFunction())
+				if (it.GetValue().IsFunction())
 					continue;
 
 				const char* key = it.GetKey().GetString();
@@ -131,17 +147,18 @@ namespace Sogas
 				m_self.SetObject(key, val);
 
 				EntityScriptVariable scriptVariable;
-
-				if (val.IsInteger())
+				
+				if (val.IsNumber())
+				{
+					// TODO: Check if it is a float or an integer
+					scriptVariable.type = VariableType::FLOAT;
+					scriptVariable.value = (f32)val.GetFloat();
+					m_scriptVariables[std::string(key)] = scriptVariable;
+				}
+				else if (val.IsInteger())
 				{
 					scriptVariable.type = VariableType::INTEGER;
 					scriptVariable.value = (i32)val.GetInteger();
-					m_scriptVariables[std::string(key)] = scriptVariable;
-				}
-				else if (val.IsNumber())
-				{
-					scriptVariable.type = VariableType::FLOAT;
-					scriptVariable.value = (f32)val.GetFloat();
 					m_scriptVariables[std::string(key)] = scriptVariable;
 				}
 				else if (val.IsString())

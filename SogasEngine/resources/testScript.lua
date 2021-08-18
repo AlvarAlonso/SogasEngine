@@ -15,14 +15,16 @@ end
 
 -- Entity script classes
 
-TestScript = class(Script, { x = 5, y = 3, z = 1});
+TestScript = class(Script, { x = 5, y = 3, z = 1, name = "jijiji", number = 0.4 });
 
 function TestScript:Start()
     return 0;
 end
 
 function TestScript:Update()
-    self.x = self.x + 1;
+    if(IsKeyPressed(65)) then
+        self.x = self.x + 1;
+    end
     return 0;
 end
 

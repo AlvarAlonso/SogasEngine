@@ -55,9 +55,10 @@ namespace Sogas
 
 	private:
 		void createScript(LuaPlus::LuaObject scriptClass);
+		static void registerScriptFunctions();
 
 		bool populateDataFromScript(LuaPlus::LuaObject scriptClass);
-		
+
 		// for debugging
 		i32 m_id = 0;
 		bool m_firstUpdate = false;
