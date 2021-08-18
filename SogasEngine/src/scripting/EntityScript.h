@@ -4,29 +4,43 @@
 #include "LuaStateManager.h"
 
 #include <map>
-#include <variant>
-
-enum class VariableType
-{
-	UNDEFINED = 0,
-	STRING,
-	INTEGER,
-	FLOAT,
-	BOOLEAN
-};
-
-typedef std::variant<std::string, i32, f32, bool> EntityScriptVariant;
-
-struct EntityScriptVariable
-{
-	VariableType type;
-	EntityScriptVariant value;
-};
-
-typedef std::map<std::string, EntityScriptVariable> ScriptVariablesMap;
-
 namespace Sogas
 {
+	enum class VariableType
+	{
+		UNDEFINED = 0,
+		INTEGER,
+		FLOAT,
+		STRING,
+		BOOLEAN
+	};
+
+	class SGS ScriptAttribute
+	{
+	public:
+		VariableType type;
+
+	private:
+		// TODO: refactor; scene panel cannot have access to pAttribute
+		LuaPlus::LuaObject* pAttribute;
+
+		friend class EntityScript;
+
+	public: 
+
+		ScriptAttribute() { type = VariableType::UNDEFINED; pAttribute = new LuaPlus::LuaObject(); }
+
+		i32 getInteger() { return pAttribute->GetInteger(); }
+
+		f32 getFloat() { return pAttribute->GetFloat(); }
+
+		std::string getString() { return pAttribute->GetString(); }
+
+		bool getBoolean() { return pAttribute->GetBoolean(); }
+	};
+
+	typedef std::map<std::string, ScriptAttribute> ScriptVariablesMap;
+
 	class SGS EntityScript
 	{
 	private:
@@ -41,7 +55,6 @@ namespace Sogas
 
 	public:
 		EntityScript() = default;
-
 		static void registerEntityScript();
 		static void initializeScriptClasses();
 

@@ -2,6 +2,7 @@
 
 #include "defines.h"
 #include "core/input.h"
+#include "LuaPlus.h"
 
 namespace Sogas { namespace LuaScriptAPI 
 {

@@ -333,25 +333,25 @@ namespace Sogas
 				{
 					if (it->second.type == VariableType::INTEGER)
 					{
-						i32 value = std::get<i32>(it->second.value);
+						i32 value = it->second.getInteger();
 						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
 						ImGui::Text(text.c_str());
 					}
 					else if (it->second.type == VariableType::FLOAT)
 					{
-						f32 value = std::get<f32>(it->second.value);
+						f32 value = it->second.getFloat();
 						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
 						ImGui::Text(text.c_str());
 					}
 					else if (it->second.type == VariableType::STRING)
 					{
-						std::string value = std::get<std::string>(it->second.value);
+						std::string value = it->second.getString();
 						std::string text = std::string(it->first.c_str()).append(": ").append(value);
 						ImGui::Text(text.c_str());
 					}
 					else if (it->second.type == VariableType::BOOLEAN)
 					{
-						bool value = std::get<bool>(it->second.value);
+						bool value = it->second.getBoolean();
 						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
 						ImGui::Text(text.c_str());
 					}

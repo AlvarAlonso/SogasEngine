@@ -145,33 +145,34 @@ namespace Sogas
 				LuaPlus::LuaObject val = it.GetValue();
 
 				m_self.SetObject(key, val);
-
-				EntityScriptVariable scriptVariable;
 				
+				ScriptAttribute attribute;
+
 				if (val.IsNumber())
 				{
+					attribute.type = VariableType::FLOAT;
+					attribute.pAttribute->AssignNumber(LuaStateManager::GET()->getLuaState(), val.GetNumber());
+
 					// TODO: Check if it is a float or an integer
-					scriptVariable.type = VariableType::FLOAT;
-					scriptVariable.value = (f32)val.GetFloat();
-					m_scriptVariables[std::string(key)] = scriptVariable;
+					m_scriptVariables[std::string(key)] = attribute;
 				}
 				else if (val.IsInteger())
 				{
-					scriptVariable.type = VariableType::INTEGER;
-					scriptVariable.value = (i32)val.GetInteger();
-					m_scriptVariables[std::string(key)] = scriptVariable;
+					attribute.type = VariableType::INTEGER;
+					attribute.pAttribute->AssignInteger(LuaStateManager::GET()->getLuaState(), val.GetInteger());
+					m_scriptVariables[std::string(key)] = attribute;
 				}
 				else if (val.IsString())
 				{
-					scriptVariable.type = VariableType::STRING;
-					scriptVariable.value = (std::string)val.GetString();
-					m_scriptVariables[std::string(key)] = scriptVariable;
+					attribute.type = VariableType::STRING;
+					attribute.pAttribute->AssignString(LuaStateManager::GET()->getLuaState(), val.GetString());
+					m_scriptVariables[std::string(key)] = attribute;
 				}
 				else if (val.IsBoolean())
 				{
-					scriptVariable.type = VariableType::BOOLEAN;
-					scriptVariable.value = (bool)val.GetBoolean();
-					m_scriptVariables[std::string(key)] = scriptVariable;
+					attribute.type = VariableType::BOOLEAN;
+					attribute.pAttribute->AssignBoolean(LuaStateManager::GET()->getLuaState(), val.GetBoolean());
+					m_scriptVariables[std::string(key)] = attribute;
 				}
 			}
 		}
