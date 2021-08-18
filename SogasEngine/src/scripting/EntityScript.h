@@ -39,6 +39,8 @@ namespace Sogas
 		bool getBoolean() { return pAttribute->GetBoolean(); }
 	};
 
+	// TODO: refactor; convert it to vector of ScriptAttributes. ScriptAttribute should own name and type. With the name it
+	// can map to the variable in m_self and with the type can get the correct type.
 	typedef std::map<std::string, ScriptAttribute> ScriptVariablesMap;
 
 	class SGS EntityScript
