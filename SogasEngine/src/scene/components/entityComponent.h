@@ -40,6 +40,7 @@ namespace Sogas
 		virtual void from_json(const json& j) = 0;
 
 		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
+		StrongEntityPtr getOwner() { return m_pOwner; }
 
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
 		// It fails in the find func with const char*

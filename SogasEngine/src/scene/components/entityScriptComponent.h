@@ -15,6 +15,7 @@ namespace Sogas
 		~EntityScriptComponent() = default;
 
 		virtual bool init() override;
+		virtual void postInit(void) override;
 		virtual const char* getName() const override { return s_name; }
 		virtual void to_json(json& j) override;
 		virtual void from_json(const json& j) override;

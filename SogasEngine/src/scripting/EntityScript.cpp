@@ -4,6 +4,8 @@
 #include "LuaScriptAPI.h"
 #include "core/assertions.h"
 #include "core/logger.h"
+#include "scene/components/entityScriptComponent.h"
+#include "scene/entity.h"
 
 #include "imgui.h"
 
@@ -38,6 +40,19 @@ namespace Sogas
 			SGSERROR("A Lua script must be a table!");
 
 		createScript(scriptClass);
+	}
+
+	void EntityScript::setOwner(EntityScriptComponent* pOwner)
+	{
+		m_pOwner = pOwner;
+
+		StrongEntityPtr ownerEntity = m_pOwner->getOwner();
+		m_self.SetNumber("gameObject", ownerEntity->getId());
+
+		ScriptAttribute entityID;
+		entityID.type = VariableType::INTEGER;
+		entityID.pAttribute->AssignInteger(LuaStateManager::GET()->getLuaState(), m_self.GetByName("gameObject").GetInteger());
+		m_scriptVariables[std::string("gameObject")] = entityID;
 	}
 
 	void EntityScript::start()
@@ -81,12 +96,12 @@ namespace Sogas
 	void EntityScript::createScript(LuaPlus::LuaObject scriptClass)
 	{
 		m_self.AssignNewTable(LuaStateManager::GET()->getLuaState());
+
 		if(populateDataFromScript(scriptClass))
 		{
 			m_self.SetLightUserdata("__object", this);
 			m_self.SetObject("__index", scriptClass);
 			m_self.SetMetatable(m_self);
-			i32 x = scriptClass.GetByName("x").ToInteger();
 		}
 		else
 		{

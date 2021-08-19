@@ -2,10 +2,13 @@
 
 #include "defines.h"
 #include "LuaStateManager.h"
+//#include "scene/components/entityScriptComponent.h"
 
 #include <map>
 namespace Sogas
 {
+	class EntityScriptComponent;
+
 	enum class VariableType
 	{
 		UNDEFINED = 0,
@@ -53,14 +56,20 @@ namespace Sogas
 
 		ScriptVariablesMap m_scriptVariables;
 
+		EntityScriptComponent* m_pOwner;
+
 		std::string m_filepath;
 
 	public:
-		EntityScript() = default;
+		EntityScript() { m_pOwner = nullptr; }
+		~EntityScript() { m_pOwner = nullptr; }
+
 		static void registerEntityScript();
 		static void initializeScriptClasses();
 
 		void createFromScript(const std::string& scriptClass);
+
+		void setOwner(EntityScriptComponent* pOwner);
 
 		void start();
 		void update();
