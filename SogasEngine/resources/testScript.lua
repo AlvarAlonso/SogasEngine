@@ -15,7 +15,7 @@ end
 
 -- Entity script classes
 
-TestScript = class(Script, { x = 5, y = 3, z = 1, name = "jijiji", number = 0.4 });
+TestScript = class(Script, { x = 5, y = 3, z = 1, name = "jijiji", number = 0.4, transform = {} });
 
 function TestScript:Start()
     return 0;
@@ -25,6 +25,9 @@ function TestScript:Update()
     if(IsKeyPressed(65)) then
         self.x = self.x + 1;
     end
+
+    self.transform = GetTransform(self);
+
     return 0;
 end
 

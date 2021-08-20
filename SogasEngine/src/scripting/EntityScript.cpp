@@ -77,7 +77,18 @@ namespace Sogas
 			SGSINFO("[%i] first update!", m_id);
 		}
 
-		f32 x = m_self.GetByName("x").GetFloat();
+		f32 x = 0, y = 0, z = 0;
+
+		if(m_self.GetByName("transform").GetByName("x").IsNumber())
+			x = m_self.GetByName("transform").GetByName("x").GetFloat();
+
+		if (m_self.GetByName("transform").GetByName("y").IsNumber())
+			y = m_self.GetByName("transform").GetByName("y").GetFloat();
+
+		if (m_self.GetByName("transform").GetByName("z").IsNumber())
+			z = m_self.GetByName("transform").GetByName("z").GetFloat();
+
+		SGSINFO("ID [%i] transform: x: %f, y: %f, z: %f", m_id, x, y, z);
 
 		LuaPlus::LuaFunction<i32> func(m_updateFunction);
 		func(m_self);
@@ -112,12 +123,14 @@ namespace Sogas
 
 	void EntityScript::registerScriptFunctions()
 	{
+		// TODO: Each function has to be registered to the proper class, not to the global namespace
 		LuaStateManager::GET()->getGlobals().RegisterDirect("IsKeyPressed", &LuaScriptAPI::isKeyPressed);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("IsMouseButtonPressed", &LuaScriptAPI::isMouseButtonPressed);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("IsMouseButtonReleased", &LuaScriptAPI::isMouseButtonReleased);
 		//LuaStateManager::GET()->getGlobals().RegisterDirect("GetMousePosition", &LuaScriptAPI::getMousePosition);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("SetMousePosition", &LuaScriptAPI::setMousePosition);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("CenterMouse", &LuaScriptAPI::centerMouse);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("GetTransform", &LuaScriptAPI::getTransform);
 
 		//metaTableObject.RegisterDirect("isKeyPressed", &LuaScriptAPI::isKeyPressed);
 	}

@@ -26,6 +26,8 @@
 #include "scene/components/cameraComponent.h"
 #include "scene/components/lightComponent.h"
 
+#include "scripting/LuaScriptAPI.h"
+
 #include "Panels/ScenePanel.h"
 
 namespace Sogas 
@@ -61,6 +63,7 @@ namespace Sogas
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
 		m_scenePanel.setContext(m_pScene);
+		LuaScriptAPI::LuaScriptContext::setContext(m_pScene);
 	}
 
 	void EditorLayer::onDetach()

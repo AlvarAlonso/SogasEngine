@@ -53,6 +53,7 @@
     <ClCompile Include="src\scripting\LuaStateManager.cpp" />
     <ClCompile Include="src\scene\components\entityScriptComponent.cpp" />
     <ClCompile Include="src\scripting\EntityScript.cpp" />
+    <ClCompile Include="src\scripting\LuaScriptAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />

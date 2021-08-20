@@ -499,6 +499,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
+    <ClCompile Include="src\scripting\LuaScriptAPI.cpp" />
     <ClCompile Include="src\scripting\LuaStateManager.cpp" />
     <ClCompile Include="src\core\utils.cpp" />
     <ClCompile Include="src\renderer\renderCommand.cpp" />

@@ -19,6 +19,9 @@ namespace Sogas
 		virtual const char* getName() const override { return s_name; }
 		virtual void to_json(json& j) override;
 		virtual void from_json(const json& j) override;
+		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
+		virtual void fromLuaObject(LuaPlus::LuaObject) const override {};
+
 		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(); }
 
 		ScriptVariablesMap getEntityScriptVariables() const { SGSASSERT(m_entityScript); return m_entityScript->getScriptVariables(); }
