@@ -131,6 +131,7 @@ namespace Sogas
 		LuaStateManager::GET()->getGlobals().RegisterDirect("SetMousePosition", &LuaScriptAPI::setMousePosition);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("CenterMouse", &LuaScriptAPI::centerMouse);
 		LuaStateManager::GET()->getGlobals().RegisterDirect("GetTransform", &LuaScriptAPI::getTransform);
+		LuaStateManager::GET()->getGlobals().RegisterDirect("SetTransform", &LuaScriptAPI::setTransform);
 
 		//metaTableObject.RegisterDirect("isKeyPressed", &LuaScriptAPI::isKeyPressed);
 	}

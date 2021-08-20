@@ -20,7 +20,7 @@ namespace Sogas
 		virtual void to_json(json& j) override;
 		virtual void from_json(const json& j) override;
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
-		virtual void fromLuaObject(LuaPlus::LuaObject) const override {};
+		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
 
 		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(); }
 

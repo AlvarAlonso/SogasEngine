@@ -41,7 +41,7 @@ namespace Sogas
 		virtual void to_json(json& j) = 0;
 		virtual void from_json(const json& j) = 0;
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const = 0;
-		virtual void fromLuaObject(LuaPlus::LuaObject) const = 0;
+		virtual void fromLuaObject(LuaPlus::LuaObject) = 0;
 
 		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
 		StrongEntityPtr getOwner() { return m_pOwner; }

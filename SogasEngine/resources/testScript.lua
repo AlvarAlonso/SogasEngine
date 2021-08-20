@@ -23,10 +23,12 @@ end
 
 function TestScript:Update()
     if(IsKeyPressed(65)) then
-        self.x = self.x + 1;
+        self.x = self.x + 0.1;
     end
 
     self.transform = GetTransform(self);
+    self.transform.x = self.transform.x + self.x;
+    SetTransform(self);
 
     return 0;
 end

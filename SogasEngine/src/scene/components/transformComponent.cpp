@@ -83,4 +83,17 @@ namespace Sogas
 
 		return transform;
 	}
+
+	void TransformComponent::fromLuaObject(LuaPlus::LuaObject self)
+	{
+		LuaPlus::LuaObject transform = self.GetByName("transform");
+
+		f32 translation[3];
+
+		translation[0] = transform.GetByName("x").GetFloat();
+		translation[1] = transform.GetByName("y").GetFloat();
+		translation[2] = transform.GetByName("z").GetFloat();
+		
+		m_translation = glm::vec3(translation[0], translation[1], translation[2]);
+	}
 }

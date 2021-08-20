@@ -36,5 +36,7 @@ namespace Sogas { namespace LuaScriptAPI
 
 	void centerMouse();
 
-	LuaPlus::LuaObject getTransform(LuaPlus::LuaObject m_self);
+	LuaPlus::LuaObject getTransform(LuaPlus::LuaObject self);
+
+	void setTransform(LuaPlus::LuaObject self);
 } }

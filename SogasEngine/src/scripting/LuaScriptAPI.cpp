@@ -38,13 +38,20 @@ namespace Sogas { namespace LuaScriptAPI
 		Input::centerMouse();
 	}
 
-	LuaPlus::LuaObject getTransform(LuaPlus::LuaObject m_self)
+	LuaPlus::LuaObject getTransform(LuaPlus::LuaObject self)
 	{
-		EntityId entityID = m_self.GetByName("gameObject").GetInteger();
+		EntityId entityID = self.GetByName("gameObject").GetInteger();
 
 		LuaPlus::LuaObject result = LuaScriptContext::getContext()->findEntityById(entityID)->
-			getComponent<TransformComponent>().lock()->toLuaObject(m_self);
+			getComponent<TransformComponent>().lock()->toLuaObject(self);
 			
 		return result;
+	}
+
+	void setTransform(LuaPlus::LuaObject self)
+	{
+		EntityId entityID = self.GetByName("gameObject").GetInteger();
+
+		LuaScriptContext::getContext()->findEntityById(entityID)->getComponent<TransformComponent>().lock()->fromLuaObject(self);
 	}
 } }
