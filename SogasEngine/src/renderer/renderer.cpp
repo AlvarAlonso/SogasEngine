@@ -80,7 +80,7 @@ namespace Sogas
 		shader->setUniform("u_color", renderComponent->getMaterial()->getMaterialProperties().color);
 		shader->setUniform("u_metalness", renderComponent->getMaterial()->getMaterialProperties().metallicFactor);
 		shader->setUniform("u_roughness", renderComponent->getMaterial()->getMaterialProperties().roughnessFactor);
-		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getOwner().lock()->getId()));
+		shader->setUniform("u_entityID", static_cast<int>(renderComponent->getOwner()->getId()));
 
 		if (material->getColorTexture())
 		{

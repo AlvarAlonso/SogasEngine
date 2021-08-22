@@ -10,6 +10,7 @@ namespace Sogas
 	LuaStateManager* LuaStateManager::s_pInstance = nullptr;
 
 	const std::string sogasCoreLuaAPIPath = "../SogasEngine/resources/sogasCoreAPI.lua";
+	const std::string keyCodesLuaAPIPath = "../SogasEngine/resources/keyCodes.lua";
 
 	bool LuaStateManager::create()
 	{
@@ -89,12 +90,8 @@ namespace Sogas
 	bool LuaStateManager::initSogasCoreLuaAPI()
 	{
 		doFile(sogasCoreLuaAPIPath);
-		
+		doFile(keyCodesLuaAPIPath);
 		// TODO: Check error
-
-		LuaPlus::LuaObject globals = m_pLuaState->GetGlobals();
-		LuaPlus::LuaObject v = globals.GetByName("v");
-		i32 x = v.GetByName("x").ToInteger();
 
 		return true;
 	}

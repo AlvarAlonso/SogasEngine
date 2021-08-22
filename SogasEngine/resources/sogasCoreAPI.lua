@@ -33,10 +33,3 @@ function class(baseClass, body)
     return ret;
 end
 
-Vec3 = class(nil,
-    {
-        x = 0, y = 0, z = 0
-    })
-
-v = Vec3:Create({x = 5, y = 8, z = 7});
-

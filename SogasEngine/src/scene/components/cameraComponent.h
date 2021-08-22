@@ -16,6 +16,8 @@ namespace Sogas
 		virtual bool init() override;
 		virtual void to_json(json& j) override {}; // TODO Add functionality
 		virtual void from_json(const json& j) override {}; // TODO Add functionality
+		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
+		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
 
 		std::shared_ptr<Camera> camera;
 		bool primary = false;

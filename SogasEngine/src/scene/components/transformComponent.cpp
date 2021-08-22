@@ -68,4 +68,31 @@ namespace Sogas
 			setScale(scale);
 		}
 	}
+
+	LuaPlus::LuaObject TransformComponent::toLuaObject(LuaPlus::LuaObject self) const
+	{
+		LuaPlus::LuaObject transform = self.GetByName("transform");
+
+		SGSASSERT(transform.IsTable());
+
+		// TODO: return all the information of the transform component, not only the position
+		transform.SetNumber("x", m_translation.x);
+		transform.SetNumber("y", m_translation.y);
+		transform.SetNumber("z", m_translation.z);
+
+		return transform;
+	}
+
+	void TransformComponent::fromLuaObject(LuaPlus::LuaObject self)
+	{
+		LuaPlus::LuaObject transform = self.GetByName("transform");
+
+		f32 translation[3];
+
+		translation[0] = transform.GetByName("x").GetFloat();
+		translation[1] = transform.GetByName("y").GetFloat();
+		translation[2] = transform.GetByName("z").GetFloat();
+		
+		m_translation = glm::vec3(translation[0], translation[1], translation[2]);
+	}
 }

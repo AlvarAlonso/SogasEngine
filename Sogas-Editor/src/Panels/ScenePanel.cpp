@@ -14,6 +14,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <iostream>
 #include <filesystem>
 
 namespace Sogas
@@ -324,6 +325,36 @@ namespace Sogas
 		drawComponent<EntityScriptComponent>("Script", entity.lock(), [](auto& component)
 			{
 				ImGui::Text("Using an entity script");
+				
+				ScriptVariablesMap scriptVariables = component.lock()->getEntityScriptVariables();
+
+				for (auto it = scriptVariables.begin(); it != scriptVariables.end(); it++)
+				{
+					if (it->second.type == VariableType::INTEGER)
+					{
+						i32 value = it->second.getInteger();
+						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+						ImGui::Text(text.c_str());
+					}
+					else if (it->second.type == VariableType::FLOAT)
+					{
+						f32 value = it->second.getFloat();
+						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+						ImGui::Text(text.c_str());
+					}
+					else if (it->second.type == VariableType::STRING)
+					{
+						std::string value = it->second.getString();
+						std::string text = std::string(it->first.c_str()).append(": ").append(value);
+						ImGui::Text(text.c_str());
+					}
+					else if (it->second.type == VariableType::BOOLEAN)
+					{
+						bool value = it->second.getBoolean();
+						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+						ImGui::Text(text.c_str());
+					}
+				}
 			});
 
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
