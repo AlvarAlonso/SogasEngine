@@ -46,8 +46,8 @@ namespace Sogas
 	{
 		m_pOwner = pOwner;
 
-		StrongEntityPtr ownerEntity = m_pOwner->getOwner();
-		m_self.SetNumber("gameObject", ownerEntity->getId());
+		WeakEntityPtr ownerEntity = m_pOwner->getOwner();
+		m_self.SetNumber("gameObject", ownerEntity.lock()->getId());
 
 		ScriptAttribute entityID;
 		entityID.type = VariableType::INTEGER;
