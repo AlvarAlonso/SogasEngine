@@ -134,6 +134,14 @@ namespace Sogas
 	void Entity::addComponent(StrongEntityComponentPtr pComponent)
 	{
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
+
+		
+		StrongEntityPtr pEntity;
+		pEntity.reset(this);
+		pComponent->setOwner(pEntity);
+
+		pComponent->postInit();
+		
 		SGSASSERT(success.second);
 	}
 

@@ -34,6 +34,7 @@ namespace Sogas
 		virtual void onEvent(Event& event) override;
 
 	private:
+
 		bool onKeyPressed(KeyPressedEvent& e);
 		bool onMouseButtonPressed(MouseButtonPressedEvent& e);
 		

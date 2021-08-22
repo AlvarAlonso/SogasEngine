@@ -10,9 +10,14 @@ namespace Sogas
 		m_entityScript = new EntityScript();
 		// TODO: this is hardcoded
 		m_entityScript->createFromScript("TestScript");
-		m_entityScript->start();
 
 		return true;
+	}
+
+	void EntityScriptComponent::postInit(void)
+	{
+		m_entityScript->setOwner(this);
+		m_entityScript->start();
 	}
 
 	void EntityScriptComponent::to_json(json& j)

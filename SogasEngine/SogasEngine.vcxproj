@@ -63,6 +63,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>sgspch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4251;4996</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +108,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\scene\components\entityScriptComponent.h" />
     <ClInclude Include="external\stb_image\stb_image.h" />
     <ClInclude Include="external\tinyobj\tiny_obj_loader.h" />
+    <ClInclude Include="src\scripting\LuaScriptAPI.h" />
     <ClInclude Include="src\scripting\LuaStateManager.h" />
     <ClInclude Include="src\core\utils.h" />
     <ClInclude Include="src\json\nlohmann\adl_serializer.hpp" />
@@ -497,6 +499,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\stb_image\stb_image.cpp" />
     <ClCompile Include="external\tinyobj\tiny_obj_loader.cc" />
+    <ClCompile Include="src\scripting\LuaScriptAPI.cpp" />
     <ClCompile Include="src\scripting\LuaStateManager.cpp" />
     <ClCompile Include="src\core\utils.cpp" />
     <ClCompile Include="src\renderer\renderCommand.cpp" />

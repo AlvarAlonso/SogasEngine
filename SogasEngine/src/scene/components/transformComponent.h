@@ -23,6 +23,8 @@ namespace Sogas
 		virtual bool init() override;
 		virtual void to_json(json& j) override;
 		virtual void from_json(const json& j) override;
+		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override;
+		virtual void fromLuaObject(LuaPlus::LuaObject self) override;
 
 		// Transform component functions		
 		glm::mat4 getTransform() const

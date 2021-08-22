@@ -52,7 +52,7 @@ namespace Sogas
 			// Should find a more robust way to create a specific component type
 			StrongEntityComponentPtr pComponent = m_pEntityFactory->createComponent(T::s_name);
 			entity->addComponent(pComponent);
-			pComponent->setOwner(entity);
+			//pComponent->setOwner(entity);
 		}
 
 		/*
