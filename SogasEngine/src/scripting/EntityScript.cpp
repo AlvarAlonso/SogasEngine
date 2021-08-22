@@ -64,7 +64,7 @@ namespace Sogas
 		}
 	}
 
-	void EntityScript::update()
+	void EntityScript::update(f32 dt)
 	{
 		static i32 id = 0;
 
@@ -90,8 +90,13 @@ namespace Sogas
 
 		SGSINFO("ID [%i] transform: x: %f, y: %f, z: %f", m_id, x, y, z);
 
+
+
+		LuaPlus::LuaObject frameDeltaTime;
+		frameDeltaTime.AssignNumber(LuaStateManager::GET()->getLuaState(), dt);
+
 		LuaPlus::LuaFunction<i32> func(m_updateFunction);
-		func(m_self);
+		func(m_self, frameDeltaTime);
 	}
 
 	void EntityScript::onDestroy()

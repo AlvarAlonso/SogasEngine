@@ -5,7 +5,7 @@ function Script:Start()
     return 0;
 end
 
-function Script:Update()
+function Script:Update(dt)
     return 0;
 end
 
@@ -15,19 +15,23 @@ end
 
 -- Entity script classes
 
-TestScript = class(Script, { x = 5, y = 3, z = 1, name = "jijiji", number = 0.4, transform = {} });
+TestScript = class(Script, { x = 0, y = 3, z = 1, name = "jijiji", number = 0.4, transform = {} });
 
 function TestScript:Start()
     return 0;
 end
 
-function TestScript:Update()
-    if(IsKeyPressed(65)) then
-        self.x = self.x + 0.1;
+function TestScript:Update(dt)
+    local x = 0;
+    if(IsKeyPressed(SGS_KEY_A)) then
+        x = 5 * dt;
+    end
+    if(IsKeyPressed(SGS_KEY_D)) then
+        x = -5 * dt;
     end
 
     self.transform = GetTransform(self);
-    self.transform.x = self.transform.x + self.x;
+    self.transform.x = self.transform.x + x;
     SetTransform(self);
 
     return 0;

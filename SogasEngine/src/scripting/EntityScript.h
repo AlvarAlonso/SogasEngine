@@ -72,7 +72,7 @@ namespace Sogas
 		void setOwner(EntityScriptComponent* pOwner);
 
 		void start();
-		void update();
+		void update(f32 dt);
 		void onDestroy();
 
 		ScriptVariablesMap& getScriptVariables() { return m_scriptVariables; }

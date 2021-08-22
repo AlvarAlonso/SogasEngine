@@ -22,7 +22,7 @@ namespace Sogas
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
 		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
 
-		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(); }
+		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(dt); }
 
 		ScriptVariablesMap getEntityScriptVariables() const { SGSASSERT(m_entityScript); return m_entityScript->getScriptVariables(); }
 
