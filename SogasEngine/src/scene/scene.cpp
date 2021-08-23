@@ -41,14 +41,22 @@ namespace Sogas
 	* @param const std::string& name
 	* @return StrongEntityPtr
 	*/
-	StrongEntityPtr Scene::createEntity(const std::string& name)
+	StrongEntityPtr Scene::createEntity(const std::string& name, const EntityId parentId)
 	{
 		StrongEntityPtr entity = m_pEntityFactory->createEntity(name.c_str());
 		entity->setScene(shared_from_this());
-		m_entities.push_back(entity);
+		if(parentId == 0)
+			m_entities.push_back(entity);
+		else {
+			const auto& parent = findEntityById(parentId);
+			parent->addChild(entity);
+		}
 		return entity;
 	}
 
+	/*
+	* @brief Destroy the entity from the scene
+	*/
 	void Scene::destroyEntity(EntityId entityId)
 	{
 		// TODO: Optimize insertion/deletion of entities
@@ -68,6 +76,25 @@ namespace Sogas
 		}
 
 		// TODO: some way to destroy an entity deleting all the references to it automatically
+	}
+
+	/*
+	* @brief Remove the entity from the m_entities vector only. This is used for making entity the child of
+	* an already existing Entity.
+	*/
+	void Scene::removeEntity(EntityId entityId)
+	{
+		i32 index = 0;
+		for (auto& currentEntity : m_entities)
+		{
+			if (currentEntity->getId() == entityId)
+			{
+				m_entities.erase(m_entities.begin() + index);
+				break; // break loop after finding the entity to be deleted
+			}
+
+			index++;
+		}
 	}
 
 	// TODO: scene onUpdate should update and submit commands to the renderer, thus the renderer needs to have access to the shader

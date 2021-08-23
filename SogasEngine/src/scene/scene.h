@@ -20,8 +20,9 @@ namespace Sogas
 		Scene(const char* filename);
 		~Scene();
 
-		StrongEntityPtr createEntity(const std::string& name = std::string());
+		StrongEntityPtr createEntity(const std::string& name = std::string(), const EntityId parentId = 0);
 		void destroyEntity(EntityId entityId);
+		void removeEntity(EntityId entityId);
 		void onUpdate(f32 dt);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };

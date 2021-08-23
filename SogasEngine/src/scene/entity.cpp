@@ -21,9 +21,9 @@ namespace Sogas
 {
 	Entity::Entity(EntityId id)
 	{
-		m_id = id;
-		m_type = "unknown";
-		m_name = "entity";
+		m_id	= id;
+		m_type	= "unknown";
+		m_name	= "entity";
 	}
 
 	Entity::~Entity(void)
@@ -151,5 +151,20 @@ namespace Sogas
 		EntityComponentsMap::iterator it = m_components.find(componentId);
 		if (it != m_components.end())
 			m_components.erase(it);
+	}
+
+	void Entity::addChild(StrongEntityPtr child)
+	{
+		m_childs.push_back(child);
+		child->m_parent = this;
+	}
+
+	void Entity::removeChild(EntityId id)
+	{
+		for (std::vector<StrongEntityPtr>::iterator i = m_childs.begin(); i != m_childs.end(); ++i) {
+			if ((*i)->getId() == id) {
+				m_childs.erase(i);
+			}
+		}
 	}
 }

@@ -19,33 +19,57 @@ namespace Sogas
 
 	class Scene;
 
+
+	/*
+	* entityid
+	* name
+	* type
+	* vector<components>
+	*/
+
+	class IEntity
+	{
+		virtual bool isVisible() const = 0;
+
+		virtual void onUpdate() const = 0;
+		virtual void preRender() const = 0;
+		virtual void onRender() const = 0;
+		virtual void postRender() const = 0;
+
+		virtual bool addChild(std::shared_ptr<IEntity> child) = 0;
+		virtual bool removeChild(EntityId id) = 0;
+	};
+
 	class SGS Entity {
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
 
 	private:
-		std::string m_name{ "entity" };
-		std::string m_type{ "unknown" };
-		EntityId m_id{ 0 }; // default ID, it must count as an invalid ID
-		EntityComponentsMap m_components{};
-		std::shared_ptr<Scene> m_pScene;
+		std::string					m_name{ "entity" };
+		std::string					m_type{ "unknown" };
+		EntityId					m_id{ 0 }; // default ID, it must count as an invalid ID
+		EntityComponentsMap			m_components{};
+		std::vector<StrongEntityPtr>	m_childs{};
+		Entity*						m_parent{ nullptr };
+		std::shared_ptr<Scene>		m_pScene;
 
 	public:
 		explicit Entity(EntityId id);
 		//Entity(const Entity& other) = default;
 		~Entity(void);
 
-		bool init();
-		void postInit();
-		void destroy();
-		void update(f32 dt);
+		bool		init();
+		void		postInit();
+		void		destroy();
+		void		update(f32 dt);
 
 		void		setName(std::string name) { m_name = name; }
 		std::string getName() const { return m_name; }
 		EntityId	getId() const { return m_id; }
 		std::string getType() const { return m_type; }
-		void setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
+		void		setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
 		bool		isSelected();
+		bool		isVisible();
 
 		void		to_json(json& j);
 		void		from_json(const json& j);
@@ -54,6 +78,16 @@ namespace Sogas
 		const std::vector<StrongEntityComponentPtr>& getComponentsVector();	// TODO This vector returns a local address, check definition
 		void addComponent(StrongEntityComponentPtr pComponent);
 		void removeComponent(const char* componentName);
+
+		void addChild(StrongEntityPtr child);
+		void removeChild(EntityId id);
+		bool hasChild() { return !m_childs.empty(); }
+		bool hasParent() {
+			if (m_parent != nullptr)
+				return true;
+			return false;
+		}
+		const std::vector<StrongEntityPtr> getChildList() { return m_childs; }
 
 		template <class T>
 		std::weak_ptr<T> getComponent()

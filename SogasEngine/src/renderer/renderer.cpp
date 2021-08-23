@@ -57,6 +57,7 @@ namespace Sogas
 		}
 //#endif
 
+		// TODO Make rendering child nodes cleaner
 		for (const auto& renderable : renderables)
 		{
 			auto renderComponent = makeStrongPtr(renderable->getComponent<RenderComponent>());
