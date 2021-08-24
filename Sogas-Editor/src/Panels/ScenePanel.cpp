@@ -39,7 +39,7 @@ namespace Sogas
 		//ImGui::ShowDemoWindow();
 
 		EntityId entityToDestroy = 0;
-		for (auto &entity : m_context.get()->getEntities())
+		for (auto &entity : m_context.get()->getRootEntities())
 		{
 			EntityId id = drawEntityNode(entity);
 			
@@ -129,7 +129,10 @@ namespace Sogas
 		if (opened)
 		{
 			for (const auto& child : entity->getChildList()) {
-				drawEntityNode(child);
+				i32 entityID = drawEntityNode(child);
+				if (entityID != 0) {
+					m_context->destroyEntity(entityID);
+				}
 			}
 			ImGui::TreePop();
 		}

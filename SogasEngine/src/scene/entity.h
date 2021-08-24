@@ -40,18 +40,19 @@ namespace Sogas
 		virtual bool removeChild(EntityId id) = 0;
 	};
 
-	class SGS Entity {
+	class SGS Entity : public std::enable_shared_from_this<Entity>
+	{
 	public:
 		typedef std::map<ComponentId, StrongEntityComponentPtr> EntityComponentsMap;
 
 	private:
-		std::string					m_name{ "entity" };
-		std::string					m_type{ "unknown" };
-		EntityId					m_id{ 0 }; // default ID, it must count as an invalid ID
-		EntityComponentsMap			m_components{};
-		std::vector<StrongEntityPtr>	m_childs{};
-		Entity*						m_parent{ nullptr };
-		std::shared_ptr<Scene>		m_pScene;
+		std::string						m_name{ "entity" };
+		std::string						m_type{ "unknown" };
+		EntityId						m_id{ 0 }; // default ID, it must count as an invalid ID
+		EntityComponentsMap				m_components{};
+		std::vector<StrongEntityPtr>	m_childs;
+		Entity*							m_parent{ nullptr };
+		std::shared_ptr<Scene>			m_pScene;
 
 	public:
 		explicit Entity(EntityId id);
@@ -69,7 +70,6 @@ namespace Sogas
 		std::string getType() const { return m_type; }
 		void		setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
 		bool		isSelected();
-		bool		isVisible();
 
 		void		to_json(json& j);
 		void		from_json(const json& j);
@@ -87,7 +87,9 @@ namespace Sogas
 				return true;
 			return false;
 		}
+		Entity* getParent() { return m_parent; }
 		const std::vector<StrongEntityPtr> getChildList() { return m_childs; }
+		StrongEntityPtr getChildWithID(const EntityId id);
 
 		template <class T>
 		std::weak_ptr<T> getComponent()

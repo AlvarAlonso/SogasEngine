@@ -45,8 +45,12 @@ namespace Sogas
 	{
 		StrongEntityPtr entity = m_pEntityFactory->createEntity(name.c_str());
 		entity->setScene(shared_from_this());
+		m_entities.push_back(entity);	// Add the entity to the vector that holds all entities.
+
+		// Also check if it has a parent. If it has not, add it to the entitiesHierarchy that holds all root entities.
+		// If it has a parent ID, add as a child to that parent.
 		if(parentId == 0)
-			m_entities.push_back(entity);
+			m_rootEntities.push_back(entity);
 		else {
 			const auto& parent = findEntityById(parentId);
 			parent->addChild(entity);
@@ -60,18 +64,40 @@ namespace Sogas
 	void Scene::destroyEntity(EntityId entityId)
 	{
 		// TODO: Optimize insertion/deletion of entities
-
 		i32 index = 0;
 		for(auto& currentEntity : m_entities)
 		{
 			if (currentEntity->getId() == entityId)
 			{
+				// If the entity is a root, erase from the root vector.
+				if (!currentEntity->hasParent()) {
+					i32 i = 0;
+					for (auto& ent : m_rootEntities)
+					{
+						if (ent->getId() == entityId) {
+							m_rootEntities.erase(m_rootEntities.begin() + i);
+							break;
+						}
+						i++;
+					}
+				}
+				else {
+					currentEntity->getParent()->removeChild(entityId);
+				}
+
+				// If it has childs, call their destruction recursively.
+				if (currentEntity->hasChild()) {
+					auto& childs = currentEntity->getChildList();
+					for (auto child : childs) {
+						destroyEntity(child->getId());
+					}
+				}
 				currentEntity->destroy();
 				currentEntity = nullptr;
 				m_entities.erase(m_entities.begin() + index);
+
 				break; // break loop after finding the entity to be deleted
 			}
-
 			index++;
 		}
 
@@ -85,11 +111,11 @@ namespace Sogas
 	void Scene::removeEntity(EntityId entityId)
 	{
 		i32 index = 0;
-		for (auto& currentEntity : m_entities)
+		for (auto& currentEntity : m_rootEntities)
 		{
 			if (currentEntity->getId() == entityId)
 			{
-				m_entities.erase(m_entities.begin() + index);
+				m_rootEntities.erase(m_rootEntities.begin() + index);
 				break; // break loop after finding the entity to be deleted
 			}
 
@@ -183,6 +209,7 @@ namespace Sogas
 					entity->from_json(jsonEntity);
 
 					m_entities.push_back(entity);
+					m_rootEntities.push_back(entity);
 				}
 			}
 		}

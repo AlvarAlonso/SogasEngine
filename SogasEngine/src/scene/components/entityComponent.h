@@ -24,7 +24,7 @@ namespace Sogas
 	class SGS EntityComponent
 	{
 	protected:
-		StrongEntityPtr m_pOwner;
+		WeakEntityPtr m_pOwner;
 
 	public:
 		virtual ~EntityComponent() { m_pOwner.reset(); }
@@ -38,12 +38,12 @@ namespace Sogas
 		// Functions meant to be overriden by the interface class
 		virtual ComponentId getId() const { return getIdFromName(getName()); } // This function returns the component ID not the Entity ID!!!
 		virtual const char* getName() const = 0;
-		virtual void to_json(json& j) = 0;
-		virtual void from_json(const json& j) = 0;
+		virtual void		to_json(json& j) = 0;
+		virtual void		from_json(const json& j) = 0;
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const = 0;
 		virtual void fromLuaObject(LuaPlus::LuaObject) = 0;
 
-		void setOwner(StrongEntityPtr pOwner) { m_pOwner = pOwner; }
+		void setOwner(WeakEntityPtr pOwner) { m_pOwner = pOwner; }
 
 		WeakEntityPtr getOwner(void) { return m_pOwner; }
 

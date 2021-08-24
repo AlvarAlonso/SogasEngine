@@ -16,19 +16,29 @@ namespace Sogas
 	class SGS Scene : public std::enable_shared_from_this<Scene>
 	{
 	public:
+		bool m_renderEnvironment{ true };
+
+	private:
+		std::vector<StrongEntityPtr>	m_entities;
+		std::vector<StrongEntityPtr>	m_rootEntities;
+		std::unique_ptr<EntityFactory>	m_pEntityFactory;
+		std::shared_ptr<Environment>	m_pEnvironment;
+		StrongEntityPtr					m_selectedEntity;
+	public:
 		Scene();
 		Scene(const char* filename);
 		~Scene();
 
 		StrongEntityPtr createEntity(const std::string& name = std::string(), const EntityId parentId = 0);
-		void destroyEntity(EntityId entityId);
-		void removeEntity(EntityId entityId);
-		void onUpdate(f32 dt);
+		void			destroyEntity(EntityId entityId);
+		void			removeEntity(EntityId entityId);
+		void			onUpdate(f32 dt);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
-		std::weak_ptr<Environment> getEnvironment() { return m_pEnvironment; }
-		void setSelectedEntity(StrongEntityPtr entity) { m_selectedEntity = entity; }
-		StrongEntityPtr getSelectedEntity(void) { return m_selectedEntity ? m_selectedEntity : nullptr; }
+		const std::vector<StrongEntityPtr>& getRootEntities() { return m_rootEntities; }
+		std::weak_ptr<Environment>			getEnvironment() { return m_pEnvironment; }
+		void								setSelectedEntity(StrongEntityPtr entity) { m_selectedEntity = entity; }
+		StrongEntityPtr						getSelectedEntity(void) { return m_selectedEntity ? m_selectedEntity : nullptr; }
 
 		StrongEntityPtr findEntityById(EntityId entityId);
 
@@ -75,15 +85,5 @@ namespace Sogas
 			}
 			return returnVector;
 		}
-
-	public:
-		bool m_renderEnvironment{ true };
-
-	private:
-		std::vector<StrongEntityPtr> m_entities;
-		std::unique_ptr<EntityFactory> m_pEntityFactory;
-		std::shared_ptr<Environment> m_pEnvironment;
-		StrongEntityPtr m_selectedEntity;
 	};
-
 }

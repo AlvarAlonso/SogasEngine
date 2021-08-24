@@ -135,10 +135,7 @@ namespace Sogas
 	{
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
 
-		
-		StrongEntityPtr pEntity;
-		pEntity.reset(this);
-		pComponent->setOwner(pEntity);
+		pComponent->setOwner(shared_from_this());
 
 		pComponent->postInit();
 		
@@ -161,10 +158,15 @@ namespace Sogas
 
 	void Entity::removeChild(EntityId id)
 	{
-		for (std::vector<StrongEntityPtr>::iterator i = m_childs.begin(); i != m_childs.end(); ++i) {
+		for (std::vector<StrongEntityPtr>::iterator i = m_childs.begin(); i != m_childs.end(); i++) {
 			if ((*i)->getId() == id) {
 				m_childs.erase(i);
+				break;
 			}
 		}
 	}
+
+	//StrongEntityPtr getChildWithID(const EntityId id) {
+	//	for()
+	//}
 }
