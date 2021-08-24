@@ -54,6 +54,8 @@
     <ClCompile Include="src\scene\components\entityScriptComponent.cpp" />
     <ClCompile Include="src\scripting\EntityScript.cpp" />
     <ClCompile Include="src\scripting\LuaScriptAPI.cpp" />
+    <ClCompile Include="src\renderer\sceneGraph\SceneGraph.cpp" />
+    <ClCompile Include="src\renderer\sceneGraph\SceneNodes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -450,6 +452,8 @@
     <ClInclude Include="src\scene\components\entityScriptComponent.h" />
     <ClInclude Include="src\scripting\EntityScript.h" />
     <ClInclude Include="src\scripting\LuaScriptAPI.h" />
+    <ClInclude Include="src\renderer\sceneGraph\SceneGraph.h" />
+    <ClInclude Include="src\renderer\sceneGraph\SceneNodes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\glm\doc\api\a00001_source.html" />

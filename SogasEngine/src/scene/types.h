@@ -13,6 +13,7 @@ namespace Sogas
 {
 	class Entity;
 	class EntityComponent;
+	class ISceneNode;
 
 	// TODO: should be moved to a utils file
 	template<typename T>
@@ -30,15 +31,20 @@ namespace Sogas
 		CONSTANT_ALPHA, ONE_MINUS_CONSTANT_ALPHA, SRC_ALPHA_SATURATE, SRC1_COLOR, ONE_MINUS_SRC1_COLOR, SRC1_ALPHA, ONE_MINUS_SRC1_ALPHA};
 	enum class DepthTypes { NEVER = 512, LESS, EQUAL, LEQUAL, GREATER, NOTEQUAL, GEQUAL, ALWAYS };
 
-
-	typedef u32 EntityId;
-	typedef u32 ComponentId;
-
 	const u32 MAX_COMPONENTS = 5;
 	typedef std::bitset<MAX_COMPONENTS> Signature;
+
+	// ECS
+	typedef u32 EntityId;
+	typedef u32 ComponentId;
 
 	typedef std::shared_ptr<Entity> StrongEntityPtr;
 	typedef std::weak_ptr<Entity> WeakEntityPtr;
 	typedef std::shared_ptr<EntityComponent> StrongEntityComponentPtr;
 	typedef std::weak_ptr<EntityComponent> WeakEntityComponentPtr;
+
+	// scene graph
+	typedef u32 NodeId;
+
+	typedef std::vector<std::shared_ptr<ISceneNode>> SceneNodeList;
 }

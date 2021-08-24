@@ -104,6 +104,8 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\sceneGraph\SceneNodes.h" />
+    <ClInclude Include="src\renderer\sceneGraph\SceneGraph.h" />
     <ClInclude Include="src\scripting\EntityScript.h" />
     <ClInclude Include="src\scene\components\entityScriptComponent.h" />
     <ClInclude Include="external\stb_image\stb_image.h" />
@@ -493,6 +495,8 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\sceneGraph\SceneNodes.cpp" />
+    <ClCompile Include="src\renderer\sceneGraph\SceneGraph.cpp" />
     <ClCompile Include="src\scripting\EntityScript.cpp" />
     <ClCompile Include="src\scene\components\entityScriptComponent.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
