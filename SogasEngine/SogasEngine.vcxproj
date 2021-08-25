@@ -104,6 +104,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\renderer\resources\light.h" />
     <ClInclude Include="src\renderer\sceneGraph\SceneNodes.h" />
     <ClInclude Include="src\renderer\sceneGraph\SceneGraph.h" />
     <ClInclude Include="src\scripting\EntityScript.h" />
@@ -495,6 +496,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <ClInclude Include="src\sogas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\resources\light.cpp" />
     <ClCompile Include="src\renderer\sceneGraph\SceneNodes.cpp" />
     <ClCompile Include="src\renderer\sceneGraph\SceneGraph.cpp" />
     <ClCompile Include="src\scripting\EntityScript.cpp" />
