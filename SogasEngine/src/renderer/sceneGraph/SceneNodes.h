@@ -17,8 +17,8 @@ namespace Sogas
 	{
 		_0 = 2, // 0 is invalid, 1 is root node
 		OPAQUE = _0,
-		TRANSPARENT = 2,
-		ENVIRONMENT = 3,
+		TRANSPARENT = 3,
+		ENVIRONMENT = 4,
 		LAST
 	};
 
