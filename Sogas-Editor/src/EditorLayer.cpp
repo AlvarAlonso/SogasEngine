@@ -304,7 +304,7 @@ namespace Sogas
 			// Entity transform
 			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>();
 
-			glm::mat4 transform = transformComponent.lock()->getTransform();
+			glm::mat4 transform = transformComponent.lock()->getLocalTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
 				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),

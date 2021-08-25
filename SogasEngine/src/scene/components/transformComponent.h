@@ -26,20 +26,10 @@ namespace Sogas
 		virtual LuaPlus::LuaObject	toLuaObject(LuaPlus::LuaObject self) const override;
 		virtual void				fromLuaObject(LuaPlus::LuaObject self) override;
 
-		// Transform component functions		
-		glm::mat4 getTransform() const
-		{
-			return glm::translate(glm::mat4(1.0f), m_translation)
-				* glm::mat4_cast(glm::quat(m_rotation))
-				* glm::scale(glm::mat4(1.0f), m_scale);
-		}
-
-		void setTransform(const glm::mat4& transform)
-		{
-			m_translation = (glm::vec3)transform[0][3];
-			m_rotation = glm::eulerAngles(glm::quat_cast(transform));
-			m_scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
-		}
+		// Transform component functions
+		glm::mat4	getLocalTransform() const;
+		glm::mat4	getTransform() const;
+		void		setTransform(const glm::mat4& transform);
 
 		glm::vec3& getTranslation() { return m_translation; }
 		glm::vec3& getRotation() { return m_rotation; }

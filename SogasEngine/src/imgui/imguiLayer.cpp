@@ -73,9 +73,9 @@ namespace Sogas
 
 	void ImGuiLayer::end()
 	{
-		ImGuiIO& io = ImGui::GetIO();
-		Application* app = Application::getInstance();
-		io.DisplaySize = ImVec2((f32)app->getWindow().getWidth(), (f32)app->getWindow().getHeight());
+		ImGuiIO& io			= ImGui::GetIO();
+		Application* app	= Application::getInstance();
+		io.DisplaySize		= ImVec2((f32)app->getWindow().getWidth(), (f32)app->getWindow().getHeight());
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

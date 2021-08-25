@@ -2,6 +2,7 @@
 #include "sgspch.h"
 #include "transformComponent.h"
 #include "scene/serializerUtils.h"
+#include "../entity.h"
 
 namespace Sogas
 {
@@ -9,12 +10,60 @@ namespace Sogas
 
 	bool TransformComponent::init()
 	{
-		m_translation = glm::vec3();
-		m_rotation = glm::vec3();
-		m_scale = glm::vec3(1);
+		m_translation	= glm::vec3();
+		m_rotation		= glm::vec3();
+		m_scale			= glm::vec3(1);
 		return true;
 	}
 
+	/*
+	* @brief Given the properties of translation, rotation and scale stored, build and return the
+	* local matrix.
+	* @param void
+	* @return glm::mat4 The local matrix of the component.
+	*/
+	glm::mat4 TransformComponent::getLocalTransform() const
+	{
+		return glm::translate(glm::mat4(1.0f), m_translation)
+			* glm::mat4_cast(glm::quat(m_rotation))
+			* glm::scale(glm::mat4(1.0f), m_scale);
+	}
+
+	/*
+	* @brief Checks if the component has a parent and computes it transform matrix.
+	* @param void
+	* @return glm::mat4 The transform matrix of the component.
+	*/
+	glm::mat4 TransformComponent::getTransform() const
+	{
+		glm::mat4 matrix = getLocalTransform();
+		if (m_pOwner.lock()->hasParent()) {
+			return m_pOwner.lock()->getParent()->getComponent<TransformComponent>().lock()->getTransform() * matrix;
+		}
+		return matrix;
+	}
+
+	/*
+	* @brief Fill the translation, rotation and scale properties from a given glm::mat4.
+	* @param transform A const glm::mat4& with the transform matrix.
+	* @return void.
+	*/
+	void TransformComponent::setTransform(const glm::mat4& transform)
+	{
+		m_translation	= (glm::vec3)transform[0][3];
+		m_rotation		= glm::eulerAngles(glm::quat_cast(transform));
+		m_scale			= glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
+	}
+
+	// ----------------------------------------------
+	// 	   Serialization
+	// ----------------------------------------------
+
+	/*
+	* @brief Converts the class TransformComponent data to json format.
+	* @param j The reference to a json value to be filled.
+	* @return void
+	*/
 	void TransformComponent::to_json(json& j)
 	{
 		json translation, rotation, scale;
@@ -28,6 +77,11 @@ namespace Sogas
 
 	}
 
+	/*
+	* @brief Retrieve data from a json value and store it to the TransforComponent class.
+	* @param jsonTransform The json value to be read with transform data.
+	* @return void
+	*/
 	void TransformComponent::from_json(const json& jsonTransform)
 	{
 		if (jsonTransform.contains("Translation") && !jsonTransform["Translation"].is_null())
@@ -68,6 +122,10 @@ namespace Sogas
 			setScale(scale);
 		}
 	}
+
+	// ----------------------------------------------
+	// 	   Lua
+	// ----------------------------------------------
 
 	LuaPlus::LuaObject TransformComponent::toLuaObject(LuaPlus::LuaObject self) const
 	{

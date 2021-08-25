@@ -26,6 +26,11 @@ namespace Sogas
 		setContext(scene);
 	}
 
+	/*
+	* @brief Pass a scene to be stored as the context of the panel.
+	* @param scene A const shared_ptr with the scene to be stored.
+	* @return void.
+	*/
 	void ScenePanel::setContext(const std::shared_ptr<Scene>& scene)
 	{
 		m_context = scene;
@@ -98,6 +103,11 @@ namespace Sogas
 		ImGui::End();
 	}
 
+	/*
+	* @brief Set selected entity with the entity passed.
+	* @param entity A shared_ptr<Entity> with the entity to be selected.
+	* @return void.
+	*/
 	void ScenePanel::setSelectedEntity(StrongEntityPtr entity)
 	{
 		m_selectedEntity = entity;
