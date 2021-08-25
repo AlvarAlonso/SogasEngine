@@ -13,6 +13,15 @@ namespace Sogas
 	class Camera;
 	class SceneGraph;
 
+	enum class MainRenderPass
+	{
+		_0 = 2, // 0 is invalid, 1 is root node
+		OPAQUE = _0,
+		TRANSPARENT = 2,
+		ENVIRONMENT = 3,
+		LAST
+	};
+
 	struct SceneNodeProperties
 	{
 	private:
@@ -22,11 +31,12 @@ namespace Sogas
 		NodeId nodeId; // TODO: 0 is invalid, 1 is root, the others are available as an ID for the other nodes
 		glm::mat4 transform;
 		float radius;
-
+		MainRenderPass renderPass;
 	public:
 		const NodeId& getNodeId() const { return nodeId; }
 		glm::mat4 const& getTransform() const { return transform; }
 		float getRadius() const { return radius; }
+		MainRenderPass getMainRenderPass() const { return renderPass; }
 	};
 
 	class ISceneNode
@@ -42,7 +52,7 @@ namespace Sogas
 		virtual void postRender(SceneGraph* pScene) = 0;
 	
 		virtual bool addChild(std::shared_ptr<ISceneNode> child) = 0;
-		virtual void removeChild(NodeId id) = 0;
+		virtual bool removeChild(NodeId id) = 0;
 
 		virtual ~ISceneNode() {};
 	};
@@ -50,7 +60,7 @@ namespace Sogas
 
 	class SceneNode : public ISceneNode
 	{
-	private:
+	protected:
 		SceneNodeList m_children;
 		std::weak_ptr<SceneNode> m_parent;
 		SceneNodeProperties m_properties;
@@ -67,7 +77,7 @@ namespace Sogas
 		virtual void postRender(SceneGraph* pScene) override;
 
 		virtual bool addChild(std::shared_ptr<ISceneNode> child) override;
-		virtual void removeChild(NodeId id) override;
+		virtual bool removeChild(NodeId id) override;
 	};
 
 	class RootNode : public SceneNode
