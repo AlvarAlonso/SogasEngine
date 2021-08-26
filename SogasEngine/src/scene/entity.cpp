@@ -154,6 +154,14 @@ namespace Sogas
 	{
 		m_childs.push_back(child);
 		child->m_parent = this;
+
+		// Set the position relative to the parent.
+		const auto& childTransform = child->getComponent<TransformComponent>();
+		const auto& parentTransform = getComponent<TransformComponent>();
+
+		auto translation = childTransform.lock()->getTranslation() - parentTransform.lock()->getTranslation();
+		childTransform.lock()->setTranslation(translation);
+		//childTransform.lock()->setTransform(glm::translate(parentTransform.lock()->getGlobalTransform(), translation));
 	}
 
 	void Entity::removeChild(EntityId id)

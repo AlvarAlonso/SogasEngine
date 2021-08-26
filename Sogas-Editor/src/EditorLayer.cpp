@@ -304,29 +304,40 @@ namespace Sogas
 			// Entity transform
 			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>();
 
-			glm::mat4 transform = transformComponent.lock()->getLocalTransform();
+			glm::mat4 transform = transformComponent.lock()->getGlobalTransform();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::WORLD, glm::value_ptr(transform),
 				nullptr, nullptr);
 
 			if(ImGuizmo::IsUsing())
 			{
+				if (transformComponent.lock()->getOwner().lock()->hasParent()) {
+					const auto& parentTransformComponent = transformComponent.lock()->getOwner().lock()->getParent()->getComponent<TransformComponent>();
+					transform = glm::inverse(parentTransformComponent.lock()->getGlobalTransform()) * transform;
+				}
+
 				f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
 				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
 
 				// apply transformation here
-				glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
-				
+				//glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
+				//
 				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
 				transformComponent.lock()->setTranslation(newTranslation);
 
-				glm::vec3 rot = glm::eulerAngles(glm::quat_cast(transform));
-				//glm::vec3 newRotation = glm::make_vec3(matrixRotation) + deltaRotation;
+				//glm::vec3 rot = glm::eulerAngles(glm::quat_cast(transform));
+				glm::vec3 rot = glm::radians(glm::make_vec3(matrixRotation));
 				transformComponent.lock()->setRotation(rot);
 
 				glm::vec3 newScale = glm::make_vec3(matrixScale);
 				transformComponent.lock()->setScale(newScale);
+
+				//transformComponent.lock()->setTransform(glm::translate(glm::mat4(1), glm::make_vec3(matrixTranslation)) * 
+				//	glm::mat4(glm::quat_cast(transform)) * 
+				//	glm::scale(glm::mat4(1), glm::make_vec3(matrixScale)));
+
+				//transformComponent.lock()->setTransform(transform);
 			}
 		}
 

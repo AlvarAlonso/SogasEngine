@@ -10,49 +10,55 @@ namespace Sogas
 
 	bool TransformComponent::init()
 	{
-		m_translation	= glm::vec3();
-		m_rotation		= glm::vec3();
-		m_scale			= glm::vec3(1);
+		m_translation			= glm::vec3();
+		m_rotation				= glm::vec3();
+		m_scale					= glm::vec3(1);
+		m_localMatrix			= glm::mat4(1);
+		m_globalMatrix			= glm::mat4(1);
+		m_inverseGlobalMatrix	= glm::mat4(1);
 		return true;
 	}
 
 	/*
 	* @brief Given the properties of translation, rotation and scale stored, build and return the
-	* local matrix.
+	* global matrix, this is the representation in the world.
 	* @param void
-	* @return glm::mat4 The local matrix of the component.
+	* @return glm::mat4 The global matrix of the component.
 	*/
-	glm::mat4 TransformComponent::getLocalTransform() const
+	glm::mat4 TransformComponent::getGlobalTransform()
 	{
-		return glm::translate(glm::mat4(1.0f), m_translation)
-			* glm::mat4_cast(glm::quat(m_rotation))
-			* glm::scale(glm::mat4(1.0f), m_scale);
+		if (m_pOwner.lock()->hasParent()) {
+			m_globalMatrix = m_pOwner.lock()->getParent()->getComponent<TransformComponent>().lock()->getGlobalTransform() * m_localMatrix;
+		}
+		else {
+			m_globalMatrix = m_localMatrix;
+		}
+		return m_globalMatrix;
 	}
 
 	/*
-	* @brief Checks if the component has a parent and computes it transform matrix.
+	* @brief Calculate and return the matrix that represents the position of the entity respective
+	* to the parent. 
 	* @param void
-	* @return glm::mat4 The transform matrix of the component.
+	* @return glm::mat4 the local matrix.
 	*/
-	glm::mat4 TransformComponent::getTransform() const
+	glm::mat4 TransformComponent::getLocalTransform()
 	{
-		glm::mat4 matrix = getLocalTransform();
-		if (m_pOwner.lock()->hasParent()) {
-			return m_pOwner.lock()->getParent()->getComponent<TransformComponent>().lock()->getTransform() * matrix;
-		}
-		return matrix;
+		return m_localMatrix;
 	}
 
 	/*
 	* @brief Fill the translation, rotation and scale properties from a given glm::mat4.
 	* @param transform A const glm::mat4& with the transform matrix.
-	* @return void.
+	* @return void. 
 	*/
 	void TransformComponent::setTransform(const glm::mat4& transform)
 	{
-		m_translation	= (glm::vec3)transform[0][3];
-		m_rotation		= glm::eulerAngles(glm::quat_cast(transform));
-		m_scale			= glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
+		m_localMatrix	= transform;
+		m_translation	= glm::vec3(m_localMatrix[3].x, m_localMatrix[3].y, m_localMatrix[3].z);// (glm::vec3)m_localMatrix[3][0];
+		m_rotation		= glm::radians(glm::eulerAngles(glm::quat_cast(m_localMatrix)));
+		m_scale			= glm::vec3(m_localMatrix[0][0], m_localMatrix[1][1], m_localMatrix[2][2]);
+		//updateMatrix();
 	}
 
 	// ----------------------------------------------
