@@ -8,23 +8,29 @@ layout(location = 3) in vec2 a_uv;
 
 uniform mat4 u_viewProjectionMatrix;
 uniform mat4 u_model;
+uniform vec3 u_cameraPosition;
 
-out vec3 v_position;
 out vec3 v_normal;
 out vec3 v_worldPosition;
 out vec2 v_uv;
 out vec3 v_color;
+out float v_angle;
 
 void main()
 {
 	mat4 model = u_model;
-	v_position = a_position;
-	v_normal = (model * vec4(a_normal, 0.0)).xyz;
+	// TODO matrix inverse is a costly operation, should be performed in CPU.
+	v_normal = mat3(transpose(inverse(model))) * a_normal;
 	v_worldPosition = (model * vec4(a_position, 1.0)).xyz;
 	v_uv = a_uv;
 	v_color = a_color;
 
 	gl_Position = u_viewProjectionMatrix * model * vec4(a_position, 1.0);
+
+	// Calculating the cosine between the camera vector to the shaded point and the normal vector
+	vec3 V = normalize(u_cameraPosition - v_worldPosition);
+	vec3 N = normalize(v_normal);
+	v_angle = dot(V, N);
 };
 
 #shader fragment
@@ -34,11 +40,11 @@ float DistributionGGX(float NdotH);
 float GeometrySmith(float NdotV, float NdotL);
 vec3 FresnelSchlick(float VdotH, vec3 F0);
 
-in vec3 v_position;
 in vec3 v_normal;
 in vec3 v_worldPosition;
 in vec2 v_uv;
 in vec3 v_color;
+in float v_angle;
 
 layout(location = 0) out vec4 outColor;
 layout(location = 1) out int idColor;
@@ -113,7 +119,10 @@ void main()
 	// TODO ambient should be done based on IBL
 	vec3 ambient = vec3(0.1) * baseColor;
 
-	outColor = vec4(direct + ambient, 1);
+	vec4 shadingColor = vec4(direct + ambient, 1);
+	vec4 highlightColor = vec4(1, 0, 0, 1);
+	//outColor = (1.0f - v_angle) * vec4(1, 0, 0, 1) + v_angle * shadingColor;
+	outColor = shadingColor;
 	idColor = u_entityID;
 };
 

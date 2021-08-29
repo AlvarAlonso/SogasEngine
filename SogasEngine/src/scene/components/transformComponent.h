@@ -12,48 +12,47 @@ namespace Sogas
 	class SGS TransformComponent : public EntityComponent
 	{
 	public:
+		glm::mat4 m_inverseGlobalMatrix;
+
+	private:
+		glm::vec3 m_translation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_rotation	= { 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_scale		= { 1.0f, 1.0f, 1.0f };
+		glm::mat4 m_localMatrix;	// local matrix, relative to the parent if any.
+		glm::mat4 m_globalMatrix;	// world matrix, where the object is defined in the world.
+	public:
 		static const char* s_name;
 		virtual const char* getName() const override { return s_name; }
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::vec3& translation) : m_translation(translation){}
-		//TransformComponent(void) : m_transform(glm::mat4(1)) {};
 
-		virtual bool init() override;
-		virtual void to_json(json& j) override;
-		virtual void from_json(const json& j) override;
-		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override;
-		virtual void fromLuaObject(LuaPlus::LuaObject self) override;
+		virtual bool				init() override;
+		virtual void				to_json(json& j) override;
+		virtual void				from_json(const json& j) override;
+		virtual LuaPlus::LuaObject	toLuaObject(LuaPlus::LuaObject self) const override;
+		virtual void				fromLuaObject(LuaPlus::LuaObject self) override;
 
-		// Transform component functions		
-		glm::mat4 getTransform() const
-		{
-			return glm::translate(glm::mat4(1.0f), m_translation)
-				* glm::mat4_cast(glm::quat(m_rotation))
-				* glm::scale(glm::mat4(1.0f), m_scale);
-		}
+		// Transform component functions
+		glm::mat4	getGlobalTransform();
+		glm::mat4	getLocalTransform();
+		void		setTransform(const glm::mat4& transform);
 
-		void setTransform(const glm::mat4& transform)
-		{
-			m_translation = (glm::vec3)transform[0][3];
-			m_rotation = glm::eulerAngles(glm::quat_cast(transform));
-			m_scale = glm::vec3(transform[0][0], transform[1][1], transform[2][2]);
-		}
+		glm::vec3&	getTranslation() { return m_translation; }
+		glm::vec3&	getRotation() { return m_rotation; }
+		glm::vec3&	getScale() { return m_scale; }
 
-		glm::vec3& getTranslation() { return m_translation; }
-		glm::vec3& getRotation() { return m_rotation; }
-		glm::vec3& getScale() { return m_scale; }
-
-		void setTranslation(glm::vec3& translation) { m_translation = translation; }
-		void setRotation(glm::vec3& rotation) { m_rotation = rotation; }
-		void setScale(glm::vec3& scale) { m_scale = scale; }
+		void setTranslation(glm::vec3& translation) { m_translation = translation; updateMatrix(); }
+		void setRotation(glm::vec3& rotation) { m_rotation = rotation; updateMatrix(); }
+		void setScale(glm::vec3& scale) { m_scale = scale; updateMatrix(); }
 
 		// TODO: getLookAt(void)
 
 	private:
-		glm::vec3 m_translation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 m_rotation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 m_scale = { 1.0f, 1.0f, 1.0f };
+		void updateMatrix() {
+			m_localMatrix = glm::translate(glm::mat4(1), m_translation) *
+				glm::mat4_cast(glm::quat(m_rotation)) *
+				glm::scale(glm::mat4(1), m_scale);
+		}
 	};
 }

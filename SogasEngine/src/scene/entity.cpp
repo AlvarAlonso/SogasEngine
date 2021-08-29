@@ -7,6 +7,8 @@
 #include "components/transformComponent.h"
 #include "core/application.h"
 
+#include "scene.h"
+
 #include "imgui.h"
 #include <ImGuizmo.h>
 
@@ -19,9 +21,9 @@ namespace Sogas
 {
 	Entity::Entity(EntityId id)
 	{
-		m_id = id;
-		m_type = "unknown";
-		m_name = "entity";
+		m_id	= id;
+		m_type	= "unknown";
+		m_name	= "entity";
 	}
 
 	Entity::~Entity(void)
@@ -110,6 +112,13 @@ namespace Sogas
 		}
 	}
 
+	bool Entity::isSelected()
+	{
+		if(m_pScene->getSelectedEntity())
+			return m_pScene->getSelectedEntity()->getId() == m_id ? true : false;
+		return false;
+	}
+
 	const std::vector<StrongEntityComponentPtr>& Entity::getComponentsVector()
 	{
 		std::vector<StrongEntityComponentPtr> componentsVector{};
@@ -126,10 +135,7 @@ namespace Sogas
 	{
 		std::pair<EntityComponentsMap::iterator, bool> success = m_components.insert(std::make_pair(pComponent->getId(), pComponent));
 
-		
-		StrongEntityPtr pEntity;
-		pEntity.reset(this);
-		pComponent->setOwner(pEntity);
+		pComponent->setOwner(shared_from_this());
 
 		pComponent->postInit();
 		
@@ -143,4 +149,32 @@ namespace Sogas
 		if (it != m_components.end())
 			m_components.erase(it);
 	}
+
+	void Entity::addChild(StrongEntityPtr child)
+	{
+		m_childs.push_back(child);
+		child->m_parent = this;
+
+		// Set the position relative to the parent.
+		const auto& childTransform = child->getComponent<TransformComponent>();
+		const auto& parentTransform = getComponent<TransformComponent>();
+
+		auto translation = childTransform.lock()->getTranslation() - parentTransform.lock()->getTranslation();
+		childTransform.lock()->setTranslation(translation);
+		//childTransform.lock()->setTransform(glm::translate(parentTransform.lock()->getGlobalTransform(), translation));
+	}
+
+	void Entity::removeChild(EntityId id)
+	{
+		for (std::vector<StrongEntityPtr>::iterator i = m_childs.begin(); i != m_childs.end(); i++) {
+			if ((*i)->getId() == id) {
+				m_childs.erase(i);
+				break;
+			}
+		}
+	}
+
+	//StrongEntityPtr getChildWithID(const EntityId id) {
+	//	for()
+	//}
 }

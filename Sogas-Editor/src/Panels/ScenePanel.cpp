@@ -26,6 +26,11 @@ namespace Sogas
 		setContext(scene);
 	}
 
+	/*
+	* @brief Pass a scene to be stored as the context of the panel.
+	* @param scene A const shared_ptr with the scene to be stored.
+	* @return void.
+	*/
 	void ScenePanel::setContext(const std::shared_ptr<Scene>& scene)
 	{
 		m_context = scene;
@@ -36,15 +41,31 @@ namespace Sogas
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 
 		EntityId entityToDestroy = 0;
-		for (auto &entity : m_context.get()->getEntities())
+		for (auto &entity : m_context.get()->getRootEntities())
 		{
 			EntityId id = drawEntityNode(entity);
 			
 			if(id != 0)
 				entityToDestroy = id;
+
+			if (ImGui::BeginDragDropSource()) {
+				EntityId entityDraggedID = entity->getId();
+				ImGui::SetDragDropPayload("ENTITY", &entityDraggedID, sizeof(EntityId));
+				ImGui::EndDragDropSource();
+			}
+			if (ImGui::BeginDragDropTarget()) {
+
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY"))
+				{
+					SGSASSERT(payload->DataSize == sizeof(EntityId));
+					EntityId childID = *(const EntityId*)payload->Data;
+					entity->addChild(m_context->findEntityById(childID));
+					m_context->removeEntity(childID);
+				}
+			}
 		}
 
 		if(entityToDestroy != 0)
@@ -82,6 +103,11 @@ namespace Sogas
 		ImGui::End();
 	}
 
+	/*
+	* @brief Set selected entity with the entity passed.
+	* @param entity A shared_ptr<Entity> with the entity to be selected.
+	* @return void.
+	*/
 	void ScenePanel::setSelectedEntity(StrongEntityPtr entity)
 	{
 		m_selectedEntity = entity;
@@ -89,10 +115,11 @@ namespace Sogas
 
 	EntityId ScenePanel::drawEntityNode(StrongEntityPtr entity)
 	{
-		ImGuiTreeNodeFlags flags = ((m_selectedEntity.lock() == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		ImGuiTreeNodeFlags flags = ((m_selectedEntity.lock() == entity) ? ImGuiTreeNodeFlags_Selected : 0);
+		flags |= entity->hasChild() ? ImGuiTreeNodeFlags_OpenOnArrow : ImGuiTreeNodeFlags_Leaf;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity->getId(), flags, entity->getName().c_str());
-		if(ImGui::IsItemClicked())
+		if (ImGui::IsItemClicked())
 		{
 			m_selectedEntity = entity;
 		}
@@ -102,29 +129,30 @@ namespace Sogas
 		{
 			if (ImGui::MenuItem("Delete Entity"))
 				entityDeleted = true;
+			if (ImGui::MenuItem("Create Child Entity")) {
+				m_context->createEntity("Child Empty Entity", entity->getId());
+			}
 
 			ImGui::EndPopup();
 		}
 
-		if(opened)
+		if (opened)
 		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, entity->getName().c_str());
-			if (opened)
-			{
-				//TODO List the components and nodes of every entity and allow their destruction if wanted
-				ImGui::TreePop();
+			for (const auto& child : entity->getChildList()) {
+				i32 entityID = drawEntityNode(child);
+				if (entityID != 0) {
+					m_context->destroyEntity(entityID);
+				}
 			}
 			ImGui::TreePop();
 		}
 
-		if(entityDeleted)
+		if (entityDeleted)
 		{
 			if (m_selectedEntity.lock() == entity)
 				m_selectedEntity = {};
 
 			return entity->getId();
-			//m_context->destroyEntity(entity); // TODO: delete all references
 		}
 
 		return 0;

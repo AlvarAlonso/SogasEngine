@@ -1386,6 +1386,7 @@ copy /Y $(SolutionDir)bin\$(Configuration)\$(ProjectName)\$(ProjectName).dll $(S
     <None Include="external\glm\glm\gtx\wrap.inl" />
     <None Include="shaders\basic.shader" />
     <None Include="shaders\environment.shader" />
+    <None Include="shaders\outline.shader" />
     <None Include="shaders\phong.shader" />
   </ItemGroup>
   <ItemGroup>
