@@ -68,7 +68,7 @@ namespace Sogas
 		m_children.push_back(child);
 		// TODO: extend parent radius
 
-		return false;
+		return true;
 	}
 
 	bool SceneNode::removeChild(NodeId id)

@@ -49,6 +49,7 @@ namespace Sogas
 		virtual const SceneNodeProperties* const getNodeProperties() const = 0;
 		virtual SceneNodeList getChildren() const = 0;
 		virtual void setTransform(glm::mat4 transform) = 0;
+		virtual void setRenderPass(MainRenderPass renderPass) = 0;
 		virtual bool hasChildren() = 0;
 
 		virtual void preRender(SceneGraph* pScene) = 0;
@@ -76,6 +77,7 @@ namespace Sogas
 		virtual const SceneNodeProperties* const getNodeProperties() const override { return &m_properties; };
 		virtual SceneNodeList getChildren() const { return m_children; };
 		virtual void setTransform(glm::mat4 transform) override;
+		virtual void setRenderPass(MainRenderPass renderPass) override { m_properties.renderPass = renderPass; };
 		virtual bool hasChildren() { return !m_children.empty(); };
 
 		virtual void preRender(SceneGraph* pScene) override;

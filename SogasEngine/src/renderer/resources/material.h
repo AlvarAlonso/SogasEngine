@@ -19,7 +19,7 @@ namespace Sogas
 		bool isTransparent{ false };
 
 		// material property factors
-		glm::vec4	color{ 1.0 };
+		glm::vec4	color{ 1.0 }; // color and alpha component
 		f32			roughnessFactor{ 0.0f };
 		f32			metallicFactor{ 0.0f };
 		f32			tillingFactor{ 1.0f };

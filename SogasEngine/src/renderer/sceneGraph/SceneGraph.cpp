@@ -88,6 +88,16 @@ namespace Sogas
 		return true;
 	}
 
+	void SceneGraph::addAlphaSceneNode(AlphaSceneNode node)
+	{
+		m_alphaNodes.push_back(node);
+	}
+
+	void SceneGraph::renderAlphaPass()
+	{
+		// TODO: render alpha pass
+	}
+
 	std::shared_ptr<SceneNode> SceneGraph::createTreeFromEntity(StrongEntityPtr entity)
 	{
 		// create the nodes of the entity
@@ -121,7 +131,7 @@ namespace Sogas
 
 	std::shared_ptr<SceneNode> SceneGraph::createNodesFromEntity(StrongEntityPtr entity)
 	{
-		// TODO: creater a wrapper or helper function for the ID that automatically increments it
+		// TODO: create a wrapper or helper function for the ID that automatically increments it
 		static u32 nodeId = (u32)MainRenderPass::LAST;
 
 		if(entity->has<LightComponent>() && entity->has<RenderComponent>())
