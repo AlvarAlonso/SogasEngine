@@ -1,6 +1,7 @@
 
 #include "sgspch.h"
 #include "scene.h"
+#include "renderer/sceneGraph/SceneGraph.h"
 #include "components/transformComponent.h"
 #include "components/renderComponent.h"
 #include "components/lightComponent.h"
@@ -14,6 +15,7 @@ namespace Sogas
 		m_pEntityFactory.reset();
 		m_pEntityFactory = std::make_unique<EntityFactory>();
 		m_pEnvironment = std::make_shared<Environment>();
+		m_sceneGraph = std::make_shared<SceneGraph>();
 	}
 
 	Scene::Scene(const char* filename)
@@ -160,6 +162,11 @@ namespace Sogas
 		}
 
 		return nullptr;
+	}
+
+	bool Scene::buildSceneGraph()
+	{
+		return m_sceneGraph->buildFromScene(shared_from_this());
 	}
 
 	/*

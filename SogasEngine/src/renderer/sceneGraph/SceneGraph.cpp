@@ -20,17 +20,23 @@ namespace Sogas
 
 	// Call it the first time the scene graph is generated
 	// The root node is supposed to be cleaned
-	void SceneGraph::buildFromScene(std::weak_ptr<Scene> pScene)
+	bool SceneGraph::buildFromScene(std::weak_ptr<Scene> pScene)
 	{
+		bool result;
+
 		std::vector<StrongEntityPtr>::iterator begin = pScene.lock()->m_rootEntities.begin();
 		std::vector<StrongEntityPtr>::iterator end = pScene.lock()->m_rootEntities.end();
 
 		for(std::vector<StrongEntityPtr>::iterator it = begin; it != end; it++)
 		{
-			// TODO: createTreeFromEntity, not only the current node
-			std::shared_ptr<SceneNode> node = createNodeFromEntity((*it));
-			m_root->addChild(node);
+			std::shared_ptr<SceneNode> node = createTreeFromEntity((*it));
+			result = m_root->addChild(node);
+
+			if (result == false)
+				return false; // TODO: clean all the nodes created
 		}
+
+		return true;
 	}
 
 	void SceneGraph::onRender()
@@ -81,7 +87,39 @@ namespace Sogas
 
 		return true;
 	}
-	std::shared_ptr<SceneNode> SceneGraph::createNodeFromEntity(StrongEntityPtr entity)
+
+	std::shared_ptr<SceneNode> SceneGraph::createTreeFromEntity(StrongEntityPtr entity)
+	{
+		// create the nodes of the entity
+		std::shared_ptr<SceneNode> entityTree = createNodesFromEntity(entity);
+
+		// find the pointer to the last node
+		
+		std::shared_ptr<ISceneNode> lastNode = entityTree;
+		while(lastNode->hasChildren())
+		{
+			//std::shared_ptr<ISceneNode> aux = lastNode->getChildren()[0];
+			lastNode = lastNode->getChildren()[0];
+		}
+		
+		// attach the nodes of its children
+		if(entity->hasChild())
+		{
+			std::vector<StrongEntityPtr> children = entity->getChildList();
+			std::vector<StrongEntityPtr>::iterator begin = children.begin();
+			std::vector<StrongEntityPtr>::iterator end = children.end();
+
+			for(std::vector<StrongEntityPtr>::iterator it = begin; it != end; it++)
+			{
+				std::shared_ptr<SceneNode> childEntityTree = createTreeFromEntity((*it));
+				lastNode->addChild(childEntityTree);
+			}
+		}
+
+		return entityTree;
+	}
+
+	std::shared_ptr<SceneNode> SceneGraph::createNodesFromEntity(StrongEntityPtr entity)
 	{
 		// TODO: creater a wrapper or helper function for the ID that automatically increments it
 		static u32 nodeId = (u32)MainRenderPass::LAST;
@@ -91,15 +129,15 @@ namespace Sogas
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, entity->getName(), light));
 			nodeId++;
 
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(nodeId, transform, material));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(nodeId, transform, entity->getName(), material));
 			nodeId++;
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(nodeId, transform, mesh));
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(nodeId, transform, entity->getName(), mesh));
 			nodeId++;
 
 			materialNode->addChild(geometryNode);
@@ -112,7 +150,7 @@ namespace Sogas
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, entity->getName(), light));
 			nodeId++;
 
 			return lightNode;
@@ -120,7 +158,7 @@ namespace Sogas
 		else
 		{
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
-			std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(nodeId, transform));
+			std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(nodeId, transform, entity->getName()));
 			nodeId++;
 
 			return emptyNode;

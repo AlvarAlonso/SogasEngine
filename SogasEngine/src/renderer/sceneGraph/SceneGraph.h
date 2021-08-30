@@ -20,7 +20,7 @@ namespace Sogas
 		SceneGraph();
 		~SceneGraph();
 
-		void buildFromScene(std::weak_ptr<Scene> pScene);
+		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
 		void onRender();
 		void onUpdate();
@@ -33,6 +33,7 @@ namespace Sogas
 		std::shared_ptr<CameraNode> getCamera() const { return m_currentCamera; }
 
 	private:
-		std::shared_ptr<SceneNode> createNodeFromEntity(StrongEntityPtr entity);
+		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
+		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);
 	};
 }

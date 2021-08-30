@@ -65,6 +65,8 @@ namespace Sogas
 
 		m_scenePanel.setContext(m_pScene);
 		LuaScriptAPI::LuaScriptContext::setContext(m_pScene);
+
+		m_pScene->buildSceneGraph();
 	}
 
 	void EditorLayer::onDetach()

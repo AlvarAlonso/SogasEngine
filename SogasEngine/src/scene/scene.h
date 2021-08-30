@@ -48,6 +48,8 @@ namespace Sogas
 
 		StrongEntityPtr findEntityById(EntityId entityId);
 
+		bool buildSceneGraph();
+
 		void to_json(json& j);
 		void from_json(const json& j);
 

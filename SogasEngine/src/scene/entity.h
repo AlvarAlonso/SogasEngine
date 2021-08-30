@@ -88,6 +88,7 @@ namespace Sogas
 			return false;
 		}
 		Entity* getParent() { return m_parent; }
+		//std::vector<StrongEntityPtr> getChildList() { return m_childs; }
 		const std::vector<StrongEntityPtr> getChildList() { return m_childs; }
 		StrongEntityPtr getChildWithID(const EntityId id);
 
