@@ -7,6 +7,11 @@ namespace Sogas
 {
 	const char* LightComponent::s_name = "LightComponent";
 
+	LightComponent::LightComponent()
+	{
+		m_light = std::make_shared<Light>();
+	}
+
 	bool LightComponent::init()
 	{
 		return true;

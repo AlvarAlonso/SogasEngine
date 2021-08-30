@@ -5,6 +5,8 @@
 
 namespace Sogas
 {
+	class Scene;
+
 	typedef std::map<NodeId, std::shared_ptr<ISceneNode>> SceneNodeMap;
 
 	class SceneGraph
@@ -18,6 +20,8 @@ namespace Sogas
 		SceneGraph();
 		~SceneGraph();
 
+		void buildFromScene(std::weak_ptr<Scene> pScene);
+
 		void onRender();
 		void onUpdate();
 
@@ -27,6 +31,8 @@ namespace Sogas
 
 		void setCamera(std::shared_ptr<CameraNode> camera) { m_currentCamera = camera; }
 		std::shared_ptr<CameraNode> getCamera() const { return m_currentCamera; }
+
+	private:
+		std::shared_ptr<SceneNode> createNodeFromEntity(StrongEntityPtr entity);
 	};
 }
-

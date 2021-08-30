@@ -111,6 +111,11 @@ namespace Sogas
 	{
 	}
 
+	void RootNode::resetNode()
+	{
+
+	}
+
 	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, std::weak_ptr<Camera> camera)
 		: SceneNode(nodeId, transform), m_camera(camera)
 	{

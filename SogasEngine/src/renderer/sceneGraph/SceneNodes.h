@@ -87,6 +87,7 @@ namespace Sogas
 		virtual bool addChild(std::shared_ptr<ISceneNode> child);
 		virtual void renderChildren(SceneGraph* pScene);
 		virtual bool isVisible() const { return true; }
+		void resetNode();
 	};
 
 	class CameraNode : public SceneNode
@@ -154,6 +155,7 @@ namespace Sogas
 	// and can occlude all its children with the isVisible parameter
 	class EmptyNode : public SceneNode
 	{
-
+	public:
+		EmptyNode(NodeId nodeId, glm::mat4 transform) : SceneNode(nodeId, transform) {};
 	};
 }

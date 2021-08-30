@@ -12,6 +12,7 @@ namespace Sogas
 	using json = nlohmann::json;
 
 	class Environment;
+	class SceneGraph;
 
 	class SGS Scene : public std::enable_shared_from_this<Scene>
 	{
@@ -24,6 +25,11 @@ namespace Sogas
 		std::unique_ptr<EntityFactory>	m_pEntityFactory;
 		std::shared_ptr<Environment>	m_pEnvironment;
 		StrongEntityPtr					m_selectedEntity;
+
+		std::shared_ptr<SceneGraph>		m_sceneGraph;
+
+		friend class SceneGraph;
+
 	public:
 		Scene();
 		Scene(const char* filename);

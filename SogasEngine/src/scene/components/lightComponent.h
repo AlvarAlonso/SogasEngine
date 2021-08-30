@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entityComponent.h"
+#include "renderer/resources/light.h"
 #include "glm/glm.hpp"
 
 namespace Sogas
@@ -11,7 +12,7 @@ namespace Sogas
 
 		static const char* s_name;
 
-		LightComponent() = default;
+		LightComponent();
 		~LightComponent() = default;
 
 		virtual bool init() override;
@@ -21,16 +22,14 @@ namespace Sogas
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
 		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
 
-		inline glm::vec3& getColor() { return m_color; }
-		inline f32& getMaxDistance() { return m_maxDistance; }
-		inline f32& getIntensity() { return m_intensity; }
+		std::weak_ptr<Light> getLight() const { return m_light; }
+		inline glm::vec3& getColor() { return m_light->m_color; }
+		inline f32& getMaxDistance() { return m_light->m_maxDistance; }
+		inline f32& getIntensity() { return m_light->m_intensity; }
 
-		void setColor(const glm::vec3 color) { m_color = color; }
+		void setColor(const glm::vec3 color) { m_light->m_color = color; }
 
 	private:
-		// TODO: refactor, it should have a light class
-		glm::vec3 m_color{ 1 };
-		f32 m_maxDistance{ 100 };
-		f32 m_intensity{ 1 };
+		std::shared_ptr<Light> m_light;
 	};
 }
