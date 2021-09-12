@@ -14,22 +14,25 @@ namespace Sogas
 		EntityScriptComponent() = default;
 		~EntityScriptComponent() = default;
 
-		virtual bool init() override;
-		virtual void postInit(void) override;
+		virtual bool		init() override;
+		virtual void		postInit(void) override;
 		virtual const char* getName() const override { return s_name; }
-		virtual void to_json(json& j) override;
-		virtual void from_json(const json& j) override;
-		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
-		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
+		virtual void		to_json(json& j) override;
+		virtual void		from_json(const json& j) override;
 
-		virtual void update(f32 dt) override { if(m_entityScript) m_entityScript->update(dt); }
+		virtual LuaPlus::LuaObject	toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
+		virtual void				fromLuaObject(LuaPlus::LuaObject) override {};
+
+		virtual void update(f32 dt) override { if(hasEntityScript()) m_entityScript->update(dt); }
 
 		ScriptVariablesMap getEntityScriptVariables() const { SGSASSERT(m_entityScript); return m_entityScript->getScriptVariables(); }
+		bool hasEntityScript(void) { return m_entityScript ? true : false; }
 
 		// TODO: find another way to initialize the script, for example, just passing the name of the class and the engine itself
 		// creates an instance of the script. The only one dealing with the script should be the component, and it should not
 		// include interface functions who deal with the entityScript.
 		void setEntityScript(EntityScript* entityScript) { m_entityScript = entityScript; }
+		void setEntityScript(const char* filename);// { m_entityScript->createFromScript(filename); }
 
 	private:
 		bool m_started = false;

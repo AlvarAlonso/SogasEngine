@@ -353,36 +353,57 @@ namespace Sogas
 		drawComponent<EntityScriptComponent>("Script", entity.lock(), [](auto& component)
 			{
 				ImGui::Text("Using an entity script");
-				
-				ScriptVariablesMap scriptVariables = component.lock()->getEntityScriptVariables();
 
-				for (auto it = scriptVariables.begin(); it != scriptVariables.end(); it++)
+				ImGui::Columns(3);
+				ImGui::Text("Script");
+				ImGui::NextColumn();
+				ImGui::Text(component.lock()->hasEntityScript() ? component.lock()->getName() : "Null");
+				ImGui::NextColumn();
+				ImGui::PushID("ScriptButton");
+				if (ImGui::Button("..."))
 				{
-					if (it->second.type == VariableType::INTEGER)
+					std::string scriptPath = FileDialog::openFile("Scripts (*.lua)\0*.lua\0");
+					std::string scriptName = takeNameFromPath(scriptPath);
+					if (!scriptName.empty())
+						component.lock()->setEntityScript(scriptName.c_str());
+				}
+				ImGui::EndColumns();
+				ImGui::PopID();
+
+				if (component.lock()->hasEntityScript())
+				{
+					
+					ScriptVariablesMap scriptVariables = component.lock()->getEntityScriptVariables();
+
+					for (auto it = scriptVariables.begin(); it != scriptVariables.end(); it++)
 					{
-						i32 value = it->second.getInteger();
-						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
-						ImGui::Text(text.c_str());
-					}
-					else if (it->second.type == VariableType::FLOAT)
-					{
-						f32 value = it->second.getFloat();
-						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
-						ImGui::Text(text.c_str());
-					}
-					else if (it->second.type == VariableType::STRING)
-					{
-						std::string value = it->second.getString();
-						std::string text = std::string(it->first.c_str()).append(": ").append(value);
-						ImGui::Text(text.c_str());
-					}
-					else if (it->second.type == VariableType::BOOLEAN)
-					{
-						bool value = it->second.getBoolean();
-						std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
-						ImGui::Text(text.c_str());
+						if (it->second.type == VariableType::INTEGER)
+						{
+							i32 value = it->second.getInteger();
+							std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+							ImGui::Text(text.c_str());
+						}
+						else if (it->second.type == VariableType::FLOAT)
+						{
+							f32 value = it->second.getFloat();
+							std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+							ImGui::Text(text.c_str());
+						}
+						else if (it->second.type == VariableType::STRING)
+						{
+							std::string value = it->second.getString();
+							std::string text = std::string(it->first.c_str()).append(": ").append(value);
+							ImGui::Text(text.c_str());
+						}
+						else if (it->second.type == VariableType::BOOLEAN)
+						{
+							bool value = it->second.getBoolean();
+							std::string text = std::string(it->first.c_str()).append(": ").append(std::to_string(value));
+							ImGui::Text(text.c_str());
+						}
 					}
 				}
+				
 			});
 
 		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)

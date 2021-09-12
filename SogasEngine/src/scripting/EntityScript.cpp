@@ -30,11 +30,11 @@ namespace Sogas
 
 	void EntityScript::createFromScript(const std::string& scriptClassName)
 	{
-		m_filepath = scriptClassName;
-		m_filepath.append(".lua");
+		m_filepath				= scriptClassName;
+		std::string className	= scriptClassName.substr(0, scriptClassName.length() - 4);
 
-		LuaPlus::LuaObject luaGlobals = LuaStateManager::GET()->getGlobals();
-		LuaPlus::LuaObject scriptClass = luaGlobals.GetByName(scriptClassName.c_str());
+		LuaPlus::LuaObject luaGlobals	= LuaStateManager::GET()->getGlobals();
+		LuaPlus::LuaObject scriptClass	= luaGlobals.GetByName(className.c_str());
 
 		if (!scriptClass.IsTable())
 			SGSERROR("A Lua script must be a table!");
