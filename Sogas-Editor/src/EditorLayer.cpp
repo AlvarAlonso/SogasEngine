@@ -42,6 +42,10 @@ namespace Sogas
 
 	void EditorLayer::onAttach()
 	{
+		// Load Icon textures
+		m_IconPlay = Texture2D::GET("resources/play-icon.png");
+		m_IconStop = Texture2D::GET("resources/stop-icon.png");
+
 		Sogas::FramebufferSpecs specs;
 		specs.attachments = { FramebufferTextureFormat::R8G8B8A8_FLOAT, FramebufferTextureFormat::R32_INT, FramebufferTextureFormat::D24S8_FLOAT };
 		specs.width = 1280; // Application::getInstance()->getWindow().getWidth();
@@ -344,6 +348,41 @@ namespace Sogas
 		ImGui::End();
 		ImGui::PopStyleVar();
 
+		UI_Playbar();
+
+		ImGui::End();
+	}
+
+	/*
+	* @brief The top bar on the editor which contains the play and stop buttons. Those buttons have the goal to 
+	* start and stop the game execution.
+	* @param void
+	* @return void
+	*/
+	void EditorLayer::UI_Playbar(void)
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.3f, 0.3, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
+
+		ImGui::Begin("##playbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		f32 size = ImGui::GetWindowHeight() - 4.0f;
+
+		std::shared_ptr<Texture2D> icon = m_sceneState == eSceneState::Edit ? m_IconPlay : m_IconStop;
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if (ImGui::ImageButton((ImTextureID)icon->getID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		{
+			if (m_sceneState == eSceneState::Edit)
+				onPlay();
+			else if (m_sceneState == eSceneState::Play)
+				onStop();
+		}
+
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
 		ImGui::End();
 	}
 
@@ -501,5 +540,35 @@ namespace Sogas
 			serializer.serialize(m_savePath);
 			SGSINFO("Save scene function");
 		}
+	}
+
+	/*
+	* @brief Change the state to play, since the game should start running when button PLAY is pressed.
+	* @param void
+	* @return void
+	*/
+	void EditorLayer::onPlay()
+	{
+		m_sceneState = eSceneState::Play;
+	}
+
+	/*
+	* @brief Change the state back to Edit. Game should stop running.
+	* @param void
+	* @return void
+	*/
+	void EditorLayer::onStop()
+	{
+		m_sceneState = eSceneState::Edit;
+	}
+
+	/*
+	* @brief Pause the game.
+	* @param void
+	* @return void
+	*/
+	void EditorLayer::onPause()
+	{
+		m_sceneState = eSceneState::Pause;
 	}
 }

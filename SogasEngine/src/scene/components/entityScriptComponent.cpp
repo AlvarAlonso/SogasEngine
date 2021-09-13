@@ -32,6 +32,12 @@ namespace Sogas
 		// TODO
 	}
 
+	/*
+	* @brief Receive the filename path. Creates an Entity Script if it does not exist and init it from
+	* the file being passed.
+	* @param const char* filename
+	* @return void
+	*/
 	void EntityScriptComponent::setEntityScript(const char* filename)
 	{
 		if (!m_entityScript)

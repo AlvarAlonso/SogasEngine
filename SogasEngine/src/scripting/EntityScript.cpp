@@ -28,10 +28,10 @@ namespace Sogas
 		registerScriptFunctions();
 	}
 
-	void EntityScript::createFromScript(const std::string& scriptClassName)
+	void EntityScript::createFromScript(const std::string& scriptFileName)
 	{
-		m_filepath				= scriptClassName;
-		std::string className	= scriptClassName.substr(0, scriptClassName.length() - 4);
+		m_filepath				= scriptFileName;
+		std::string className	= scriptFileName.substr(0, scriptFileName.length() - 4);	// Class name should be the same as the script.
 
 		LuaPlus::LuaObject luaGlobals	= LuaStateManager::GET()->getGlobals();
 		LuaPlus::LuaObject scriptClass	= luaGlobals.GetByName(className.c_str());
@@ -89,8 +89,6 @@ namespace Sogas
 			z = m_self.GetByName("transform").GetByName("z").GetFloat();
 
 		SGSINFO("ID [%i] transform: x: %f, y: %f, z: %f", m_id, x, y, z);
-
-
 
 		LuaPlus::LuaObject frameDeltaTime;
 		frameDeltaTime.AssignNumber(LuaStateManager::GET()->getLuaState(), dt);
