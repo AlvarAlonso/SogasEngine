@@ -37,7 +37,7 @@ namespace Sogas
 
 		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
-		void onRender();
+		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
 		void onUpdate();
 
 		std::shared_ptr<ISceneNode> findNode(NodeId id);
@@ -51,6 +51,8 @@ namespace Sogas
 	private:
 
 		void renderAlphaPass();
+
+		NodeId getNextNodeID();
 
 		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
 		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);

@@ -98,9 +98,11 @@ namespace Sogas
 		// TODO: Should grid be directly implemented by editor layer?
 
 		m_framebuffer->bind();
+		m_framebuffer->clearAttachment(1, -1); // [CHANGE] this used to be after beginScene
 
+		m_pScene->onRender(m_pCamera);
+		/*
 		Renderer::get()->beginScene(m_pScene, m_pCamera);
-		m_framebuffer->clearAttachment(1, -1);
 		Renderer::get()->draw();
 		if (!m_pGrid)
 		{
@@ -109,6 +111,8 @@ namespace Sogas
 		}
 		Renderer::get()->renderGrid(m_pGrid);
 		Renderer::get()->endScene();
+		*/
+		
 
 		// TODO: Mouse picking
 

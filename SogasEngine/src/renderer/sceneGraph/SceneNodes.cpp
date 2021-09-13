@@ -2,6 +2,7 @@
 #include "SceneNodes.h"
 
 #include "core/camera.h"
+#include "renderer/renderer.h"
 #include "renderer/resources/light.h"
 #include "renderer/resources/material.h"
 #include "renderer/resources/mesh.h"
@@ -36,7 +37,7 @@ namespace Sogas
 	bool SceneNode::isVisible(SceneGraph* pScene) const
 	{
 		// TODO: check if current node is inside the camera's frustum
-		return false;
+		return true;
 	}
 
 	void SceneNode::render(SceneGraph* pScene)
@@ -120,7 +121,7 @@ namespace Sogas
 
 	void RootNode::resetNode()
 	{
-
+		// TODO: clean up the root node
 	}
 
 	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera)
@@ -178,6 +179,7 @@ namespace Sogas
 	void MaterialNode::preRender(SceneGraph* pScene)
 	{
 		// TODO: set material stuff (uniforms and shaders)
+		// call renderer functions to set material
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh)
@@ -191,6 +193,7 @@ namespace Sogas
 		// by a previous material node
 
 		// TODO: render indexed
+		// call renderer::submit with the mesh, the material used will be the set by a previous material node
 	}
 
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment)

@@ -145,6 +145,14 @@ namespace Sogas
 
 	}
 
+	void Scene::onRender(std::shared_ptr<Camera> pCamera)
+	{
+		std::shared_ptr<Scene> pScene = shared_from_this();
+
+		// render scene
+		m_sceneGraph->onRender(pScene, pCamera);
+	}
+
 	/*
 	* @brief Search for the entity with the correspondant id and returns it
 	* @param EntityId
@@ -167,6 +175,11 @@ namespace Sogas
 	bool Scene::buildSceneGraph()
 	{
 		return m_sceneGraph->buildFromScene(shared_from_this());
+	}
+
+	void Scene::setCamera(std::shared_ptr<Camera> pCamera)
+	{
+		m_pMainCamera = pCamera;
 	}
 
 	/*

@@ -36,17 +36,23 @@ namespace Sogas
 				return false; // TODO: clean all the nodes created
 		}
 
+		m_currentCamera = std::make_shared<CameraNode>(getNextNodeID(), glm::mat4(1), "main camera", pScene.lock()->m_pMainCamera);
+
 		return true;
 	}
 
-	void SceneGraph::onRender()
+	void SceneGraph::onRender(std::shared_ptr<Scene> &pScene, std::shared_ptr<Camera> &pCamera)
 	{
+		Renderer::get()->beginScene(pScene, pCamera);
+
 		if(m_root && m_currentCamera)
 		{
 			m_root->render(this);
 			m_root->renderChildren(this);
 			m_root->postRender(this);
 		}
+
+		Renderer::get()->endScene();
 	}
 
 	void SceneGraph::onUpdate()
@@ -98,6 +104,16 @@ namespace Sogas
 		// TODO: render alpha pass
 	}
 
+	NodeId SceneGraph::getNextNodeID()
+	{
+		static u32 nodeId = (u32)MainRenderPass::LAST;
+
+		u32 nextID = nodeId;
+		nodeId++;
+
+		return nextID;
+	}
+
 	std::shared_ptr<SceneNode> SceneGraph::createTreeFromEntity(StrongEntityPtr entity)
 	{
 		// create the nodes of the entity
@@ -131,24 +147,18 @@ namespace Sogas
 
 	std::shared_ptr<SceneNode> SceneGraph::createNodesFromEntity(StrongEntityPtr entity)
 	{
-		// TODO: create a wrapper or helper function for the ID that automatically increments it
-		static u32 nodeId = (u32)MainRenderPass::LAST;
-
 		if(entity->has<LightComponent>() && entity->has<RenderComponent>())
 		{
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, entity->getName(), light));
-			nodeId++;
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName(), light));
 
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(nodeId, transform, entity->getName(), material));
-			nodeId++;
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName(), material));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(nodeId, transform, entity->getName(), mesh));
-			nodeId++;
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName(), mesh));
 
 			materialNode->addChild(geometryNode);
 			lightNode->addChild(materialNode);
@@ -160,16 +170,14 @@ namespace Sogas
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(nodeId, transform, entity->getName(), light));
-			nodeId++;
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName(), light));
 
 			return lightNode;
 		}
 		else
 		{
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
-			std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(nodeId, transform, entity->getName()));
-			nodeId++;
+			std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(getNextNodeID(), transform, entity->getName()));
 
 			return emptyNode;
 		}			

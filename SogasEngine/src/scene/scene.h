@@ -13,6 +13,7 @@ namespace Sogas
 
 	class Environment;
 	class SceneGraph;
+	class Camera;
 
 	class SGS Scene : public std::enable_shared_from_this<Scene>
 	{
@@ -28,6 +29,8 @@ namespace Sogas
 
 		std::shared_ptr<SceneGraph>		m_sceneGraph;
 
+		std::shared_ptr<Camera>			m_pMainCamera; // [TEMPORAL]: SceneGraph should create cameraNode from a CameraComponent
+
 		friend class SceneGraph;
 
 	public:
@@ -39,6 +42,7 @@ namespace Sogas
 		void			destroyEntity(EntityId entityId);
 		void			removeEntity(EntityId entityId);
 		void			onUpdate(f32 dt);
+		void			onRender(std::shared_ptr<Camera> pCamera);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		const std::vector<StrongEntityPtr>& getRootEntities() { return m_rootEntities; }
@@ -49,6 +53,7 @@ namespace Sogas
 		StrongEntityPtr findEntityById(EntityId entityId);
 
 		bool buildSceneGraph();
+		void setCamera(std::shared_ptr<Camera> pCamera); // TODO: [Temporal]: This should change when the camera is created from a CameraComponent
 
 		void to_json(json& j);
 		void from_json(const json& j);
