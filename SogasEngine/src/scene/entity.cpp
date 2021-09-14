@@ -59,7 +59,7 @@ namespace Sogas
 
 	void Entity::to_json(json& j)
 	{
-		json transform, render, light;
+		json transform, render, light, camera;
 		getComponent<TransformComponent>().lock()->to_json(transform);
 
 		if (has<RenderComponent>())
@@ -68,10 +68,14 @@ namespace Sogas
 		if (has<LightComponent>())
 			getComponent<LightComponent>().lock()->to_json(light);
 
+		if (has<CameraComponent>())
+			getComponent<CameraComponent>().lock()->to_json(camera);
+
 		j["Name"] = !getName().empty() ? getName() : "Entity";
-		j[TransformComponent::s_name] = transform;
-		j[RenderComponent::s_name] = render;
-		j[LightComponent::s_name] = light;
+		j[TransformComponent::s_name]	= transform;
+		j[RenderComponent::s_name]		= render;
+		j[LightComponent::s_name]		= light;
+		j[CameraComponent::s_name]		= camera;
 	}
 
 	void Entity::from_json(const json& jsonEntity)
@@ -109,6 +113,15 @@ namespace Sogas
 		{
 			auto jsonLight = jsonEntity[LightComponent::s_name];
 			makeStrongPtr(getComponent<LightComponent>())->from_json(jsonLight);
+		}
+
+		// -----------------------
+		// Check if entity contains Camera Component
+		// -----------------------
+		if (jsonEntity.contains(CameraComponent::s_name) && !jsonEntity[CameraComponent::s_name].is_null())
+		{
+			auto jsonCamera = jsonEntity[CameraComponent::s_name];
+			makeStrongPtr(getComponent<CameraComponent>())->from_json(jsonCamera);
 		}
 	}
 

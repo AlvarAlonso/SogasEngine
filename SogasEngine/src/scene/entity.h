@@ -68,6 +68,7 @@ namespace Sogas
 		std::string getName() const { return m_name; }
 		EntityId	getId() const { return m_id; }
 		std::string getType() const { return m_type; }
+		std::weak_ptr<Scene> getScene() { return m_pScene; }
 		void		setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
 		bool		isSelected();
 

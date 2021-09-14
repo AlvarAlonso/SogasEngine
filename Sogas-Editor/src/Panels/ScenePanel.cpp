@@ -322,6 +322,18 @@ namespace Sogas
 				ImGui::CloseCurrentPopup();
 			}
 
+			if (ImGui::MenuItem("Camera"))
+			{
+				if (!m_selectedEntity.lock()->has<CameraComponent>())
+				{
+					m_context->addComponent<CameraComponent>(pEntity);
+				}
+				else {
+					SGSWARN("This entity already has a camera component!");
+				}
+				ImGui::CloseCurrentPopup();
+			}
+
 			ImGui::EndPopup();
 		}
 
@@ -340,6 +352,58 @@ namespace Sogas
 		drawComponent<CameraComponent>("Camera", entity.lock(), [](auto& component)
 			{
 				ImGui::Text(CameraComponent::s_name);
+				const auto& type = component.lock()->getType();
+				std::weak_ptr<CameraComponent> cameraComponent = component.lock();
+
+				bool isPrimary = component.lock()->isPrimary();
+				ImGui::Checkbox("Primary", &isPrimary);
+				component.lock()->setPrimary(isPrimary);
+
+				const char* cameraTypeString[] = { "Perspective", "Orthographic" };
+				const char* currentCameraTypeString = cameraTypeString[(i32)component.lock()->getType()];
+
+				if (ImGui::BeginCombo("Type", currentCameraTypeString))
+				{
+					for (i32 i = 0; i < 2; ++i)
+					{
+						bool isSelected = currentCameraTypeString == cameraTypeString[i];
+						if (ImGui::Selectable(cameraTypeString[i], isSelected))
+						{
+							currentCameraTypeString = cameraTypeString[i];
+							component.lock()->setType((CameraComponent::eProjectionType)i);
+						}
+
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				if (component.lock()->getType() == CameraComponent::eProjectionType::Perspective)
+				{
+					f32 fov = glm::degrees(component.lock()->getPerspectiveFOV());
+					f32 near = component.lock()->getPerspectiveNear();
+					f32 far = component.lock()->getPerspectiveFar();
+
+					ImGui::SliderFloat("FOV", &fov, 0.0f, 89.9f);
+					ImGui::SliderFloat("Near", &near, 0.01f, 1000.0f);
+					ImGui::SliderFloat("Far", &far, 0.01f, 1000.0f);
+
+					cameraComponent.lock()->setPerspective(glm::radians(fov), near, far);
+				}
+
+				if (component.lock()->getType() == CameraComponent::eProjectionType::Orthographic)
+				{
+					f32 size = component.lock()->getOrthographicSize();
+					f32 near = component.lock()->getOrthographicNear();
+					f32 far = component.lock()->getOrthographicFar();
+
+					ImGui::SliderFloat("Size", &cameraComponent.lock()->getOrthographicSize(), 0.0f, 10.0f);
+					ImGui::SliderFloat("Near", &near, 0.01f, 1000.0f);
+					ImGui::SliderFloat("Far", &far, 0.01f, 1000.0f);
+
+					cameraComponent.lock()->setOrtographic(size, near, far);
+				}
 			});
 
 		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)

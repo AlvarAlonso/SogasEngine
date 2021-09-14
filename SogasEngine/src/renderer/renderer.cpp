@@ -31,7 +31,7 @@ namespace Sogas
 		return s_RendererAPI->init();
 	}
 
-	void Renderer::beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
+	void Renderer::beginEditorScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
 	{
 		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 		RenderCommand::clear();
@@ -44,6 +44,41 @@ namespace Sogas
 		s_pScene							= scene;
 		s_sceneData->viewprojectionMatrix	= pCamera->getViewProjection();
 		s_sceneData->cameraPosition			= pCamera->getPosition();
+	}
+
+	/*
+	* @brief Render the ingame scene. Search for the main camera component and render it from its view.
+	* @param shared_ptr<Scene>& scene
+	* @return void
+	*/
+	void Renderer::beginRuntimeScene(std::shared_ptr<Scene>& scene)
+	{
+		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
+		RenderCommand::clear();
+		RenderCommand::setDepthFunc(DepthTypes::LEQUAL);
+		RenderCommand::enableDepthBuffer(true);
+
+		RenderCommand::setBlendFunc(BlendTypes::ZERO, BlendTypes::ZERO);
+		RenderCommand::enableBlend(true);
+
+		s_pScene = scene;
+
+		glm::mat4 view, projection;
+		glm::vec3 cameraPosition = glm::vec3(0.0f);
+		for (const auto& ent : scene->getEntities()) {
+			if (ent->has<CameraComponent>()) {
+				if (ent->getComponent<CameraComponent>().lock()->isPrimary()) 
+				{
+					projection		= ent->getComponent<CameraComponent>().lock()->getProjection();
+					view			= ent->getComponent<TransformComponent>().lock()->getGlobalTransform();
+					cameraPosition	= ent->getComponent<TransformComponent>().lock()->getTranslation();
+					break;
+				}
+			}
+		}
+
+		s_sceneData->viewprojectionMatrix	= projection * view;
+		s_sceneData->cameraPosition			= cameraPosition;
 	}
 
 	void Renderer::draw()

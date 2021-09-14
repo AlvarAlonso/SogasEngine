@@ -17,6 +17,7 @@ namespace Sogas
 	{
 	public:
 		bool m_renderEnvironment{ true };
+		u32 m_viewportWidth = 0, m_viewportHeight = 0;
 
 	private:
 		std::vector<StrongEntityPtr>	m_entities;
@@ -32,14 +33,17 @@ namespace Sogas
 		StrongEntityPtr createEntity(const std::string& name = std::string(), const EntityId parentId = 0);
 		void			destroyEntity(EntityId entityId);
 		void			removeEntity(EntityId entityId);
+
 		void			onEditorUpdate(f32 dt);
 		void			onRuntimeUpdate(f32 dt);
+		void			onViewportResize(u32 width, u32 height);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		const std::vector<StrongEntityPtr>& getRootEntities() { return m_rootEntities; }
 		std::weak_ptr<Environment>			getEnvironment() { return m_pEnvironment; }
 		void								setSelectedEntity(StrongEntityPtr entity) { m_selectedEntity = entity; }
 		StrongEntityPtr						getSelectedEntity(void) { return m_selectedEntity ? m_selectedEntity : nullptr; }
+
 
 		StrongEntityPtr findEntityById(EntityId entityId);
 
@@ -63,8 +67,8 @@ namespace Sogas
 			// TODO: name from type may not be the same as stored in static s_name
 			// Should find a more robust way to create a specific component type
 			StrongEntityComponentPtr pComponent = m_pEntityFactory->createComponent(T::s_name);
+
 			entity->addComponent(pComponent);
-			//pComponent->setOwner(entity);
 		}
 
 		/*

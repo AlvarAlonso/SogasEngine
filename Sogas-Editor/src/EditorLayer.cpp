@@ -86,9 +86,11 @@ namespace Sogas
 		{
 			m_framebuffer->resize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 			m_cameraController->setViewportSize(m_viewportSize.x, m_viewportSize.y);
+			m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 		}
 
+		m_framebuffer->bind();
 
 		// TODO: implement onUpdate func
 		switch (m_sceneState)
@@ -100,29 +102,37 @@ namespace Sogas
 				m_cameraController->onUpdate(dt);
 			}
 			m_pScene->onEditorUpdate(dt);
+
+			// Editor render
+
+			Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
+			m_framebuffer->clearAttachment(1, -1);
+			Renderer::get()->draw();
+			if (!m_pGrid)
+			{
+				m_pGrid = std::make_shared<Mesh>();
+				m_pGrid->createGrid();
+			}
+			Renderer::get()->renderGrid(m_pGrid);
+			Renderer::get()->endScene();
+
 			break;
 		}
 		case Sogas::EditorLayer::eSceneState::Play:
+		{
 			m_pScene->onRuntimeUpdate(dt);
+
+			Renderer::get()->beginRuntimeScene(m_pScene);
+			m_framebuffer->clearAttachment(1, -1);
+			Renderer::get()->draw();
+			Renderer::get()->endScene();
 			break;
+		}
 		case Sogas::EditorLayer::eSceneState::Pause:
 			break;
 		default:
 			break;
 		}
-
-		m_framebuffer->bind();
-
-		Renderer::get()->beginScene(m_pScene, m_pCamera);
-		m_framebuffer->clearAttachment(1, -1);
-		Renderer::get()->draw();
-		if (!m_pGrid)
-		{
-			m_pGrid = std::make_shared<Mesh>();
-			m_pGrid->createGrid();
-		}
-		Renderer::get()->renderGrid(m_pGrid);
-		Renderer::get()->endScene();
 
 		// TODO: Mouse picking
 
@@ -494,6 +504,7 @@ namespace Sogas
 	void Sogas::EditorLayer::newScene()
 	{
 		m_pScene = std::make_shared<Scene>();
+		m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 		m_scenePanel.setContext(m_pScene);
 	}
 
@@ -509,6 +520,7 @@ namespace Sogas
 		if (!filepath.empty())
 		{
 			m_pScene = std::make_shared<Scene>();
+			m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 			m_scenePanel.setContext(m_pScene);
 			
 			Serializer serializer(m_pScene);

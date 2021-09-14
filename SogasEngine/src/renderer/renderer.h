@@ -40,7 +40,8 @@ namespace Sogas
 
 
 		bool init(); // TODO pass necessary information to init renderer module.
-		void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
+		void beginEditorScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
+		void beginRuntimeScene(std::shared_ptr<Scene>& scene);
 		void draw();
 		void endScene();
 		void shutdown();

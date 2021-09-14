@@ -153,6 +153,21 @@ namespace Sogas
 		}
 	}
 
+	void Scene::onViewportResize(u32 width, u32 height)
+	{
+		m_viewportWidth = width;
+		m_viewportHeight = height;
+
+		for (const auto& entity : m_entities) {
+
+			if (entity->has<CameraComponent>())
+			{
+				std::weak_ptr<CameraComponent> cameraComponent = entity->getComponent<CameraComponent>();
+				cameraComponent.lock()->setViewportSize(width, height);
+			}
+		}
+	}
+
 	/*
 	* @brief Search for the entity with the correspondant id and returns it
 	* @param EntityId
@@ -215,6 +230,9 @@ namespace Sogas
 
 					if (jsonEntity.contains(LightComponent::s_name) && !jsonEntity[LightComponent::s_name].is_null())
 						addComponent<LightComponent>(entity);
+
+					if (jsonEntity.contains(CameraComponent::s_name) && !jsonEntity[CameraComponent::s_name].is_null())
+						addComponent<CameraComponent>(entity);
 
 					entity->from_json(jsonEntity);
 
