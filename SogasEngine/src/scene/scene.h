@@ -32,7 +32,8 @@ namespace Sogas
 		StrongEntityPtr createEntity(const std::string& name = std::string(), const EntityId parentId = 0);
 		void			destroyEntity(EntityId entityId);
 		void			removeEntity(EntityId entityId);
-		void			onUpdate(f32 dt);
+		void			onEditorUpdate(f32 dt);
+		void			onRuntimeUpdate(f32 dt);
 
 		const std::vector<StrongEntityPtr>& getEntities() { return m_entities; };
 		const std::vector<StrongEntityPtr>& getRootEntities() { return m_rootEntities; }

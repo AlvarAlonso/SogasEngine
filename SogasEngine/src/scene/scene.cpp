@@ -125,7 +125,22 @@ namespace Sogas
 
 	// TODO: scene onUpdate should update and submit commands to the renderer, thus the renderer needs to have access to the shader
 	// and textures to bind them when updating/rendering
-	void Scene::onUpdate(f32 dt)
+	/*
+	* @brief Editor update. From this update we can modify the scene without being in an ingame state.
+	* @param f32 dt, delta time.
+	* @return void.
+	*/
+	void Scene::onEditorUpdate(f32 dt)
+	{
+	}
+
+	/*
+	* @brief Actual in game update. This updates the scene from the viewport of the ingame camera and
+	* also runs the scripts.
+	* @param f32 dt, the delta time of the application.
+	* @return void
+	*/
+	void Scene::onRuntimeUpdate(f32 dt)
 	{
 		for(auto& entity : m_entities)
 		{
@@ -136,11 +151,6 @@ namespace Sogas
 				scriptComponent.lock()->update(dt);
 			}
 		}
-		//for (auto& entity : m_entities)
-		//{
-		//	auto tComponent = entity->getComponent<TransformComponent>(TransformComponent::s_name);
-		//}
-
 	}
 
 	/*

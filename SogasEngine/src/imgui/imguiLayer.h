@@ -24,6 +24,9 @@ namespace Sogas
 
 		void begin();
 		void end();
+	
+	private:
+		void setDarkTheme();
 
 	private:
 		bool m_blockEvents;

@@ -89,15 +89,27 @@ namespace Sogas
 			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 		}
 
-		if (m_viewportFocused)
-		{
-			m_cameraController->onUpdate(dt);
-		}
 
 		// TODO: implement onUpdate func
-		m_pScene->onUpdate(dt);
-
-		// TODO: Should grid be directly implemented by editor layer?
+		switch (m_sceneState)
+		{
+		case Sogas::EditorLayer::eSceneState::Edit:
+		{
+			if (m_viewportFocused)
+			{
+				m_cameraController->onUpdate(dt);
+			}
+			m_pScene->onEditorUpdate(dt);
+			break;
+		}
+		case Sogas::EditorLayer::eSceneState::Play:
+			m_pScene->onRuntimeUpdate(dt);
+			break;
+		case Sogas::EditorLayer::eSceneState::Pause:
+			break;
+		default:
+			break;
+		}
 
 		m_framebuffer->bind();
 
