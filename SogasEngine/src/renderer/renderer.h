@@ -18,6 +18,7 @@ namespace Sogas
 	class RenderComponent;
 	class Mesh;
 	class Environment;
+	class Material;
 
 	class SGS Renderer
 	{
@@ -51,7 +52,12 @@ namespace Sogas
 		// TODO these should be a command ???
 	private:
 		Renderer() = default; // TODO make user able to chose rendering API.
-		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);
+		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform); // TODO: to be deleted
+
+		// different submits for different kinds of render primitives (materials, geometry, lights, etc...)
+		void submit(const std::shared_ptr<Material>& material, const glm::mat4& transform, const EntityId entityId); // TODO: transform and entityID should be set somewhere else
+		void submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive);
+
 		void renderEnvironment(std::weak_ptr<Environment> environment);
 
 	private:

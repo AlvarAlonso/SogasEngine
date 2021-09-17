@@ -26,6 +26,11 @@ namespace Sogas
 	bool Renderer::environment = true;
 	Renderer* Renderer::m_handle = nullptr;
 
+	struct RenderStateInfo
+	{
+		std::weak_ptr<Shader> currentShader;
+	} renderStateInfo;
+
 	bool Renderer::init()
 	{
 		return s_RendererAPI->init();
@@ -153,6 +158,74 @@ namespace Sogas
 					RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
 				else
 					RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+			}
+		}
+	}
+
+	void Renderer::submit(const std::shared_ptr<Material>& material, const glm::mat4& transform, const EntityId entityId)
+	{
+		renderStateInfo.currentShader = material->getShader();
+		std::shared_ptr<Shader> shader = renderStateInfo.currentShader.lock(); // reading purposes
+
+		shader->bind();
+		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
+		shader->setUniform("u_cameraPosition", s_sceneData->cameraPosition);
+		shader->setUniform("u_model", transform);
+		shader->setUniform("u_color", material->getMaterialProperties().color);
+		shader->setUniform("u_metalness", material->getMaterialProperties().metallicFactor);
+		shader->setUniform("u_roughness", material->getMaterialProperties().roughnessFactor);
+		shader->setUniform("u_entityID", static_cast<int>(entityId));
+
+		if (material->getColorTexture())
+		{
+			material->getColorTexture()->bind(0);
+			shader->setUniform("u_texture", 0);
+		}
+		else
+			shader->setUniform("u_texture", 0);	// TODO: use default texture ??
+	}
+
+	// [IMPORTANT] TODO: make a temporary state of the rendering pass (current shader)
+	void Renderer::submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive)
+	{
+		std::shared_ptr<Shader> shader = renderStateInfo.currentShader.lock(); // reading purposes
+
+		// lights set up and drawing of mesh
+
+		auto lights = s_pScene->getByComponent<LightComponent>();
+
+		if (lights.empty())
+		{
+			RenderCommand::enableBlend(false);
+			mesh->m_vertexArray->bind();
+			if (mesh->m_vertexArray->getIndexBuffer())
+				RenderCommand::drawIndexed(mesh->m_vertexArray, primitive);
+			else
+				RenderCommand::draw(mesh->m_vertexArray, primitive);
+		}
+		else
+		{
+			for (u32 i = 0; i < lights.size(); i++)
+			{
+				(i == 0) ? RenderCommand::enableBlend(false) : RenderCommand::enableBlend(true);
+
+				auto& light = lights.at(i);
+
+				// Set light position
+				glm::vec3 lightPosition = makeStrongPtr(light->getComponent<TransformComponent>())->getTranslation();
+				shader->setUniform("u_lightPosition", lightPosition);
+
+				// Set light colour
+				auto lightComponent = makeStrongPtr(light->getComponent<LightComponent>());
+				shader->setUniform("u_lightColor", lightComponent->getColor());
+				shader->setUniform("u_lightIntensity", lightComponent->getIntensity());
+				shader->setUniform("u_maxLightDistance", lightComponent->getMaxDistance());
+
+				mesh->m_vertexArray->bind();
+				if (mesh->m_vertexArray->getIndexBuffer())
+					RenderCommand::drawIndexed(mesh->m_vertexArray, primitive);
+				else
+					RenderCommand::draw(mesh->m_vertexArray, primitive);
 			}
 		}
 	}
