@@ -38,7 +38,7 @@ namespace Sogas
 
 	void Renderer::beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& pCamera)
 	{
-		RenderCommand::setClearColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
+		RenderCommand::setClearColor(glm::vec4(1.0f, 0.2f, 0.2f, 1.0f));
 		RenderCommand::clear();
 		RenderCommand::setDepthFunc(DepthTypes::LEQUAL);
 		RenderCommand::enableDepthBuffer(true);
@@ -50,7 +50,7 @@ namespace Sogas
 		s_sceneData->viewprojectionMatrix	= pCamera->getViewProjection();
 		s_sceneData->cameraPosition			= pCamera->getPosition();
 	}
-
+	/*
 	void Renderer::draw()
 	{
 		std::vector<StrongEntityPtr> renderables = s_pScene->getByComponent<RenderComponent>();
@@ -72,7 +72,7 @@ namespace Sogas
 				submit(renderComponent, model);
 		}
 	}
-
+	*/
 	void Renderer::endScene()
 	{
 		

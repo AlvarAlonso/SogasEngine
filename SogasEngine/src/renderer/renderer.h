@@ -42,7 +42,12 @@ namespace Sogas
 
 		bool init(); // TODO pass necessary information to init renderer module.
 		void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
-		void draw();
+		//void draw();
+		// different submits for different kinds of render primitives (materials, geometry, lights, etc...)
+		// TODO: in the future, submits will only submit render info to a queue, and this queue will be divided in batches that will be renderer separately
+		void submit(const std::shared_ptr<Material>& material, const glm::mat4& transform, const EntityId entityId); // TODO: transform and entityID should be set somewhere else
+		void submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive);
+		void renderEnvironment(std::weak_ptr<Environment> environment);
 		void endScene();
 		void shutdown();
 
@@ -53,12 +58,6 @@ namespace Sogas
 	private:
 		Renderer() = default; // TODO make user able to chose rendering API.
 		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform); // TODO: to be deleted
-
-		// different submits for different kinds of render primitives (materials, geometry, lights, etc...)
-		void submit(const std::shared_ptr<Material>& material, const glm::mat4& transform, const EntityId entityId); // TODO: transform and entityID should be set somewhere else
-		void submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive);
-
-		void renderEnvironment(std::weak_ptr<Environment> environment);
 
 	private:
 		static API s_API; // TODO: Hide the API to the rest of the application

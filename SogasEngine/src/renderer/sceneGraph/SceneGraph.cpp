@@ -45,6 +45,11 @@ namespace Sogas
 	{
 		Renderer::get()->beginScene(pScene, pCamera);
 
+		// TODO This should be after all renderables have been drown, the problem is that the objects highlighted outline would not be seen.
+		if (pScene->m_renderEnvironment) {
+			Renderer::get()->renderEnvironment(pScene->getEnvironment());
+		}
+
 		if(m_root && m_currentCamera)
 		{
 			m_root->render(this);
@@ -152,25 +157,41 @@ namespace Sogas
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName(), light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(" light"), light));
 
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName(), material));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(" material"), material));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName(), mesh));
+			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append( " geometry"), mesh, primitive));
 
 			materialNode->addChild(geometryNode);
 			lightNode->addChild(materialNode);
 
 			return lightNode;
 		}
+		else if (entity->has<RenderComponent>())
+		{
+			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
+
+			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(" material"), material));
+
+			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
+			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(" geometry"), mesh, primitive));
+
+			materialNode->addChild(geometryNode);
+
+			return materialNode;
+		}
 		else if(entity->has<LightComponent>())
 		{
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName(), light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append( "light"), light));
 
 			return lightNode;
 		}

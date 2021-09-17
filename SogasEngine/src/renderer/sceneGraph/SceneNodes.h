@@ -142,9 +142,10 @@ namespace Sogas
 	{
 	private:
 		std::weak_ptr<Mesh> m_mesh;
+		Primitive m_primitive;
 
 	public:
-		GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh);
+		GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive);
 		
 		virtual void render(SceneGraph* pScene) override;
 	};

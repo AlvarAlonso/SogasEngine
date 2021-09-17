@@ -49,6 +49,7 @@ namespace Sogas
 	{
 		for(SceneNodeList::iterator it = m_children.begin(); it != m_children.end(); it++)
 		{
+			(*it)->preRender(pScene); // TODO: add check to see if preRender went well
 			if((*it)->isVisible(pScene))
 			{
 				(*it)->render(pScene);
@@ -117,6 +118,7 @@ namespace Sogas
 
 	void RootNode::renderChildren(SceneGraph* pScene)
 	{
+		m_children[(u32)MainRenderPass::OPAQUE - (u32)MainRenderPass::_0]->renderChildren(pScene);
 	}
 
 	void RootNode::resetNode()
@@ -178,22 +180,24 @@ namespace Sogas
 
 	void MaterialNode::preRender(SceneGraph* pScene)
 	{
-		// TODO: set material stuff (uniforms and shaders)
+		// set material stuff (uniforms and shaders)
 		// call renderer functions to set material
+		Renderer::get()->submit(m_material.lock(), glm::mat4(1), getNodeProperties()->getNodeId());
 	}
 
-	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh)
-		: SceneNode(nodeId, transform, name), m_mesh(mesh)
+	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive)
+		: SceneNode(nodeId, transform, name), m_mesh(mesh), m_primitive(primitive)
 	{
 	}
 
 	void GeometryNode::render(SceneGraph* pScene)
 	{
-		// TODO: should use the material that is set as render state
+		// should use the material that is set as render state
 		// by a previous material node
 
 		// TODO: render indexed
 		// call renderer::submit with the mesh, the material used will be the set by a previous material node
+		Renderer::get()->submit(m_mesh.lock(), m_primitive);
 	}
 
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment)
