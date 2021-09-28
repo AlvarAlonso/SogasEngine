@@ -49,6 +49,8 @@ namespace Sogas
 
 		m_framebuffer = Framebuffer::create(specs);
 
+		Renderer::get()->setDefaultFramebuffer(m_framebuffer);
+
 		m_pCamera = std::make_shared<Camera>();
 
 		this->newScene();
@@ -98,7 +100,6 @@ namespace Sogas
 		// TODO: Should grid be directly implemented by editor layer?
 
 		m_framebuffer->bind();
-		m_framebuffer->clearAttachment(1, -1); // [CHANGE] this used to be after beginScene
 
 		m_pScene->onRender(m_pCamera);
 		/*

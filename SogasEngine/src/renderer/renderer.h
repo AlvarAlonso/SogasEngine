@@ -19,6 +19,7 @@ namespace Sogas
 	class Mesh;
 	class Environment;
 	class Material;
+	class Framebuffer;
 
 	class SGS Renderer
 	{
@@ -41,6 +42,11 @@ namespace Sogas
 
 
 		bool init(); // TODO pass necessary information to init renderer module.
+
+		// [TODO]: This should be redone when expanding the renderer or adding Vulkan support
+		Framebuffer* getDefaultFramebuffer() { return m_defaultFramebuffer; }
+		void setDefaultFramebuffer(Framebuffer* framebuffer) { m_defaultFramebuffer = framebuffer; }
+
 		void beginScene(std::shared_ptr<Scene>& scene, std::shared_ptr<Camera>& camera);
 		//void draw();
 		// different submits for different kinds of render primitives (materials, geometry, lights, etc...)
@@ -75,5 +81,8 @@ namespace Sogas
 
 		static std::shared_ptr<Scene> s_pScene;
 		static std::unique_ptr<sceneData> s_sceneData;
+
+		// [TODO]: This should be redone when expanding the renderer or adding Vulkan support
+		Framebuffer* m_defaultFramebuffer = nullptr;
 	};
 }

@@ -1,6 +1,7 @@
 #include "sgspch.h"
 #include "SceneGraph.h"
 #include "scene/scene.h"
+#include "renderer/framebuffer.h"
 #include "scene/components/lightComponent.h"
 #include "scene/components/entityComponent.h"
 #include "scene/components/renderComponent.h"
@@ -44,8 +45,9 @@ namespace Sogas
 	void SceneGraph::onRender(std::shared_ptr<Scene> &pScene, std::shared_ptr<Camera> &pCamera)
 	{
 		Renderer::get()->beginScene(pScene, pCamera);
+		Renderer::get()->getDefaultFramebuffer()->clearAttachment(1, -1);
 
-		// TODO This should be after all renderables have been drown, the problem is that the objects highlighted outline would not be seen.
+		// TODO This should be after all renderables have been drawn, the problem is that the objects highlighted outline would not be seen.
 		if (pScene->m_renderEnvironment) {
 			Renderer::get()->renderEnvironment(pScene->getEnvironment());
 		}
