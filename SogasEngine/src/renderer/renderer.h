@@ -48,8 +48,8 @@ namespace Sogas
 
 		// TODO render grid should be private and called inside draw(), not in the application layer
 		void renderGrid(std::shared_ptr<Mesh>& grid); // Maybe grid should be a default render component?
+		void renderEditorUI();
 
-		// TODO these should be a command ???
 	private:
 		Renderer() = default; // TODO make user able to chose rendering API.
 		void submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform);

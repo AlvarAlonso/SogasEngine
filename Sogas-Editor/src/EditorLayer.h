@@ -56,7 +56,8 @@ namespace Sogas
 		void onPause();
 
 	private:
-		Framebuffer*						m_framebuffer = nullptr;
+		Framebuffer* m_framebuffer = nullptr;
+		Framebuffer* m_framebuffer2 = nullptr;
 		std::unique_ptr<CameraController>	m_cameraController;
 		std::shared_ptr<Camera>				m_pCamera;
 

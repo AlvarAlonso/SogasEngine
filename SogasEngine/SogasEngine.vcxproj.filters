@@ -1291,5 +1291,7 @@
     <None Include="shaders\phong.shader" />
     <None Include="shaders\environment.shader" />
     <None Include="shaders\outline.shader" />
+    <None Include="shaders\editorUI.shader" />
+    <None Include="shaders\editorCamera.shader" />
   </ItemGroup>
 </Project>

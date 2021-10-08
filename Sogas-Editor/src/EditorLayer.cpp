@@ -52,6 +52,7 @@ namespace Sogas
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
 		m_framebuffer = Framebuffer::create(specs);
+		m_framebuffer2 = Framebuffer::create(specs);
 
 		m_pCamera = std::make_shared<Camera>();
 
@@ -61,8 +62,6 @@ namespace Sogas
 
 		// TODO: add scripting for camera movement/behavior
 		m_cameraController.reset(new CameraController(m_pCamera));
-		//m_pCamera->lookat({ 20.0f, 10.0f, -50.0f }, { 0.0f, 0.0f, 0.0f });
-		//m_pCamera->lookat({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 10.0f });
 		m_pCamera->setPosition(glm::vec3{ 0.0f, 3.0f, -15.0f });
 
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
@@ -79,12 +78,25 @@ namespace Sogas
 	{
 		// TODO: Framebuffer resize function
 
+		//SGSDEBUG("Viewport Camera Position: [%f, %f, %f].", m_pCamera->getPosition().x, m_pCamera->getPosition().y, m_pCamera->getPosition().z);
+
 		// Resize
 		if(FramebufferSpecs specs = m_framebuffer->getSpecification();
 			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
 			(specs.width != m_viewportSize.x || specs.height != m_viewportSize.y))
 		{
 			m_framebuffer->resize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
+			m_cameraController->setViewportSize(m_viewportSize.x, m_viewportSize.y);
+			m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
+			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
+		}
+
+		// Resize Framebuffer 2
+		if (FramebufferSpecs specs = m_framebuffer2->getSpecification();
+			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
+			(specs.width != m_viewportSize.x || specs.height != m_viewportSize.y))
+		{
+			m_framebuffer2->resize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 			m_cameraController->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 			m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
 			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
@@ -97,35 +109,36 @@ namespace Sogas
 		{
 		case Sogas::EditorLayer::eSceneState::Edit:
 		{
-			if (m_viewportFocused)
-			{
-				m_cameraController->onUpdate(dt);
-			}
-			m_pScene->onEditorUpdate(dt);
+			//if (m_viewportFocused)
+			//{
+			//	m_cameraController->onUpdate(dt);
+			//}
+			//m_pScene->onEditorUpdate(dt);
 
-			// Editor render
+			//// Editor render
 
-			Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
-			m_framebuffer->clearAttachment(1, -1);
-			Renderer::get()->draw();
-			if (!m_pGrid)
-			{
-				m_pGrid = std::make_shared<Mesh>();
-				m_pGrid->createGrid();
-			}
-			Renderer::get()->renderGrid(m_pGrid);
-			Renderer::get()->endScene();
+			//Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
+			//m_framebuffer->clearAttachment(1, -1);
+			//Renderer::get()->draw();
+			//if (!m_pGrid)
+			//{
+			//	m_pGrid = std::make_shared<Mesh>();
+			//	m_pGrid->createGrid();
+			//}
+			//Renderer::get()->renderGrid(m_pGrid);
+			//Renderer::get()->renderEditorUI();
+			//Renderer::get()->endScene();
 
-			break;
+			//break;
 		}
 		case Sogas::EditorLayer::eSceneState::Play:
 		{
-			m_pScene->onRuntimeUpdate(dt);
-
-			Renderer::get()->beginRuntimeScene(m_pScene);
-			m_framebuffer->clearAttachment(1, -1);
-			Renderer::get()->draw();
-			Renderer::get()->endScene();
+			//m_pScene->onRuntimeUpdate(dt);
+			//
+			//Renderer::get()->beginRuntimeScene(m_pScene);
+			//m_framebuffer->clearAttachment(1, -1);
+			//Renderer::get()->draw();
+			//Renderer::get()->endScene();
 			break;
 		}
 		case Sogas::EditorLayer::eSceneState::Pause:
@@ -133,6 +146,26 @@ namespace Sogas
 		default:
 			break;
 		}
+
+		if (m_viewportFocused)
+		{
+			m_cameraController->onUpdate(dt);
+		}
+		m_pScene->onEditorUpdate(dt);
+
+		// Editor render
+
+		Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
+		m_framebuffer->clearAttachment(1, -1);
+		Renderer::get()->draw();
+		if (!m_pGrid)
+		{
+			m_pGrid = std::make_shared<Mesh>();
+			m_pGrid->createGrid();
+		}
+		Renderer::get()->renderGrid(m_pGrid);
+		Renderer::get()->renderEditorUI();
+		Renderer::get()->endScene();
 
 		// TODO: Mouse picking
 
@@ -165,6 +198,20 @@ namespace Sogas
 		}
 
 		m_framebuffer->unbind();
+
+		m_framebuffer2->bind();
+
+		if (m_sceneState == Sogas::EditorLayer::eSceneState::Play)
+		{
+			m_pScene->onRuntimeUpdate(dt);
+			
+			Renderer::get()->beginRuntimeScene(m_pScene);
+			m_framebuffer2->clearAttachment(1, -1);
+			Renderer::get()->draw();
+			Renderer::get()->endScene();
+		}
+
+		m_framebuffer2->unbind();
 	}
 
 	void EditorLayer::onImguiRender()
@@ -285,6 +332,7 @@ namespace Sogas
 
 		u64 textureId = m_framebuffer->getColorAttachment();
 		ImGui::Image((ImTextureID)textureId, ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
 		
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -331,10 +379,11 @@ namespace Sogas
 			std::weak_ptr<TransformComponent> transformComponent = selectedEntity->getComponent<TransformComponent>();
 
 			glm::mat4 transform = transformComponent.lock()->getGlobalTransform();
+			bool isLocal = transformComponent.lock()->getIsLocal();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-				(ImGuizmo::OPERATION)m_gizmoType, ImGuizmo::WORLD, glm::value_ptr(transform),
-				nullptr, nullptr);
+				(ImGuizmo::OPERATION)m_gizmoType, isLocal ? ImGuizmo::LOCAL : ImGuizmo::WORLD, 
+				glm::value_ptr(transform), nullptr, nullptr);
 
 			if(ImGuizmo::IsUsing())
 			{
@@ -368,6 +417,12 @@ namespace Sogas
 		}
 
 		ImGui::End();
+
+		// Runtime View for debuggin purposes
+		ImGui::Begin("Runtime View");
+		ImGui::Image((ImTextureID)m_framebuffer2->getColorAttachment(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });	
+		ImGui::End();
+
 		ImGui::PopStyleVar();
 
 		UI_Playbar();

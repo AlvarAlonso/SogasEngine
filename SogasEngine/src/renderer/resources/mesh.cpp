@@ -4,6 +4,7 @@
 #include "renderer/shader.h"
 #include "core/utils.h"
 #include "core/logger.h"
+#include "scene/components/cameraComponent.h"
 
 #include "../external/tinyobj/tiny_obj_loader.h"
 #include "glm/glm.hpp"
@@ -80,7 +81,6 @@ namespace Sogas
             props.roughnessFactor = material.shininess;
         }
 
-        //auto shader = std::make_shared<Shader>("../SogasEngine/shaders/phong.shader");
         m_pMaterial = std::make_shared<Material>(Shader::GET("phong.shader"), props);
 
         std::unordered_map<Vertex, u32> uniqueVertices{};
@@ -173,6 +173,8 @@ namespace Sogas
             glm::vec4 color;
         };
 
+        // Vertex Buffer
+
         std::vector<gVertex> vertices;
 
         for (f32 i = n_lines * -0.5f; i <= n_lines * 0.5f; ++i)
@@ -195,5 +197,137 @@ namespace Sogas
         };
         m_vertexBuffer->setLayout(layout);
         m_vertexArray->addVertexBuffer(m_vertexBuffer);
+    }
+
+    /*
+    * @brief This function creates a simple wireframe mesh that represents the camera.
+    * @param void
+    * @return void
+    */
+    void Mesh::createCameraMesh(std::weak_ptr<CameraComponent>& cameraComponent)
+    {
+        glm::vec3 black = {0.0f, 0.0f, 0.0f};
+
+        struct gVertex {
+            glm::vec3 position;
+            glm::vec3 color;
+        };
+
+        // Vertex Buffer
+        std::vector<gVertex> vertices;
+
+        CameraComponent::eProjectionType type = cameraComponent.lock()->getType();
+        float aspectRatio = cameraComponent.lock()->getAspectRatio();
+
+        if (type == CameraComponent::eProjectionType::Orthographic)
+        {
+            float size = cameraComponent.lock()->getOrthographicSize();
+            float near = cameraComponent.lock()->getOrthographicNear();
+
+            vertices.push_back({ { 0.0f,  0.0f,  0.0f}, {0.75f, 0.25f, 0.0f} });
+            vertices.push_back({ { size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  near}, black });
+        }
+        else if (type == CameraComponent::eProjectionType::Perspective)
+        {
+            float FOV = cameraComponent.lock()->getPerspectiveFOV();
+            float near = cameraComponent.lock()->getPerspectiveNear();
+            float size = near * std::tan(FOV);
+
+            vertices.push_back({ { 0.0f,  0.0f,  0.0f}, {0.75f, 0.25f, 0.0f} });
+            vertices.push_back({ { size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  near}, black });
+        }
+
+        size_t arraySize    = vertices.size();
+        size_t vertexSize   = sizeof(gVertex);
+        size_t size         = arraySize * vertexSize;
+
+        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
+        VertexBufferLayout layout = {
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float3, "a_color"}
+        };
+
+        m_vertexBuffer->setLayout(layout);
+        m_vertexArray->addVertexBuffer(m_vertexBuffer);
+
+        // Indices Buffer
+        std::vector<u32> indices = { 0, 1, 2, 0, 1, 3, 0, 3, 4, 0, 4, 2 };
+        m_indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
+
+        m_vertexArray->setIndexBuffer(m_indexBuffer);
+    }
+
+    void Mesh::getFrustrumFromCamera(std::weak_ptr<CameraComponent>& cameraComponent)
+    {
+        glm::vec3 black = { 0.0f, 0.0f, 0.0f };
+
+        struct gVertex {
+            glm::vec3 position;
+            glm::vec3 color;
+        };
+
+        std::vector<gVertex> vertices;
+        std::vector<u32> indices;
+        float aspectRatio = cameraComponent.lock()->getAspectRatio();
+
+        if (cameraComponent.lock()->getType() == CameraComponent::eProjectionType::Orthographic)
+        {
+            float size  = cameraComponent.lock()->getOrthographicSize();
+            float near  = cameraComponent.lock()->getOrthographicNear();
+            float far   = cameraComponent.lock()->getOrthographicFar();
+
+            vertices.push_back({ { size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  near}, black });
+                                                     
+            vertices.push_back({ { size * aspectRatio,  size,  far}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  far}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  far}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  far}, black });
+
+        }
+
+        if (cameraComponent.lock()->getType() == CameraComponent::eProjectionType::Perspective)
+        {
+            float fov   = cameraComponent.lock()->getPerspectiveFOV();
+            float near  = cameraComponent.lock()->getPerspectiveNear();
+            float far   = cameraComponent.lock()->getPerspectiveFar();
+            float size  = 1.0f;
+
+            vertices.push_back({ { size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  near}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  near}, black });
+
+            vertices.push_back({ { size * aspectRatio,  size,  far}, black });
+            vertices.push_back({ { size * aspectRatio, -size,  far}, black });
+            vertices.push_back({ {-size * aspectRatio,  size,  far}, black });
+            vertices.push_back({ {-size * aspectRatio, -size,  far}, black });
+        }
+
+        size_t arraySize = vertices.size();
+        size_t vertexSize = sizeof(gVertex);
+        size_t size = arraySize * vertexSize;
+
+        m_vertexBuffer.reset(VertexBuffer::create(vertices.data(), (u32)size));
+        VertexBufferLayout layout = {
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float3, "a_color"}
+        };
+
+        m_vertexBuffer->setLayout(layout);
+        m_vertexArray->addVertexBuffer(m_vertexBuffer);
+
+        indices = {0, 4, 4, 5, 5, 1, 0, 4, 4, 6, 6, 2, 3, 7, 7, 6, 7, 5};
+        m_indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
+
+        m_vertexArray->setIndexBuffer(m_indexBuffer);
     }
 }

@@ -341,6 +341,16 @@ namespace Sogas
 
 		drawComponent<TransformComponent>("Transform", entity.lock(), [](auto& component)
 			{
+				bool local = component.lock()->getIsLocal();
+				if (ImGui::TreeNode(local ? "Local" : "World"))
+				{
+					if (local)
+						ImGui::Selectable("World", &local);
+					else
+						ImGui::Selectable("Local", &local);
+					component.lock()->setIsLocal(local);
+					ImGui::TreePop();
+				}
 				DrawVec3Control("Translation", component.lock()->getTranslation());
 				glm::vec3 rotation = glm::degrees(component.lock()->getRotation());
 				DrawVec3Control("Rotation", rotation);
@@ -358,6 +368,10 @@ namespace Sogas
 				bool isPrimary = component.lock()->isPrimary();
 				ImGui::Checkbox("Primary", &isPrimary);
 				component.lock()->setPrimary(isPrimary);
+
+				bool showFrustrum = component.lock()->getShowFrustrum();
+				ImGui::Checkbox("Show Frustrum", &showFrustrum);
+				component.lock()->setShowFrustrum(showFrustrum);
 
 				const char* cameraTypeString[] = { "Perspective", "Orthographic" };
 				const char* currentCameraTypeString = cameraTypeString[(i32)component.lock()->getType()];
@@ -398,8 +412,8 @@ namespace Sogas
 					f32 near = component.lock()->getOrthographicNear();
 					f32 far = component.lock()->getOrthographicFar();
 
-					ImGui::SliderFloat("Size", &cameraComponent.lock()->getOrthographicSize(), 0.0f, 10.0f);
-					ImGui::SliderFloat("Near", &near, 0.01f, 1000.0f);
+					ImGui::SliderFloat("Size", &size, 0.0f, 25.0f);
+					ImGui::SliderFloat("Near", &near, 0.01f, 100.0f);
 					ImGui::SliderFloat("Far", &far, 0.01f, 1000.0f);
 
 					cameraComponent.lock()->setOrtographic(size, near, far);

@@ -7,6 +7,8 @@
 
 namespace Sogas 
 {
+	class CameraComponent;
+
 	class SGS Mesh
 	{
 	public:
@@ -21,6 +23,8 @@ namespace Sogas
 
 		static std::shared_ptr<Mesh> GET(const std::string& filename);
 		void createGrid(f32 dist = 5.0f, i32 n_lines = 20);
+		void createCameraMesh(std::weak_ptr<CameraComponent>& cameraComponent);
+		void getFrustrumFromCamera(std::weak_ptr<CameraComponent>& cameraComponent);
 
 		std::shared_ptr<VertexArray> m_vertexArray;
 		std::shared_ptr<IndexBuffer> m_indexBuffer;

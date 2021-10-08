@@ -78,7 +78,7 @@ namespace Sogas
 			case Sogas::CameraComponent::eProjectionType::Orthographic:
 			{
 				f32 left	= -m_orthographicSize * m_aspectRatio * 0.5f;
-				f32 right	=  m_orthographicSize * m_aspectRatio * 0.05f;
+				f32 right	=  m_orthographicSize * m_aspectRatio * 0.5f;
 				f32 bottom	= -m_orthographicSize * 0.5f;
 				f32 top		=  m_orthographicSize * 0.5f;
 

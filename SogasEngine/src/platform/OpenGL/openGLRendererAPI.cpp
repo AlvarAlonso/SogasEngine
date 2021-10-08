@@ -42,13 +42,13 @@ namespace Sogas
 	{
 		for (std::shared_ptr<VertexBuffer> vertexBuffer : vertexArray->getVertexBuffers())
 		{
-			glDrawArrays((GLenum)primitive, 0, vertexBuffer.get()->getSize());
+			glDrawArrays((GLenum)primitive, (GLint)0, vertexBuffer.get()->getSize());
 		}
 	}
 
 	void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const Primitive primitive)
 	{
-		glDrawElements((GLenum)primitive, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements((GLenum)primitive, (GLsizei)vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
 	/*

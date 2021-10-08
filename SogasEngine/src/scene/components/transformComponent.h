@@ -20,6 +20,7 @@ namespace Sogas
 		glm::vec3 m_scale		= { 1.0f, 1.0f, 1.0f };
 		glm::mat4 m_localMatrix;	// local matrix, relative to the parent if any.
 		glm::mat4 m_globalMatrix;	// world matrix, where the object is defined in the world.
+		bool	  m_isLocal{true};
 	public:
 		static const char* s_name;
 		virtual const char* getName() const override { return s_name; }
@@ -36,15 +37,17 @@ namespace Sogas
 		// Transform component functions
 		glm::mat4	getGlobalTransform();
 		glm::mat4	getLocalTransform();
-		void		setTransform(const glm::mat4& transform);
 
 		glm::vec3&	getTranslation() { return m_translation; }
 		glm::vec3&	getRotation() { return m_rotation; }
 		glm::vec3&	getScale() { return m_scale; }
+		bool		getIsLocal() { return m_isLocal; }
 
+		void setTransform(const glm::mat4& transform);
 		void setTranslation(glm::vec3& translation) { m_translation = translation; updateMatrix(); }
 		void setRotation(glm::vec3& rotation) { m_rotation = rotation; updateMatrix(); }
 		void setScale(glm::vec3& scale) { m_scale = scale; updateMatrix(); }
+		void setIsLocal(const bool local) { m_isLocal = local; }
 
 		// TODO: getLookAt(void)
 

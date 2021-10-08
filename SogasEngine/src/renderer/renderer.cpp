@@ -13,6 +13,8 @@
 #include "scene/components/transformComponent.h"
 #include "scene/components/renderComponent.h"
 
+#include "glm/gtx/quaternion.hpp"
+
 #include "scene/types.h"
 
 namespace Sogas 
@@ -77,8 +79,10 @@ namespace Sogas
 			}
 		}
 
+		SGSDEBUG("%f, %f, %f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+
 		s_sceneData->viewprojectionMatrix	= projection * view;
-		s_sceneData->cameraPosition			= cameraPosition;
+		s_sceneData->cameraPosition			= -cameraPosition;
 	}
 
 	void Renderer::draw()
@@ -129,7 +133,7 @@ namespace Sogas
 				RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
 			else
 				RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
-			renderComponent->getMesh()->m_vertexArray->unbind();
+			//renderComponent->getMesh()->m_vertexArray->unbind();
 			shader->unbind();
 			RenderCommand::enableDepthBuffer(true);
 			RenderCommand::enableDepthMask(true);
@@ -187,7 +191,7 @@ namespace Sogas
 				if (renderComponent->getMesh()->m_vertexArray->getIndexBuffer())
 					RenderCommand::drawIndexed(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
 				else
-					RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());
+					RenderCommand::draw(renderComponent->getMesh()->m_vertexArray, renderComponent->getPrimitive());	
 			}
 		}
 	}
@@ -206,11 +210,17 @@ namespace Sogas
 
 		grid->m_vertexArray->bind();
 		RenderCommand::draw(grid->m_vertexArray, Primitive::LINES);
+		//grid->m_vertexArray->unbind();
 		
 		RenderCommand::enableBlend(true);
 		shader->unbind();
 	}
 
+	/*
+	* @brief Function with the goal of rendering the environment as a cubemap.
+	* @param std::weak_ptr<Environment> environment
+	* @return void
+	*/
 	void Renderer::renderEnvironment(std::weak_ptr<Environment> environment)
 	{
 		RenderCommand::enableDepthBuffer(true);
@@ -233,10 +243,90 @@ namespace Sogas
 			RenderCommand::drawIndexed(mesh->m_vertexArray);
 		else
 			RenderCommand::draw(mesh->m_vertexArray);
+		//mesh->m_vertexArray->unbind();
 
 		RenderCommand::enableDepthBuffer(true);
 		RenderCommand::enableBlend(true);
 		shader->unbind();
+	}
+
+	/*
+	* @brief Render the icons for items like lights or cameras.
+	* @param void
+	* @return void
+	*/
+	void Renderer::renderEditorUI()
+	{
+		RenderCommand::enableBlend(false);
+
+		// Do lights at the moment
+		for (const auto& entity : s_pScene->getEntities())
+		{
+			if (entity->has<LightComponent>())
+			{
+				glm::mat4 model = entity->getComponent<TransformComponent>().lock()->getGlobalTransform();
+				//model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+				glm::vec3 position			= entity->getComponent<TransformComponent>().lock()->getTranslation();
+				glm::vec3 targetVector		= glm::normalize(s_sceneData->cameraPosition - position);
+				glm::quat rotationQuat		= glm::rotation(glm::vec3(0, 1, 0), -targetVector);
+				glm::mat4 rotationMatrix	= glm::toMat4(rotationQuat);
+				model = glm::scale(model, glm::vec3(0.25f));
+
+				model *= rotationMatrix;
+
+				std::shared_ptr<Mesh>		mesh = Mesh::GET("plane.obj");
+				std::shared_ptr<Shader>		shader = Shader::GET("editorUI.shader");
+				std::shared_ptr<Texture2D>	texture = Texture2D::GET("../Sogas-Editor/resources/lightbulb-icon.png");
+				texture->bind(1);
+
+				shader->bind();
+				shader->setUniform("u_model", model);
+				shader->setUniform("u_viewprojectionMatrix", s_sceneData->viewprojectionMatrix);
+				shader->setUniform("u_texture", 1);
+
+				mesh->m_vertexArray->bind();
+				RenderCommand::drawIndexed(mesh->m_vertexArray);
+			}
+
+			if (entity->has<CameraComponent>())
+			{
+				std::weak_ptr<CameraComponent> cameraComponent = entity->getComponent<CameraComponent>();
+
+				std::shared_ptr<Mesh> camera = std::make_shared<Mesh>();
+				camera->createCameraMesh(cameraComponent);
+
+				glm::mat4 model = entity->getComponent<TransformComponent>().lock()->getGlobalTransform();
+
+				std::shared_ptr<Shader> shader = Shader::GET("editorCamera.shader");
+
+				shader->bind();
+				shader->setUniform("u_model", model);
+				shader->setUniform("u_viewprojectionMatrix", s_sceneData->viewprojectionMatrix);
+				shader->setUniform("u_color", glm::vec3(0.0f));
+
+				camera->m_vertexArray->bind();
+				RenderCommand::setLineWidth(2.0f);
+				RenderCommand::drawIndexed(camera->m_vertexArray, Primitive::LINE_LOOP);
+				RenderCommand::setLineWidth(1.0f);
+
+				if (cameraComponent.lock()->getShowFrustrum())
+				{
+					std::shared_ptr frustrum = std::make_shared<Mesh>();
+					frustrum->getFrustrumFromCamera(cameraComponent);
+
+					glm::mat4 model = entity->getComponent<TransformComponent>().lock()->getGlobalTransform();
+					std::shared_ptr<Shader> shader = Shader::GET("editorCamera.shader");
+
+					shader->bind();
+					shader->setUniform("u_model", model);
+					shader->setUniform("u_viewprojectionMatrix", s_sceneData->viewprojectionMatrix);
+					shader->setUniform("u_color", glm::vec3(0.5f));
+
+					frustrum->m_vertexArray->bind();
+					RenderCommand::drawIndexed(frustrum->m_vertexArray, Primitive::LINES);
+				}
+			}
+		}
 	}
 
 	void Renderer::shutdown()
