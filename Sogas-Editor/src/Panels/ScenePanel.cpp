@@ -422,9 +422,26 @@ namespace Sogas
 
 		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
 			{
+				const char* lightTypeNames[3] = { "Environment", "Point", "Spot" };
+				static i32 selectedLightType = (i32)component.lock()->getType();
+				
+				if (ImGui::TreeNode(lightTypeNames[selectedLightType]))
+				{
+					for (i32 i = 0; i < 3; ++i) {
+						if (ImGui::Selectable(lightTypeNames[i], selectedLightType == i)) {
+							selectedLightType = i;
+							component.lock()->setType((LightComponent::e_lightType)selectedLightType);
+						}
+					}
+					ImGui::TreePop();
+				}
 				ImGui::ColorEdit3("Colour", &component.lock()->getColor().x);
 				ImGui::SliderFloat("Intensity", &component.lock()->getIntensity(), 0.0f, 100.0f);
 				ImGui::SliderFloat("Maximum Distance", &component.lock()->getMaxDistance(), 0.0f, 500.0f);
+
+				if (component.lock()->getType() == LightComponent::e_lightType::SPOT) {
+					ImGui::SliderFloat("Angle", &component.lock()->getAngle(), 0.0f, 180.0f);
+				}
 			});
 
 		
