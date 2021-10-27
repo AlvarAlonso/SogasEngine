@@ -46,6 +46,7 @@ namespace Sogas
 		void setOwner(WeakEntityPtr pOwner) { m_pOwner = pOwner; }
 
 		WeakEntityPtr getOwner(void) { return m_pOwner; }
+		EntityId getOwnerId() { return m_pOwner.lock()->getId(); }
 
 		// TODO: Should probably use hash instead of map for performance sake or maybe bitwise
 		// It fails in the find func with const char*
