@@ -182,7 +182,9 @@ namespace Sogas
 	{
 		// set material stuff (uniforms and shaders)
 		// call renderer functions to set material
-		Renderer::get()->submit(m_material.lock(), glm::mat4(1), getNodeProperties()->getNodeId());
+
+		// [TODO]: Should this be setting the transform? Or should each geometry be awared of its position?
+		Renderer::get()->submit(m_material.lock(), getNodeProperties()->getTransform(), getNodeProperties()->getNodeId());
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive)

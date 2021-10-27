@@ -48,17 +48,19 @@ namespace Sogas
 		Renderer::get()->getDefaultFramebuffer()->clearAttachment(1, -1);
 
 		// TODO This should be after all renderables have been drawn, the problem is that the objects highlighted outline would not be seen.
+		
 		if (pScene->m_renderEnvironment) {
 			Renderer::get()->renderEnvironment(pScene->getEnvironment());
 		}
-
+		
+		
 		if(m_root && m_currentCamera)
 		{
 			m_root->render(this);
 			m_root->renderChildren(this);
 			m_root->postRender(this);
 		}
-
+		
 		Renderer::get()->endScene();
 	}
 

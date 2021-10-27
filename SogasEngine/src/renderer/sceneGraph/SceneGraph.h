@@ -7,7 +7,14 @@ namespace Sogas
 {
 	class Scene;
 
-	typedef std::map<NodeId, std::shared_ptr<ISceneNode>> SceneNodeMap;
+	// TODO: A map that maps ActorId and SceneNodeTypeChanged to the corresponding ISceneNode. A double map can be used.
+	// The first, maps the ActorId to its map of SceneNodes. The second maps the name of the scene node changed to the 
+	// corresponding ISceneNode.
+
+	// This maps actors to its potential diferent nodes
+	typedef std::map<EntityId, std::map<SceneNodeType, std::shared_ptr<ISceneNode>>> EntityToSceneNodesMap;
+
+	typedef std::map<NodeId, std::shared_ptr<ISceneNode>> SceneNodeMap; // TODO: to be deleted
 
 	class AlphaSceneNode
 	{
@@ -28,7 +35,7 @@ namespace Sogas
 	private:
 		std::shared_ptr<SceneNode> m_root;
 		std::shared_ptr<CameraNode> m_currentCamera;
-		SceneNodeMap m_nodeMap;
+		SceneNodeMap m_nodeMap; // TODO: to be deleted
 		std::list<AlphaSceneNode> m_alphaNodes;
 
 	public:

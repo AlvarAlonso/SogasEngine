@@ -23,6 +23,19 @@ namespace Sogas
 		LAST // invalid location (like an iterator.end())
 	};
 
+	// Used to map an EntityId to the needed node type
+	enum class SceneNodeType
+	{
+		ROOT = 0,
+		CAMERA,
+		EMPTY,
+		ENVIRONMENT,
+		GEOMETRY,
+		LIGHT,
+		MATERIAL,
+		LAST // invalid location (like an iterator.end())
+	};
+
 	struct SceneNodeProperties
 	{
 	private:
@@ -30,6 +43,7 @@ namespace Sogas
 
 	protected:
 		NodeId nodeId; // TODO: 0 is invalid, 1 is root, the others are available as an ID for the other nodes
+		EntityId entityId;
 		glm::mat4 transform;
 		float radius;
 		std::string name; // debug purposes

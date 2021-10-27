@@ -47,6 +47,7 @@ namespace Sogas
 		Framebuffer* m_framebuffer = nullptr;
 		std::unique_ptr<CameraController> m_cameraController;
 		std::shared_ptr<Camera> m_pCamera;
+		std::shared_ptr<Camera> m_oldCamera; // [TEMPORAL]: To be removed
 
 		std::shared_ptr<Scene> m_pScene;
 		std::shared_ptr<Mesh> m_pGrid;	// Should grid be defined in editor?

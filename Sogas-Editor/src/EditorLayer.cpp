@@ -63,6 +63,8 @@ namespace Sogas
 		//m_pCamera->lookat({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 10.0f });
 		m_pCamera->setPosition(glm::vec3{ 0.0f, 3.0f, -15.0f });
 
+		m_oldCamera = std::make_shared<Camera>(*m_pCamera);
+
 		mouse_pos = { Application::getInstance()->getWindow().getWidth(), Application::getInstance()->getWindow().getHeight() };
 
 		m_scenePanel.setContext(m_pScene);
@@ -97,11 +99,16 @@ namespace Sogas
 		// TODO: implement onUpdate func
 		m_pScene->onUpdate(dt);
 
+		//m_pScene->buildSceneGraph();
+
 		// TODO: Should grid be directly implemented by editor layer?
 
 		m_framebuffer->bind();
 
 		m_pScene->onRender(m_pCamera);
+
+		m_oldCamera = std::make_shared<Camera>(*m_pCamera);
+
 		/*
 		Renderer::get()->beginScene(m_pScene, m_pCamera);
 		Renderer::get()->draw();
