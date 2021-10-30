@@ -3,6 +3,7 @@
 #include "transformComponent.h"
 #include "scene/serializerUtils.h"
 #include "../entity.h"
+#include "scene/scene.h"
 
 namespace Sogas
 {
@@ -59,6 +60,18 @@ namespace Sogas
 		m_rotation		= glm::radians(glm::eulerAngles(glm::quat_cast(m_localMatrix)));
 		m_scale			= glm::vec3(m_localMatrix[0][0], m_localMatrix[1][1], m_localMatrix[2][2]);
 		//updateMatrix();
+	}
+
+	void TransformComponent::setTranslation(glm::vec3& translation)
+	{
+		EntityId id = m_pOwner.lock()->getId();
+		std::shared_ptr<Scene> scene = m_pOwner.lock()->getScene();
+		m_translation = translation; 
+		updateMatrix();
+		// TODO: Update scene graph
+		void* data = &translation;
+
+		scene->updateSceneGraphNode(id, SceneNodeType::ANY, data);
 	}
 
 	// ----------------------------------------------

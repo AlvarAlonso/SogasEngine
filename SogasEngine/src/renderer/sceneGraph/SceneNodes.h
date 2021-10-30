@@ -23,19 +23,6 @@ namespace Sogas
 		LAST // invalid location (like an iterator.end())
 	};
 
-	// Used to map an EntityId to the needed node type
-	enum class SceneNodeType
-	{
-		ROOT = 0,
-		CAMERA,
-		EMPTY,
-		ENVIRONMENT,
-		GEOMETRY,
-		LIGHT,
-		MATERIAL,
-		LAST // invalid location (like an iterator.end())
-	};
-
 	struct SceneNodeProperties
 	{
 	private:
@@ -75,6 +62,8 @@ namespace Sogas
 		virtual bool addChild(std::shared_ptr<ISceneNode> child) = 0;
 		virtual bool removeChild(NodeId id) = 0;
 
+		virtual void updateNode(void* data) = 0;
+
 		virtual ~ISceneNode() {};
 	};
 
@@ -102,6 +91,8 @@ namespace Sogas
 
 		virtual bool addChild(std::shared_ptr<ISceneNode> child) override;
 		virtual bool removeChild(NodeId id) override;
+
+		virtual void updateNode(void* data) override;
 	};
 
 	class RootNode : public SceneNode
@@ -111,6 +102,7 @@ namespace Sogas
 		virtual bool addChild(std::shared_ptr<ISceneNode> child);
 		virtual void renderChildren(SceneGraph* pScene);
 		virtual bool isVisible() const { return true; }
+
 		void resetNode();
 	};
 
@@ -123,6 +115,8 @@ namespace Sogas
 
 		virtual void render(SceneGraph* pScene) override;
 		virtual bool isVisible(SceneGraph* pScene) const override;
+
+		virtual void updateNode(void* data) override;
 
 		// camera wrapper functions
 		void lookAt(const glm::vec3 position, const glm::vec3 center);
@@ -139,6 +133,8 @@ namespace Sogas
 
 	public:
 		LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Light> light);
+
+		virtual void updateNode(void* data) override;
 	};
 
 	class MaterialNode: public SceneNode
@@ -150,6 +146,8 @@ namespace Sogas
 		MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Material> material);
 	
 		virtual void preRender(SceneGraph* pScene) override;
+
+		virtual void updateNode(void* data) override;
 	};
 
 	class GeometryNode : public SceneNode
@@ -162,6 +160,8 @@ namespace Sogas
 		GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive);
 		
 		virtual void render(SceneGraph* pScene) override;
+
+		virtual void updateNode(void* data) override;
 	};
 
 	class EnvironmentNode : public SceneNode
@@ -174,6 +174,8 @@ namespace Sogas
 	
 		virtual void preRender(SceneGraph* pScene) override;
 		virtual void render(SceneGraph* pScene) override;
+
+		virtual void updateNode(void* data) override;
 	};
 
 	// represents a node that just adds a transfrom in the scene graph
@@ -182,5 +184,7 @@ namespace Sogas
 	{
 	public:
 		EmptyNode(NodeId nodeId, glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {};
+
+		virtual void updateNode(void* data) override;
 	};
 }

@@ -88,6 +88,13 @@ namespace Sogas
 		return false;
 	}
 
+	void SceneNode::updateNode(void* data)
+	{
+		glm::mat4* newTransform = (glm::mat4*)data;
+		m_properties.transform = *newTransform;
+		newTransform = nullptr;
+	}
+
 	RootNode::RootNode(const NodeId nodeId, glm::mat4 transform, const std::string name)
 		: SceneNode(nodeId, transform, name)
 	{
@@ -143,6 +150,12 @@ namespace Sogas
 		return true;
 	}
 
+	void CameraNode::updateNode(void* data)
+	{
+		Camera* newCamera = reinterpret_cast<Camera*>(data);
+		// TODO
+	}
+
 	void CameraNode::lookAt(const glm::vec3 position, const glm::vec3 center)
 	{
 		m_camera.lock()->lookat(position, center);
@@ -173,6 +186,10 @@ namespace Sogas
 	{
 	}
 
+	void LightNode::updateNode(void* data)
+	{
+	}
+
 	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material)
 		: SceneNode(nodeId, transform, name), m_material(material)
 	{
@@ -185,6 +202,10 @@ namespace Sogas
 
 		// [TODO]: Should this be setting the transform? Or should each geometry be awared of its position?
 		Renderer::get()->submit(m_material.lock(), getNodeProperties()->getTransform(), getNodeProperties()->getNodeId());
+	}
+
+	void MaterialNode::updateNode(void* data)
+	{
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive)
@@ -202,6 +223,10 @@ namespace Sogas
 		Renderer::get()->submit(m_mesh.lock(), m_primitive);
 	}
 
+	void GeometryNode::updateNode(void* data)
+	{
+	}
+
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment)
 		: SceneNode(nodeId, transform, name), m_environment(environment)
 	{
@@ -215,5 +240,11 @@ namespace Sogas
 	void EnvironmentNode::render(SceneGraph* pScene)
 	{
 		// TODO: render the sky same way as the EnvironmentComponent
+	}
+	void EnvironmentNode::updateNode(void* data)
+	{
+	}
+	void EmptyNode::updateNode(void* data)
+	{
 	}
 }

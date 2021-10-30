@@ -42,7 +42,7 @@ namespace Sogas
 		glm::vec3&	getRotation() { return m_rotation; }
 		glm::vec3&	getScale() { return m_scale; }
 
-		void setTranslation(glm::vec3& translation) { m_translation = translation; updateMatrix(); }
+		void setTranslation(glm::vec3& translation);
 		void setRotation(glm::vec3& rotation) { m_rotation = rotation; updateMatrix(); }
 		void setScale(glm::vec3& scale) { m_scale = scale; updateMatrix(); }
 

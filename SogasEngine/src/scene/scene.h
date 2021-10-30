@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "entityFactory.h"
 #include "environment.h"
+#include "renderer/sceneGraph/SceneGraph.h"
 #include <json/single_include/nlohmann/json.hpp>
 
 namespace Sogas 
@@ -12,7 +13,6 @@ namespace Sogas
 	using json = nlohmann::json;
 
 	class Environment;
-	class SceneGraph;
 	class Camera;
 
 	class SGS Scene : public std::enable_shared_from_this<Scene>
@@ -53,6 +53,7 @@ namespace Sogas
 		StrongEntityPtr findEntityById(EntityId entityId);
 
 		bool buildSceneGraph();
+		void updateSceneGraphNode(EntityId entityId, SceneNodeType nodeType, void* data);
 		void setCamera(std::shared_ptr<Camera> pCamera); // TODO: [Temporal]: This should change when the camera is created from a CameraComponent
 
 		void to_json(json& j);

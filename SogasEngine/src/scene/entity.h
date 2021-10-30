@@ -64,12 +64,13 @@ namespace Sogas
 		void		destroy();
 		void		update(f32 dt);
 
-		void		setName(std::string name) { m_name = name; }
-		std::string getName() const { return m_name; }
-		EntityId	getId() const { return m_id; }
-		std::string getType() const { return m_type; }
-		void		setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
-		bool		isSelected();
+		void					setName(std::string name) { m_name = name; }
+		std::string				getName() const { return m_name; }
+		EntityId				getId() const { return m_id; }
+		std::string				getType() const { return m_type; }
+		void					setScene(std::shared_ptr<Scene> pScene) { m_pScene = pScene; }
+		std::shared_ptr<Scene>	getScene() { return m_pScene; }
+		bool					isSelected();
 
 		void		to_json(json& j);
 		void		from_json(const json& j);

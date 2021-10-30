@@ -177,6 +177,11 @@ namespace Sogas
 		return m_sceneGraph->buildFromScene(shared_from_this());
 	}
 
+	void Scene::updateSceneGraphNode(EntityId entityId, SceneNodeType nodeType, void* data)
+	{
+		m_sceneGraph->updateNode(entityId, nodeType, data);
+	}
+
 	void Scene::setCamera(std::shared_ptr<Camera> pCamera)
 	{
 		m_pMainCamera = pCamera;

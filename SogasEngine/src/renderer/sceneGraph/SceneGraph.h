@@ -12,9 +12,10 @@ namespace Sogas
 	// corresponding ISceneNode.
 
 	// This maps actors to its potential diferent nodes
-	typedef std::map<EntityId, std::map<SceneNodeType, std::shared_ptr<ISceneNode>>> EntityToSceneNodesMap;
+	typedef std::map<SceneNodeType, std::shared_ptr<ISceneNode>> TypeNodeMap;
+	typedef std::map<EntityId, TypeNodeMap> EntityToSceneNodesMap;
 
-	typedef std::map<NodeId, std::shared_ptr<ISceneNode>> SceneNodeMap; // TODO: to be deleted
+	typedef std::map<NodeId, std::shared_ptr<ISceneNode>> SceneNodeMap;
 
 	class AlphaSceneNode
 	{
@@ -35,7 +36,8 @@ namespace Sogas
 	private:
 		std::shared_ptr<SceneNode> m_root;
 		std::shared_ptr<CameraNode> m_currentCamera;
-		SceneNodeMap m_nodeMap; // TODO: to be deleted
+		SceneNodeMap m_nodeMap;
+		EntityToSceneNodesMap m_entityNodesMap;
 		std::list<AlphaSceneNode> m_alphaNodes;
 
 	public:
@@ -51,6 +53,7 @@ namespace Sogas
 		bool addChild(NodeId id, std::shared_ptr<ISceneNode> child);
 		bool removeChild(NodeId id);
 		void addAlphaSceneNode(AlphaSceneNode node);
+		void updateNode(EntityId entityId, SceneNodeType nodeType, void* data);
 
 		void setCamera(std::shared_ptr<CameraNode> camera) { m_currentCamera = camera; }
 		std::shared_ptr<CameraNode> getCamera() const { return m_currentCamera; }

@@ -31,6 +31,13 @@ namespace Sogas
 		CONSTANT_ALPHA, ONE_MINUS_CONSTANT_ALPHA, SRC_ALPHA_SATURATE, SRC1_COLOR, ONE_MINUS_SRC1_COLOR, SRC1_ALPHA, ONE_MINUS_SRC1_ALPHA};
 	enum class DepthTypes { NEVER = 512, LESS, EQUAL, LEQUAL, GREATER, NOTEQUAL, GEQUAL, ALWAYS };
 
+	// Used to map an EntityId to the needed node type
+	enum class SceneNodeType
+	{
+		ROOT = 0, ANY, CAMERA, EMPTY, ENVIRONMENT, GEOMETRY, LIGHT, MATERIAL, 
+		LAST // invalid location (like an iterator.end())
+	};
+
 	const u32 MAX_COMPONENTS = 5;
 	typedef std::bitset<MAX_COMPONENTS> Signature;
 
