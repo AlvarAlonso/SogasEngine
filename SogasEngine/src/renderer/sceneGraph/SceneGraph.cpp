@@ -117,14 +117,22 @@ namespace Sogas
 			return;
 		}
 
-		TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(nodeType);
-		if (typeNodeIt == entityToSceneNodesIt->second.end())
+		if(nodeType == SceneNodeType::ANY)
 		{
-			SGSDEBUG("The node type specified has not been found in the type to scene node map");
-			return;
+			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.begin();
+			typeNodeIt->second->updateNodeTransform(data);
 		}
+		else
+		{
+			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(nodeType);
+			if (typeNodeIt == entityToSceneNodesIt->second.end())
+			{
+				SGSDEBUG("The node type specified has not been found in the type to scene node map");
+				return;
+			}
 
-		typeNodeIt->second->updateNode(data);
+			typeNodeIt->second->updateNode(data);
+		}
 	}
 
 	void SceneGraph::renderAlphaPass()

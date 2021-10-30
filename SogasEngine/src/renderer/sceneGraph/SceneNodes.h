@@ -31,6 +31,7 @@ namespace Sogas
 	protected:
 		NodeId nodeId; // TODO: 0 is invalid, 1 is root, the others are available as an ID for the other nodes
 		EntityId entityId;
+		SceneNodeType type;
 		glm::mat4 transform;
 		float radius;
 		std::string name; // debug purposes
@@ -63,6 +64,7 @@ namespace Sogas
 		virtual bool removeChild(NodeId id) = 0;
 
 		virtual void updateNode(void* data) = 0;
+		virtual void updateNodeTransform(void* data) = 0;
 
 		virtual ~ISceneNode() {};
 	};
@@ -93,6 +95,7 @@ namespace Sogas
 		virtual bool removeChild(NodeId id) override;
 
 		virtual void updateNode(void* data) override;
+		virtual void updateNodeTransform(void* data) override;
 	};
 
 	class RootNode : public SceneNode

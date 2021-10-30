@@ -90,6 +90,15 @@ namespace Sogas
 
 	void SceneNode::updateNode(void* data)
 	{
+		// TODO: This should update nothing. Each child has the responsibility to cast the void pointer to the appropiate types
+		// and update itself.
+		glm::mat4* newTransform = (glm::mat4*)data;
+		m_properties.transform = *newTransform;
+		newTransform = nullptr;
+	}
+
+	void SceneNode::updateNodeTransform(void* data)
+	{
 		glm::mat4* newTransform = (glm::mat4*)data;
 		m_properties.transform = *newTransform;
 		newTransform = nullptr;
