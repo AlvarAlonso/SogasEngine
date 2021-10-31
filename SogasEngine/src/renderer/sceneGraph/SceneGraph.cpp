@@ -117,10 +117,21 @@ namespace Sogas
 			return;
 		}
 
+		// The ANY type represents an update in the transform. We do not care about the type of node we change
+		// because all nodes belong to the same game object
 		if(nodeType == SceneNodeType::ANY)
 		{
-			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.begin();
-			typeNodeIt->second->updateNodeTransform(data);
+			//TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.begin();
+			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(SceneNodeType::MATERIAL);
+
+			if(typeNodeIt != entityToSceneNodesIt->second.end())
+			{
+				typeNodeIt->second->updateNodeTransform(data);
+			}
+			else
+			{
+				SGSDEBUG("Could not change the transform on the material node");
+			}
 		}
 		else
 		{
@@ -200,6 +211,15 @@ namespace Sogas
 			materialNode->addChild(geometryNode);
 			lightNode->addChild(materialNode);
 
+			TypeNodeMap* typeToNode = new TypeNodeMap;
+			typeToNode->insert({ SceneNodeType::LIGHT, lightNode });
+			typeToNode->insert({ SceneNodeType::MATERIAL, materialNode });
+			typeToNode->insert({ SceneNodeType::GEOMETRY, geometryNode });
+
+			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
+
+			typeToNode = nullptr;
+
 			return lightNode;
 		}
 		else if (entity->has<RenderComponent>())
@@ -215,6 +235,13 @@ namespace Sogas
 
 			materialNode->addChild(geometryNode);
 
+			TypeNodeMap* typeToNode = new TypeNodeMap;
+			typeToNode->insert({ SceneNodeType::MATERIAL, materialNode });
+			typeToNode->insert({ SceneNodeType::GEOMETRY, geometryNode });
+
+			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
+			typeToNode = nullptr;
+
 			return materialNode;
 		}
 		else if(entity->has<LightComponent>())
@@ -224,6 +251,12 @@ namespace Sogas
 
 			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append( "light"), light));
 
+			TypeNodeMap* typeToNode = new TypeNodeMap;
+			typeToNode->insert({ SceneNodeType::LIGHT, lightNode });
+
+			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
+			typeToNode = nullptr;
+
 			return lightNode;
 		}
 		else
@@ -231,7 +264,14 @@ namespace Sogas
 			glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
 			std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(getNextNodeID(), transform, entity->getName()));
 
+			TypeNodeMap* typeToNode = new TypeNodeMap;
+			typeToNode->insert({ SceneNodeType::EMPTY , emptyNode });
+
+			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
+
+			typeToNode = nullptr;
+
 			return emptyNode;
-		}			
+		}
 	}
 }

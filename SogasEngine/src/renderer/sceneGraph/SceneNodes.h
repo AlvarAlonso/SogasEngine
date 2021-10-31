@@ -38,11 +38,13 @@ namespace Sogas
 		MainRenderPass renderPass;
 	public:
 		const NodeId& getNodeId() const { return nodeId; }
+		const SceneNodeType getType() const { return type; }
 		glm::mat4 const& getTransform() const { return transform; }
 		float getRadius() const { return radius; }
 		MainRenderPass getMainRenderPass() const { return renderPass; }
 		void setMainRenderPass(MainRenderPass newRenderPass) { renderPass = newRenderPass; }
 		void setName(std::string newName) { name = newName; }
+		void setType(SceneNodeType newType) { type = newType; }
 	};
 
 	class ISceneNode
@@ -68,7 +70,6 @@ namespace Sogas
 
 		virtual ~ISceneNode() {};
 	};
-
 
 	class SceneNode : public ISceneNode
 	{

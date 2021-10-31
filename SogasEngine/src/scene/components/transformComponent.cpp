@@ -69,9 +69,8 @@ namespace Sogas
 		m_translation = translation; 
 		updateMatrix();
 		// TODO: Update scene graph
-		void* data = &translation;
 
-		scene->updateSceneGraphNode(id, SceneNodeType::ANY, data);
+		scene->updateSceneGraphNode(id, SceneNodeType::ANY, (void*)&translation);
 	}
 
 	// ----------------------------------------------

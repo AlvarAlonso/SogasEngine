@@ -99,14 +99,18 @@ namespace Sogas
 
 	void SceneNode::updateNodeTransform(void* data)
 	{
-		glm::mat4* newTransform = (glm::mat4*)data;
-		m_properties.transform = *newTransform;
+		glm::vec3* newTransform = (glm::vec3*)data;
+		m_properties.transform[3].x = newTransform->x;
+		m_properties.transform[3].y = newTransform->y;
+		m_properties.transform[3].z = newTransform->z;
 		newTransform = nullptr;
 	}
 
 	RootNode::RootNode(const NodeId nodeId, glm::mat4 transform, const std::string name)
 		: SceneNode(nodeId, transform, name)
 	{
+		m_properties.setType(SceneNodeType::ROOT);
+
 		m_children.reserve((size_t)MainRenderPass::LAST);
 
 		std::shared_ptr<SceneNode> opaqueGroup(new SceneNode(
@@ -145,6 +149,7 @@ namespace Sogas
 	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera)
 		: SceneNode(nodeId, transform, name), m_camera(camera)
 	{
+		m_properties.setType(SceneNodeType::CAMERA);
 	}
 
 	void CameraNode::render(SceneGraph* pScene)
@@ -193,6 +198,7 @@ namespace Sogas
 	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Light> light)
 		: SceneNode(nodeId, transform, name), m_light(light)
 	{
+		m_properties.setType(SceneNodeType::LIGHT);
 	}
 
 	void LightNode::updateNode(void* data)
@@ -202,6 +208,7 @@ namespace Sogas
 	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material)
 		: SceneNode(nodeId, transform, name), m_material(material)
 	{
+		m_properties.setType(SceneNodeType::MATERIAL);
 	}
 
 	void MaterialNode::preRender(SceneGraph* pScene)
@@ -220,6 +227,7 @@ namespace Sogas
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive)
 		: SceneNode(nodeId, transform, name), m_mesh(mesh), m_primitive(primitive)
 	{
+		m_properties.setType(SceneNodeType::GEOMETRY);
 	}
 
 	void GeometryNode::render(SceneGraph* pScene)
@@ -239,6 +247,7 @@ namespace Sogas
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment)
 		: SceneNode(nodeId, transform, name), m_environment(environment)
 	{
+		m_properties.setType(SceneNodeType::ENVIRONMENT);
 	}
 
 	void EnvironmentNode::preRender(SceneGraph* pScene)

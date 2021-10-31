@@ -12,6 +12,7 @@ namespace Sogas
 	// corresponding ISceneNode.
 
 	// This maps actors to its potential diferent nodes
+
 	typedef std::map<SceneNodeType, std::shared_ptr<ISceneNode>> TypeNodeMap;
 	typedef std::map<EntityId, TypeNodeMap> EntityToSceneNodesMap;
 
