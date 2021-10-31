@@ -189,6 +189,8 @@ namespace Sogas
 	public:
 		EmptyNode(NodeId nodeId, glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {};
 
+		virtual void preRender(SceneGraph* pScene) override;
+
 		virtual void updateNode(void* data) override;
 	};
 }

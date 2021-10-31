@@ -17,6 +17,12 @@
 
 namespace Sogas 
 {
+	// TODO: This is valid as long as we render one mesh at a time. It will be invalid once we start optimizing using batch rendering, etc...
+	struct RenderState
+	{
+		glm::mat4 transform;
+	} currentRenderState;
+
 	std::unique_ptr<Renderer::sceneData>Renderer::s_sceneData = std::make_unique<Renderer::sceneData>();
 	std::shared_ptr<Scene> Renderer::s_pScene;
 
@@ -162,15 +168,20 @@ namespace Sogas
 		}
 	}
 
-	void Renderer::submit(const std::shared_ptr<Material>& material, const glm::mat4& transform, const EntityId entityId)
+	void Renderer::submit(const glm::mat4& transform)
+	{
+		currentRenderState.transform = transform;
+	}
+
+	void Renderer::submit(const std::shared_ptr<Material>& material, const EntityId entityId)
 	{
 		renderStateInfo.currentShader = material->getShader();
 		std::shared_ptr<Shader> shader = renderStateInfo.currentShader.lock(); // reading purposes
 
 		shader->bind();
+		shader->setUniform("u_model", currentRenderState.transform);
 		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		shader->setUniform("u_cameraPosition", s_sceneData->cameraPosition);
-		shader->setUniform("u_model", transform);
 		shader->setUniform("u_color", material->getMaterialProperties().color);
 		shader->setUniform("u_metalness", material->getMaterialProperties().metallicFactor);
 		shader->setUniform("u_roughness", material->getMaterialProperties().roughnessFactor);

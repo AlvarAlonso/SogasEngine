@@ -217,7 +217,7 @@ namespace Sogas
 		// call renderer functions to set material
 
 		// [TODO]: Should this be setting the transform? Or should each geometry be awared of its position?
-		Renderer::get()->submit(m_material.lock(), getNodeProperties()->getTransform(), getNodeProperties()->getNodeId());
+		Renderer::get()->submit(m_material.lock(), getNodeProperties()->getNodeId());
 	}
 
 	void MaterialNode::updateNode(void* data)
@@ -259,9 +259,16 @@ namespace Sogas
 	{
 		// TODO: render the sky same way as the EnvironmentComponent
 	}
+
 	void EnvironmentNode::updateNode(void* data)
 	{
 	}
+
+	void EmptyNode::preRender(SceneGraph* pScene)
+	{
+		Renderer::get()->submit(m_properties.getTransform());
+	}
+
 	void EmptyNode::updateNode(void* data)
 	{
 	}

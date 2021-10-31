@@ -68,9 +68,8 @@ namespace Sogas
 		std::shared_ptr<Scene> scene = m_pOwner.lock()->getScene();
 		m_translation = translation; 
 		updateMatrix();
-		// TODO: Update scene graph
 
-		scene->updateSceneGraphNode(id, SceneNodeType::ANY, (void*)&translation);
+		scene->updateSceneGraphNode(id, SceneNodeType::EMPTY, (void*)&translation);
 	}
 
 	// ----------------------------------------------
