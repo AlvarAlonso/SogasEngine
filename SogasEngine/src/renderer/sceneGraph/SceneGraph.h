@@ -47,6 +47,16 @@ namespace Sogas
 
 		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
+		template<typename T>
+		void addNode(EntityId id)
+		{
+			NodeId nodeId = getNextNodeID();
+			glm::mat4 transform = glm::mat4(1);
+			T newNode = T();
+
+			// TODO: finish this function
+		}
+
 		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
 		void onUpdate();
 

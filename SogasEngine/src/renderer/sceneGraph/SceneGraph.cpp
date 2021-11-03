@@ -201,14 +201,14 @@ namespace Sogas
 		{
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(" light"), light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(LightNode::getStaticName()), light));
 
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(" material"), material));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(MaterialNode::getStaticName()), material));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
 			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append( " geometry"), mesh, primitive));
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(GeometryNode::getStaticName()), mesh, primitive));
 
 			materialNode->addChild(geometryNode);
 			lightNode->addChild(materialNode);
@@ -227,11 +227,11 @@ namespace Sogas
 		else if (entity->has<RenderComponent>())
 		{
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(" material"), material));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(MaterialNode::getStaticName()), material));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
 			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(" geometry"), mesh, primitive));
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(GeometryNode::getStaticName()), mesh, primitive));
 
 			materialNode->addChild(geometryNode);
 			emptyNode->addChild(materialNode);
@@ -248,7 +248,7 @@ namespace Sogas
 		{
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append( "light"), light));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(LightNode::getStaticName()), light));
 
 			emptyNode->addChild(lightNode);
 
