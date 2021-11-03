@@ -49,10 +49,9 @@ namespace Sogas
 		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
 		template<typename T>
-		void addNode(EntityId entityId, glm::mat4 transform, void* data)
+		void addNode(StrongEntityPtr entity, glm::mat4 transform, void* data)
 		{
 			NodeId nodeId = getNextNodeID();
-			StrongEntityPtr entity = Scene::findEntityById(entityId);
 			
 			if(T::getStaticName() == "_empty")
 			{
@@ -65,6 +64,9 @@ namespace Sogas
 			std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, nodeName));
 			// populate the new node
 			newNode->updateNode(data);
+
+			// TODO: place node in the scene graph. If it has a parent, it must be placed as a child of said parent. If not,
+			// it is placed as a child of one of the root node groups.
 		}
 
 		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
@@ -84,6 +86,8 @@ namespace Sogas
 		void renderAlphaPass();
 
 		NodeId getNextNodeID();
+
+		bool placeNode(SceneNode &node);
 
 		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
 		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);

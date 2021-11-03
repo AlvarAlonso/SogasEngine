@@ -160,6 +160,17 @@ namespace Sogas
 		return nextID;
 	}
 
+	bool SceneGraph::placeNode(SceneNode& node)
+	{
+		// TODO:
+
+		// Get entityId and parent information
+		// If it has no parent and the node is empty, place as a child of opaque group
+		// If it has parent and is empty, place as a child of the last node of the parent.
+		// If the node is not empty, search the corresponding place in the nodes belonging to the entity
+		return false;
+	}
+
 	std::shared_ptr<SceneNode> SceneGraph::createTreeFromEntity(StrongEntityPtr entity)
 	{
 		// create the nodes of the entity
