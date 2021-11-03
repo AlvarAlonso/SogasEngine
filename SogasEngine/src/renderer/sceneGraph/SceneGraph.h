@@ -2,6 +2,7 @@
 
 #include "renderer/renderer.h"
 #include "SceneNodes.h"
+#include "scene/entity.h"
 
 namespace Sogas
 {
@@ -48,13 +49,22 @@ namespace Sogas
 		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
 		template<typename T>
-		void addNode(EntityId id)
+		void addNode(EntityId entityId, glm::mat4 transform, void* data)
 		{
 			NodeId nodeId = getNextNodeID();
-			glm::mat4 transform = glm::mat4(1);
-			T newNode = T();
+			StrongEntityPtr entity = Scene::findEntityById(entityId);
+			
+			if(T::getStaticName() == "_empty")
+			{
+				std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, entity->getName()));
+				return;
+			}
 
-			// TODO: finish this function
+			std::string nodeName = entity->getName().append(T::getStaticName());
+			// generate new node for an existing entity represented by an empty node
+			std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, nodeName));
+			// populate the new node
+			newNode->updateNode(data);
 		}
 
 		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
