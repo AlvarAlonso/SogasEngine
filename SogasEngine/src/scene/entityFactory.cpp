@@ -32,6 +32,7 @@ namespace Sogas
 		// No xml or json at the moment, create default entity
 		
 		// TODO: generate the ID with some other function
+		// the value 0 is an invalid number
 		m_lastEntityId++;
 
 		StrongEntityPtr pEntity(new Entity(m_lastEntityId));

@@ -34,7 +34,7 @@ namespace Sogas
 	// Used to map an EntityId to the needed node type
 	enum class SceneNodeType
 	{
-		ROOT = 0, ANY, CAMERA, EMPTY, ENVIRONMENT, GEOMETRY, LIGHT, MATERIAL, 
+		ROOT = 0, ANY, EMPTY, CAMERA, ENVIRONMENT, LIGHT, MATERIAL, GEOMETRY, // order matters 
 		LAST // invalid location (like an iterator.end())
 	};
 
@@ -42,7 +42,7 @@ namespace Sogas
 	typedef std::bitset<MAX_COMPONENTS> Signature;
 
 	// ECS
-	typedef u32 EntityId;
+	typedef u32 EntityId; // a value of 0 represents an invalid entity
 	typedef u32 ComponentId;
 
 	typedef std::shared_ptr<Entity> StrongEntityPtr;

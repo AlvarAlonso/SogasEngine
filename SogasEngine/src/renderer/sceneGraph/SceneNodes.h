@@ -38,7 +38,8 @@ namespace Sogas
 		MainRenderPass renderPass;
 	public:
 		const NodeId& getNodeId() const { return nodeId; }
-		const SceneNodeType getType() const { return type; }
+		const EntityId& getEntityId() const { return entityId; }
+		const SceneNodeType& getType() const { return type; }
 		glm::mat4 const& getTransform() const { return transform; }
 		float getRadius() const { return radius; }
 		MainRenderPass getMainRenderPass() const { return renderPass; }

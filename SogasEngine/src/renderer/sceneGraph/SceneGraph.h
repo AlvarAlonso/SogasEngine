@@ -22,7 +22,7 @@ namespace Sogas
 	class AlphaSceneNode
 	{
 	public:
-		std::shared_ptr<SceneNode> m_node;
+		std::shared_ptr<SceneNode> m_pNode;
 		std::weak_ptr<Material> m_material;
 		glm::mat4 m_globalTransform;
 		f32 m_distanceToCamera;
@@ -73,6 +73,9 @@ namespace Sogas
 		void onUpdate();
 
 		std::shared_ptr<ISceneNode> findNode(NodeId id);
+		std::shared_ptr<ISceneNode> findNode(EntityId entityId, SceneNodeType nodeType);
+		std::shared_ptr<ISceneNode> findLastEntityNode(EntityId entityId, SceneNodeType nodeType = SceneNodeType::LAST);
+
 		bool addChild(NodeId id, std::shared_ptr<ISceneNode> child);
 		bool removeChild(NodeId id);
 		void addAlphaSceneNode(AlphaSceneNode node);
@@ -87,7 +90,7 @@ namespace Sogas
 
 		NodeId getNextNodeID();
 
-		bool placeNode(SceneNode &node);
+		bool placeNode(SceneNode &node, EntityId entityId, EntityId parentId = 0);
 
 		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
 		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);
