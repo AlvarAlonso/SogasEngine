@@ -99,7 +99,19 @@ namespace Sogas
 
 	std::shared_ptr<ISceneNode> SceneGraph::findLastEntityNode(EntityId entityId, SceneNodeType nodeType)
 	{
-		for(u32 type = (u32)((u32)nodeType - 1); type >= (u32)SceneNodeType::EMPTY; type--)
+		u32 type = 0;
+
+		// if the node is empty, its parent must be a node from another entity
+		if(nodeType == SceneNodeType::EMPTY)
+		{
+			type = (u32)(u32(SceneNodeType::LAST));
+		}
+		else
+		{
+			type = (u32)((u32)nodeType - 1);
+		}
+
+		for(type; type >= (u32)SceneNodeType::EMPTY; type--)
 		{
 			std::shared_ptr<ISceneNode> lastNode = findNode(entityId, (SceneNodeType)type);
 
@@ -196,50 +208,38 @@ namespace Sogas
 		return nextID;
 	}
 
-	bool SceneGraph::placeNode(SceneNode& node, EntityId entityId, EntityId parentId)
+	bool SceneGraph::placeNode(std::shared_ptr<SceneNode> node, EntityId entityId, EntityId parentId)
 	{
-		// TODO:
-
-		// if the node is empty
-		if (node.getNodeProperties()->getType() == SceneNodeType::EMPTY) // TODO: change the way to access node properties because it looks shitty as fuck
+		SceneNodeType nodeType = node->getNodeProperties()->getType();
+		// if the node is empty and it has parent
+		if (parentId == 0 && nodeType == SceneNodeType::EMPTY) // TODO: change the way to access node properties because it looks shitty as fuck
 		{
-			// if it has parent
-			if (parentId == 0)
-			{
-				// place as a child of opaque group
-				return addChild(node.getNodeProperties()->getNodeId(), findNode((u32)MainRenderPass::OPAQUE));
-			}
-			// if it does not have parent
-			else
-			{
-				// the current child of the last node is childed to the new node
-				// WARNING: children have a pointer to the parent, but it is never set, so I amb not setting this pointer to null anywhere
-				std::shared_ptr<ISceneNode> lastNode = findLastEntityNode(entityId);
-				SceneNodeList lastNodeChildren = lastNode->getChildren();
-				for (size_t i = 0; i < lastNodeChildren.size(); i++)
-				{
-					lastNode->removeChild(lastNodeChildren[i]->getNodeProperties()->getNodeId());
-					node.addChild(lastNodeChildren[i]);
-				}
-
-				// the new node is placed as a child of the last node of the parent.
-				return addChild(node.getNodeProperties()->getNodeId(), lastNode);
-			}
+			return addChild(findNode((u32)MainRenderPass::OPAQUE)->getNodeProperties()->getNodeId(), node);
 		}
-		// if the node is not empty
 		else
 		{
-			// search the corresponding place in the nodes belonging to the entity
-			std::shared_ptr<ISceneNode> lastNode = findLastEntityNode(entityId, node.getNodeProperties()->getType());
+			std::shared_ptr<ISceneNode> lastNode = nullptr;
+
+			if(nodeType == SceneNodeType::EMPTY)
+			{
+				// search the corresponding place in the nodes belonging to the parent entity
+				lastNode = findLastEntityNode(parentId, nodeType);
+			}
+			else
+			{
+				// search the corresponding place in the nodes belonging to the entity
+				lastNode = findLastEntityNode(entityId, nodeType);
+			}
+
 			SceneNodeList lastNodeChildren = lastNode->getChildren();
 			for (size_t i = 0; i < lastNodeChildren.size(); i++)
 			{
 				lastNode->removeChild(lastNodeChildren[i]->getNodeProperties()->getNodeId());
-				node.addChild(lastNodeChildren[i]);
+				node->addChild(lastNodeChildren[i]);
 			}
 
 			// the new node is placed as a child of the last node of the parent.
-			return addChild(node.getNodeProperties()->getNodeId(), lastNode);
+			return addChild(lastNode->getNodeProperties()->getNodeId(), node);
 		}
 		
 		return false;

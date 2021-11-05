@@ -55,6 +55,7 @@ namespace Sogas
 			
 			if(T::getStaticName() == "_empty")
 			{
+				// TODO: WTF is that
 				std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, entity->getName()));
 				return;
 			}
@@ -67,6 +68,7 @@ namespace Sogas
 
 			// TODO: place node in the scene graph. If it has a parent, it must be placed as a child of said parent. If not,
 			// it is placed as a child of one of the root node groups.
+			placeNode(newNode, entity->getId(), entity->getParent()->getId());
 		}
 
 		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
@@ -90,7 +92,7 @@ namespace Sogas
 
 		NodeId getNextNodeID();
 
-		bool placeNode(SceneNode &node, EntityId entityId, EntityId parentId = 0);
+		bool placeNode(std::shared_ptr<SceneNode> node, EntityId entityId, EntityId parentId = 0);
 
 		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
 		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);
