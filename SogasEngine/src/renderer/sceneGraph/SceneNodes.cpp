@@ -268,5 +268,6 @@ namespace Sogas
 
 	void EmptyNode::updateNode(void* data)
 	{
+		// TODO: update transform
 	}
 }

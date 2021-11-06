@@ -57,6 +57,10 @@ namespace Sogas
 			const auto& parent = findEntityById(parentId);
 			parent->addChild(entity);
 		}
+
+		// add to render scene graph
+		m_sceneGraph->addNode<EmptyNode>(entity, glm::mat4(1), nullptr);
+
 		return entity;
 	}
 

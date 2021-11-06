@@ -53,6 +53,15 @@ namespace Sogas
 		StrongEntityPtr findEntityById(EntityId entityId);
 
 		bool buildSceneGraph();
+
+		/*
+		template<typename T>
+		void addSceneGraphNode(StrongEntityPtr entity, glm::mat4 transform, void* data)
+		{
+			m_sceneGraph->addNode<T>(entity, transform, data);
+		}
+		*/
+
 		void updateSceneGraphNode(EntityId entityId, SceneNodeType nodeType, void* data);
 		void setCamera(std::shared_ptr<Camera> pCamera); // TODO: [Temporal]: This should change when the camera is created from a CameraComponent
 
@@ -67,6 +76,8 @@ namespace Sogas
 		template <class T>
 		void addComponent(StrongEntityPtr entity)
 		{
+			// TODO: maybe put the emptyNode creation also here, instead of handling it during entity creation
+
 			//if (!T:s_name)
 			//{
 			//	SGSWARN("No valid component name given.");
@@ -78,6 +89,19 @@ namespace Sogas
 			StrongEntityComponentPtr pComponent = m_pEntityFactory->createComponent(T::s_name);
 			entity->addComponent(pComponent);
 			//pComponent->setOwner(entity);
+
+			// add node to render scene graph 
+			// TODO: refactor this which is currently hardcoded and avoid runtime type checking
+			std::string componentName = T::s_name;
+			if(componentName == "RenderComponent")
+			{
+				m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&dynamic_cast<RenderComponent*>(pComponent.get())->getMesh());
+				m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&dynamic_cast<RenderComponent*>(pComponent.get())->getMaterial());
+			}
+			else if (componentName == "LightComponent")
+			{
+				//m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (LightComponent)pComponent->getLight());
+			}
 		}
 
 		/*

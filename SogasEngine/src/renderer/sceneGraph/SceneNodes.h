@@ -48,7 +48,7 @@ namespace Sogas
 		void setType(SceneNodeType newType) { type = newType; }
 	};
 
-	class ISceneNode
+	class SGS ISceneNode
 	{
 	public:
 		virtual const SceneNodeProperties* const getNodeProperties() const = 0;
@@ -73,7 +73,7 @@ namespace Sogas
 		virtual ~ISceneNode() {};
 	};
 
-	class SceneNode : public ISceneNode
+	class SGS SceneNode : public ISceneNode
 	{
 	protected:
 		SceneNodeList m_children;
@@ -101,7 +101,7 @@ namespace Sogas
 		virtual void updateNodeTransform(void* data) override;
 	};
 
-	class RootNode : public SceneNode
+	class SGS RootNode : public SceneNode
 	{
 	public:
 		RootNode(const NodeId nodeId = 1, glm::mat4 transform = glm::mat4(1), const std::string name = "RootNode");
@@ -114,11 +114,12 @@ namespace Sogas
 		void resetNode();
 	};
 
-	class CameraNode : public SceneNode
+	class SGS CameraNode : public SceneNode
 	{
 	private:
 		std::weak_ptr<Camera> m_camera;
 	public:
+		CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {}
 		CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Camera> camera);
 		static const std::string getStaticName() { return "_camera"; };
 
@@ -135,24 +136,26 @@ namespace Sogas
 		inline void setPosition(glm::vec3 pos);
 	};
 
-	class LightNode : public SceneNode
+	class SGS LightNode : public SceneNode
 	{
 	private:
 		std::weak_ptr<Light> m_light;
 
 	public:
+		LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {}
 		LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Light> light);
 		static const std::string getStaticName() { return "_light"; };
 
 		virtual void updateNode(void* data) override;
 	};
 
-	class MaterialNode: public SceneNode
+	class SGS MaterialNode: public SceneNode
 	{
 	private:
 		std::weak_ptr<Material> m_material;
 
 	public:
+		MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name){}
 		MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Material> material);
 		static const std::string getStaticName() { return "_material"; };
 
@@ -161,13 +164,14 @@ namespace Sogas
 		virtual void updateNode(void* data) override;
 	};
 
-	class GeometryNode : public SceneNode
+	class SGS GeometryNode : public SceneNode
 	{
 	private:
 		std::weak_ptr<Mesh> m_mesh;
 		Primitive m_primitive;
 
 	public:
+		GeometryNode(const NodeId nodeId, const glm::mat4 transform, std::string name) : m_primitive(Primitive::TRIANGLES), SceneNode(nodeId, transform, name) {}
 		GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive);
 		static const std::string getStaticName() { return "_geometry"; };
 
@@ -176,12 +180,13 @@ namespace Sogas
 		virtual void updateNode(void* data) override;
 	};
 
-	class EnvironmentNode : public SceneNode
+	class SGS EnvironmentNode : public SceneNode
 	{
 	private:
 		std::weak_ptr<Environment> m_environment;
 
 	public:
+		EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {}
 		EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment);
 		static const std::string getStaticName() { return "_environment"; };
 
@@ -193,7 +198,7 @@ namespace Sogas
 
 	// represents a node that just adds a transfrom in the scene graph
 	// and can occlude all its children with the isVisible parameter
-	class EmptyNode : public SceneNode
+	class SGS EmptyNode : public SceneNode
 	{
 	public:
 		EmptyNode(NodeId nodeId, glm::mat4 transform, std::string name) : SceneNode(nodeId, transform, name) {};

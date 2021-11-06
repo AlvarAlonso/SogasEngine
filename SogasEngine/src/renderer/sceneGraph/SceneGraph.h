@@ -33,7 +33,7 @@ namespace Sogas
 		}
 	};
 
-	class SceneGraph
+	class SGS SceneGraph
 	{
 	private:
 		std::shared_ptr<SceneNode> m_root;
@@ -57,6 +57,8 @@ namespace Sogas
 			{
 				// TODO: WTF is that
 				std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, entity->getName()));
+				placeNode(newNode, entity->getId(), entity->getParent()->getId());
+
 				return;
 			}
 

@@ -10,6 +10,17 @@
 
 namespace Sogas
 {
+	// TODO: use these name constants instead of the hardcoded string
+	// TODO: moved the named constants to another file due to linking errors
+	// component static names
+	/*
+	const char* RENDER_COMPONENT_NAME = "RenderComponent";
+	const char* LIGHT_COMPONENT_NAME = "LightComponent";
+	const char* CAMERA_COMPONENT_NAME = "CameraComponent";
+	const char* ENTITY_SCRIPT_COMPONENT_NAME = "EntityScriptComponent";
+	const char* TRANSFORM_COMPONENT_NAME = "TransformComponent";
+	*/
+
 	using json = nlohmann::json;
 
 	//TODO: find a better way to find a const char* in a map
