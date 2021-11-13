@@ -59,6 +59,8 @@ namespace Sogas
 		}
 
 		// add to render scene graph
+		if (!m_isInitialized) return entity;
+
 		m_sceneGraph->addNode<EmptyNode>(entity, glm::mat4(1), nullptr);
 
 		return entity;
@@ -108,6 +110,8 @@ namespace Sogas
 		}
 
 		// TODO: some way to destroy an entity deleting all the references to it automatically
+
+		// TODO: delete node in scene graph
 	}
 
 	/*
@@ -178,7 +182,12 @@ namespace Sogas
 
 	bool Scene::buildSceneGraph()
 	{
-		return m_sceneGraph->buildFromScene(shared_from_this());
+		bool result = false;
+		result = m_sceneGraph->buildFromScene(shared_from_this());
+
+		if (result)
+			m_isInitialized = true;
+		return result;
 	}
 
 	void Scene::updateSceneGraphNode(EntityId entityId, SceneNodeType nodeType, void* data)

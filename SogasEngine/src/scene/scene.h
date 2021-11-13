@@ -38,6 +38,8 @@ namespace Sogas
 		Scene(const char* filename);
 		~Scene();
 
+		bool m_isInitialized = false;
+
 		StrongEntityPtr createEntity(const std::string& name = std::string(), const EntityId parentId = 0);
 		void			destroyEntity(EntityId entityId);
 		void			removeEntity(EntityId entityId);
@@ -92,6 +94,8 @@ namespace Sogas
 
 			// add node to render scene graph 
 			// TODO: refactor this which is currently hardcoded and avoid runtime type checking
+			if (!m_isInitialized) return;
+
 			std::string componentName = T::s_name;
 			if(componentName == "RenderComponent")
 			{

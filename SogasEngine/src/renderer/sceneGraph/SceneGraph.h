@@ -48,29 +48,54 @@ namespace Sogas
 
 		bool buildFromScene(std::weak_ptr<Scene> pScene);
 
+		// Scene Graph exposes addNode to add the corresponding nodes everytime a component is placed onto an entity
+		// The nodes to add are specified in the places of the code where the component is added and those nodes depend on
+		// the type of the component.
+		// Depending on the type of the node and if it has parent or not, is placed in a different position in the scene graph
+		// and the EntityNodeMap (a map between an entity and its nodes) is mapped differently.
+
+		// TODO: maybe make the function addNode return a boolean
 		template<typename T>
 		void addNode(StrongEntityPtr entity, glm::mat4 transform, void* data)
 		{
+			EntityId entityId = entity->getId();
 			NodeId nodeId = getNextNodeID();
 			
 			if(T::getStaticName() == "_empty")
 			{
 				// TODO: WTF is that
-				std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, entity->getName()));
-				placeNode(newNode, entity->getId(), entity->getParent()->getId());
+				std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, transform, entity->getName(), entityId));
+
+				Entity* parent = entity->getParent();
+				EntityId parentId = 0;
+				if (parent)
+				{
+					parentId = parent->getId();
+				}
+
+				if (placeNode(newNode, entity->getId(), parentId))
+					registerNodeToMaps(newNode);
 
 				return;
 			}
 
 			std::string nodeName = entity->getName().append(T::getStaticName());
 			// generate new node for an existing entity represented by an empty node
-			std::shared_ptr<T> newNode = std::make_shared<T>(T(getNextNodeID(), transform, nodeName));
+			std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, transform, nodeName, entityId));
 			// populate the new node
 			newNode->updateNode(data);
 
-			// TODO: place node in the scene graph. If it has a parent, it must be placed as a child of said parent. If not,
+			// place node in the scene graph. If it has a parent, it must be placed as a child of said parent. If not,
 			// it is placed as a child of one of the root node groups.
-			placeNode(newNode, entity->getId(), entity->getParent()->getId());
+			Entity* parent = entity->getParent();
+			EntityId parentId = 0;
+			if(parent)
+			{
+				parentId = parent->getId();
+			}
+
+			if (placeNode(newNode, entity->getId(), parentId))
+				registerNodeToMaps(newNode);
 		}
 
 		void onRender(std::shared_ptr<Scene>& pScene, std::shared_ptr<Camera>& pCamera);
@@ -95,6 +120,7 @@ namespace Sogas
 		NodeId getNextNodeID();
 
 		bool placeNode(std::shared_ptr<SceneNode> node, EntityId entityId, EntityId parentId = 0);
+		bool registerNodeToMaps(std::shared_ptr<ISceneNode> node);
 
 		std::shared_ptr<SceneNode> createTreeFromEntity(StrongEntityPtr entity);
 		std::shared_ptr<SceneNode> createNodesFromEntity(StrongEntityPtr entity);

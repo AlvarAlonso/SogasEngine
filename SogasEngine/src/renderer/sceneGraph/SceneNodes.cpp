@@ -10,9 +10,10 @@
 
 namespace Sogas
 {
-	SceneNode::SceneNode(const NodeId nodeId, const glm::mat4 transform, const std::string name)
+	SceneNode::SceneNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, const EntityId entityId)
 	{
 		m_properties.nodeId = nodeId;
+		m_properties.entityId = entityId;
 		m_properties.radius = 0.0f;
 		m_properties.transform = transform;
 		m_properties.name = name;
@@ -143,8 +144,14 @@ namespace Sogas
 		// TODO: clean up the root node
 	}
 
-	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera)
-		: SceneNode(nodeId, transform, name), m_camera(camera)
+	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::CAMERA);
+	}
+
+	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId), m_camera(camera)
 	{
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
@@ -192,8 +199,14 @@ namespace Sogas
 		m_camera.lock()->setPosition(pos);
 	}
 
-	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Light> light)
-		: SceneNode(nodeId, transform, name), m_light(light)
+	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::LIGHT);
+	}
+
+	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Light> light, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId), m_light(light)
 	{
 		m_properties.setType(SceneNodeType::LIGHT);
 	}
@@ -202,8 +215,14 @@ namespace Sogas
 	{
 	}
 
-	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material)
-		: SceneNode(nodeId, transform, name), m_material(material)
+	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::MATERIAL);
+	}
+
+	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId), m_material(material)
 	{
 		m_properties.setType(SceneNodeType::MATERIAL);
 	}
@@ -221,8 +240,14 @@ namespace Sogas
 	{
 	}
 
-	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive)
-		: SceneNode(nodeId, transform, name), m_mesh(mesh), m_primitive(primitive)
+	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
+		: m_primitive(Primitive::TRIANGLES), SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::GEOMETRY);
+	}
+
+	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId), m_mesh(mesh), m_primitive(primitive)
 	{
 		m_properties.setType(SceneNodeType::GEOMETRY);
 	}
@@ -241,8 +266,14 @@ namespace Sogas
 	{
 	}
 
-	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment)
-		: SceneNode(nodeId, transform, name), m_environment(environment)
+	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::ENVIRONMENT);
+	}
+
+	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId), m_environment(environment)
 	{
 		m_properties.setType(SceneNodeType::ENVIRONMENT);
 	}
@@ -259,6 +290,12 @@ namespace Sogas
 
 	void EnvironmentNode::updateNode(void* data)
 	{
+	}
+
+	EmptyNode::EmptyNode(NodeId nodeId, glm::mat4 transform, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, transform, name, entityId)
+	{
+		m_properties.setType(SceneNodeType::EMPTY);
 	}
 
 	void EmptyNode::preRender(SceneGraph* pScene)
