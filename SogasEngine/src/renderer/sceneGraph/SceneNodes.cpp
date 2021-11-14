@@ -151,7 +151,7 @@ namespace Sogas
 	}
 
 	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_camera(camera)
+		: SceneNode(nodeId, transform, name, entityId), m_pCamera(camera.lock().get())
 	{
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
@@ -176,27 +176,27 @@ namespace Sogas
 
 	void CameraNode::lookAt(const glm::vec3 position, const glm::vec3 center)
 	{
-		m_camera.lock()->lookat(position, center);
+		m_pCamera->lookat(position, center);
 	}
 
 	glm::mat4 CameraNode::getView()
 	{
-		return m_camera.lock()->getView();
+		return m_pCamera->getView();
 	}
 
 	glm::mat4 CameraNode::getProjection()
 	{
-		return m_camera.lock()->getProjection();
+		return m_pCamera->getProjection();
 	}
 
 	glm::mat4 CameraNode::getViewProjection()
 	{
-		return m_camera.lock()->getViewProjection();
+		return m_pCamera->getViewProjection();
 	}
 
 	inline void CameraNode::setPosition(glm::vec3 pos)
 	{
-		m_camera.lock()->setPosition(pos);
+		m_pCamera->setPosition(pos);
 	}
 
 	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
@@ -206,13 +206,14 @@ namespace Sogas
 	}
 
 	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Light> light, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_light(light)
+		: SceneNode(nodeId, transform, name, entityId), m_pLight(light.lock().get())
 	{
 		m_properties.setType(SceneNodeType::LIGHT);
 	}
 
 	void LightNode::updateNode(void* data)
 	{
+		m_pLight = static_cast<Light*>(data);
 	}
 
 	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
@@ -222,7 +223,7 @@ namespace Sogas
 	}
 
 	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_material(material)
+		: SceneNode(nodeId, transform, name, entityId), m_pMaterial(material.lock().get())
 	{
 		m_properties.setType(SceneNodeType::MATERIAL);
 	}
@@ -233,11 +234,13 @@ namespace Sogas
 		// call renderer functions to set material
 
 		// [TODO]: Should this be setting the transform? Or should each geometry be awared of its position?
-		Renderer::get()->submit(m_material.lock(), getNodeProperties()->getNodeId());
+		if(m_pMaterial)
+			Renderer::get()->submit(m_pMaterial, getNodeProperties()->getNodeId());
 	}
 
 	void MaterialNode::updateNode(void* data)
 	{
+		m_pMaterial = static_cast<Material*>(data);
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
@@ -247,7 +250,7 @@ namespace Sogas
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_mesh(mesh), m_primitive(primitive)
+		: SceneNode(nodeId, transform, name, entityId), m_pMesh(mesh.lock().get()), m_primitive(primitive)
 	{
 		m_properties.setType(SceneNodeType::GEOMETRY);
 	}
@@ -259,11 +262,13 @@ namespace Sogas
 
 		// TODO: render indexed
 		// call renderer::submit with the mesh, the material used will be the set by a previous material node
-		Renderer::get()->submit(m_mesh.lock(), m_primitive);
+		if(m_pMesh)
+			Renderer::get()->submit(m_pMesh, m_primitive);
 	}
 
 	void GeometryNode::updateNode(void* data)
 	{
+		m_pMesh = static_cast<Mesh*>(data);
 	}
 
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
@@ -273,7 +278,7 @@ namespace Sogas
 	}
 
 	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_environment(environment)
+		: SceneNode(nodeId, transform, name, entityId), m_pEnvironment(environment.lock().get())
 	{
 		m_properties.setType(SceneNodeType::ENVIRONMENT);
 	}

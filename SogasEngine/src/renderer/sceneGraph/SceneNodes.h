@@ -117,7 +117,7 @@ namespace Sogas
 	class SGS CameraNode : public SceneNode
 	{
 	private:
-		std::weak_ptr<Camera> m_camera;
+		Camera* m_pCamera;
 	public:
 		CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId = 0);
 		CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name, std::weak_ptr<Camera> camera, const EntityId entityId = 0);
@@ -139,7 +139,7 @@ namespace Sogas
 	class SGS LightNode : public SceneNode
 	{
 	private:
-		std::weak_ptr<Light> m_light;
+		Light* m_pLight;
 
 	public:
 		LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId = 0);
@@ -152,7 +152,7 @@ namespace Sogas
 	class SGS MaterialNode: public SceneNode
 	{
 	private:
-		std::weak_ptr<Material> m_material;
+		Material* m_pMaterial;
 
 	public:
 		MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId = 0);
@@ -167,7 +167,7 @@ namespace Sogas
 	class SGS GeometryNode : public SceneNode
 	{
 	private:
-		std::weak_ptr<Mesh> m_mesh;
+		Mesh* m_pMesh;
 		Primitive m_primitive;
 
 	public:
@@ -183,7 +183,7 @@ namespace Sogas
 	class SGS EnvironmentNode : public SceneNode
 	{
 	private:
-		std::weak_ptr<Environment> m_environment;
+		Environment* m_pEnvironment;
 
 	public:
 		EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId = 0);

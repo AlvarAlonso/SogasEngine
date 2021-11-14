@@ -52,8 +52,8 @@ namespace Sogas
 		// different submits for different kinds of render primitives (materials, geometry, lights, etc...)
 		// TODO: in the future, submits will only submit render info to a queue, and this queue will be divided in batches that will be renderer separately
 		void submit(const glm::mat4& transform);
-		void submit(const std::shared_ptr<Material>& material, const EntityId entityId); // TODO: transform and entityID should be set somewhere else
-		void submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive);
+		void submit(Material* pMaterial, const EntityId entityId); // TODO: transform and entityID should be set somewhere else
+		void submit(Mesh* pMesh, const Primitive primitive);
 		void renderEnvironment(std::weak_ptr<Environment> environment);
 		void endScene();
 		void shutdown();

@@ -22,7 +22,7 @@ namespace Sogas
 		virtual LuaPlus::LuaObject toLuaObject(LuaPlus::LuaObject self) const override { return LuaPlus::LuaObject(); };
 		virtual void fromLuaObject(LuaPlus::LuaObject) override {};
 
-		std::weak_ptr<Light> getLight() const { return m_light; }
+		std::shared_ptr<Light> getLight() const { return m_light; }
 		inline glm::vec3& getColor() { return m_light->m_color; }
 		inline f32& getMaxDistance() { return m_light->m_maxDistance; }
 		inline f32& getIntensity() { return m_light->m_intensity; }

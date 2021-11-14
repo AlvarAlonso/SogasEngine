@@ -28,7 +28,7 @@ namespace Sogas
 
 		//inline void setMaterial(Material* material) { m_pMaterial = std::make_shared<Material>(material); }
 		std::shared_ptr<Mesh>				getMesh(void) const { return m_pMesh; }
-		inline std::shared_ptr<Material>&	getMaterial() { return m_pMesh->getMaterial(); }
+		inline std::shared_ptr<Material>	getMaterial() { if (!m_pMesh) { return nullptr; } return m_pMesh->getMaterial(); }
 		inline std::shared_ptr<Shader>&		getShader() { return m_pMesh->getMaterial()->getShader(); }
 		inline const Primitive				getPrimitive() { return m_primitive; }
 

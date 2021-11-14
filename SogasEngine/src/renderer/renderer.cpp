@@ -87,7 +87,7 @@ namespace Sogas
 	void Renderer::submit(const std::shared_ptr<RenderComponent>& renderComponent, const glm::mat4& transform)
 	{
 
-		auto& material = renderComponent->getMaterial();
+		auto material = renderComponent->getMaterial();
 		std::shared_ptr<Shader> shader;
 		// TODO This is a bug right now, first outline is black and all outlines not shown while environmnet is true.
 		// Outline pass - Only do this if component is selected
@@ -173,23 +173,23 @@ namespace Sogas
 		currentRenderState.transform = transform;
 	}
 
-	void Renderer::submit(const std::shared_ptr<Material>& material, const EntityId entityId)
+	void Renderer::submit(Material* pMaterial, const EntityId entityId)
 	{
-		renderStateInfo.currentShader = material->getShader();
+		renderStateInfo.currentShader = pMaterial->getShader();
 		std::shared_ptr<Shader> shader = renderStateInfo.currentShader.lock(); // reading purposes
 
 		shader->bind();
 		shader->setUniform("u_model", currentRenderState.transform);
 		shader->setUniform("u_viewProjectionMatrix", s_sceneData->viewprojectionMatrix);
 		shader->setUniform("u_cameraPosition", s_sceneData->cameraPosition);
-		shader->setUniform("u_color", material->getMaterialProperties().color);
-		shader->setUniform("u_metalness", material->getMaterialProperties().metallicFactor);
-		shader->setUniform("u_roughness", material->getMaterialProperties().roughnessFactor);
+		shader->setUniform("u_color", pMaterial->getMaterialProperties().color);
+		shader->setUniform("u_metalness", pMaterial->getMaterialProperties().metallicFactor);
+		shader->setUniform("u_roughness", pMaterial->getMaterialProperties().roughnessFactor);
 		shader->setUniform("u_entityID", static_cast<int>(entityId));
 
-		if (material->getColorTexture())
+		if (pMaterial->getColorTexture())
 		{
-			material->getColorTexture()->bind(0);
+			pMaterial->getColorTexture()->bind(0);
 			shader->setUniform("u_texture", 0);
 		}
 		else
@@ -197,7 +197,7 @@ namespace Sogas
 	}
 
 	// [IMPORTANT] TODO: make a temporary state of the rendering pass (current shader)
-	void Renderer::submit(const std::shared_ptr<Mesh>& mesh, const Primitive primitive)
+	void Renderer::submit(Mesh* pMesh, const Primitive primitive)
 	{
 		std::shared_ptr<Shader> shader = renderStateInfo.currentShader.lock(); // reading purposes
 
@@ -208,11 +208,11 @@ namespace Sogas
 		if (lights.empty())
 		{
 			RenderCommand::enableBlend(false);
-			mesh->m_vertexArray->bind();
-			if (mesh->m_vertexArray->getIndexBuffer())
-				RenderCommand::drawIndexed(mesh->m_vertexArray, primitive);
+			pMesh->m_vertexArray->bind();
+			if (pMesh->m_vertexArray->getIndexBuffer())
+				RenderCommand::drawIndexed(pMesh->m_vertexArray, primitive);
 			else
-				RenderCommand::draw(mesh->m_vertexArray, primitive);
+				RenderCommand::draw(pMesh->m_vertexArray, primitive);
 		}
 		else
 		{
@@ -232,11 +232,11 @@ namespace Sogas
 				shader->setUniform("u_lightIntensity", lightComponent->getIntensity());
 				shader->setUniform("u_maxLightDistance", lightComponent->getMaxDistance());
 
-				mesh->m_vertexArray->bind();
-				if (mesh->m_vertexArray->getIndexBuffer())
-					RenderCommand::drawIndexed(mesh->m_vertexArray, primitive);
+				pMesh->m_vertexArray->bind();
+				if (pMesh->m_vertexArray->getIndexBuffer())
+					RenderCommand::drawIndexed(pMesh->m_vertexArray, primitive);
 				else
-					RenderCommand::draw(mesh->m_vertexArray, primitive);
+					RenderCommand::draw(pMesh->m_vertexArray, primitive);
 			}
 		}
 	}

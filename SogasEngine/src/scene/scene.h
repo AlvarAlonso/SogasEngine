@@ -8,6 +8,9 @@
 #include "renderer/sceneGraph/SceneGraph.h"
 #include <json/single_include/nlohmann/json.hpp>
 
+// TODO: fix the includes
+#include "scene/components/lightComponent.h"
+
 namespace Sogas 
 {
 	using json = nlohmann::json;
@@ -99,12 +102,18 @@ namespace Sogas
 			std::string componentName = T::s_name;
 			if(componentName == "RenderComponent")
 			{
-				m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&dynamic_cast<RenderComponent*>(pComponent.get())->getMesh());
-				m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&dynamic_cast<RenderComponent*>(pComponent.get())->getMaterial());
+				RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(pComponent.get());
+				std::shared_ptr<Material> psMaterial = renderComponent->getMaterial();
+				Material * pMaterial = psMaterial.get();
+				m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&pMaterial);
+
+				Mesh* pMesh = dynamic_cast<RenderComponent*>(pComponent.get())->getMesh().get();
+				m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&pMesh);
 			}
 			else if (componentName == "LightComponent")
 			{
-				//m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (LightComponent)pComponent->getLight());
+				Light* pLight = dynamic_cast<LightComponent*>(pComponent.get())->getLight().get();
+				m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (void*)&pLight);
 			}
 		}
 
