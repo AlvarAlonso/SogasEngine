@@ -220,6 +220,7 @@ namespace Sogas
 		: SceneNode(nodeId, transform, name, entityId)
 	{
 		m_properties.setType(SceneNodeType::MATERIAL);
+		m_pMaterial = nullptr;
 	}
 
 	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material, const EntityId entityId)
@@ -247,6 +248,7 @@ namespace Sogas
 		: m_primitive(Primitive::TRIANGLES), SceneNode(nodeId, transform, name, entityId)
 	{
 		m_properties.setType(SceneNodeType::GEOMETRY);
+		m_pMesh = nullptr;
 	}
 
 	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId)

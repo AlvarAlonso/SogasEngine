@@ -104,16 +104,37 @@ namespace Sogas
 			{
 				RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(pComponent.get());
 				std::shared_ptr<Material> psMaterial = renderComponent->getMaterial();
-				Material * pMaterial = psMaterial.get();
-				m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&pMaterial);
+				Material* pMaterial = psMaterial.get();
+				if(pMaterial)
+				{
+					m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&pMaterial);
+				}
+				else
+				{
+					m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), nullptr);
+				}
 
 				Mesh* pMesh = dynamic_cast<RenderComponent*>(pComponent.get())->getMesh().get();
-				m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&pMesh);
+				if(pMesh)
+				{
+					m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&pMesh);
+				}
+				else
+				{
+					m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), nullptr);
+				}
 			}
 			else if (componentName == "LightComponent")
 			{
 				Light* pLight = dynamic_cast<LightComponent*>(pComponent.get())->getLight().get();
-				m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (void*)&pLight);
+				if(pLight)
+				{
+					m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (void*)&pLight);
+				}
+				else
+				{
+					m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), nullptr);
+				}
 			}
 		}
 

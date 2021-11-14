@@ -83,7 +83,9 @@ namespace Sogas
 			// generate new node for an existing entity represented by an empty node
 			std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, transform, nodeName, entityId));
 			// populate the new node
-			newNode->updateNode(data);
+			if(data)
+				newNode->updateNode(data);	// TODO: this is a bug. In reinterprets de void pointer and initializes the pointer even
+											// if it is a nullptr
 
 			// place node in the scene graph. If it has a parent, it must be placed as a child of said parent. If not,
 			// it is placed as a child of one of the root node groups.
