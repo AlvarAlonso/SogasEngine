@@ -41,7 +41,7 @@ namespace Sogas
 		RenderCommand::enableDepthBuffer(true);
 
 		RenderCommand::setBlendFunc(BlendTypes::ZERO, BlendTypes::ZERO);
-		RenderCommand::enableBlend(true);
+		RenderCommand::enableBlend(false);
 
 		s_pScene							= scene;
 		s_sceneData->viewprojectionMatrix	= pCamera->getViewProjection();
@@ -82,7 +82,7 @@ namespace Sogas
 		SGSDEBUG("%f, %f, %f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
 		s_sceneData->viewprojectionMatrix	= projection * view;
-		s_sceneData->cameraPosition			= -cameraPosition;
+		s_sceneData->cameraPosition			= cameraPosition;
 	}
 
 	void Renderer::draw()

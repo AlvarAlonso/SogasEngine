@@ -52,7 +52,6 @@ namespace Sogas
 		specs.height = 720; // Application::getInstance()->getWindow().getHeight();
 
 		m_framebuffer = Framebuffer::create(specs);
-		m_framebuffer2 = Framebuffer::create(specs);
 
 		m_pCamera = std::make_shared<Camera>();
 
@@ -91,17 +90,6 @@ namespace Sogas
 			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
 		}
 
-		// Resize Framebuffer 2
-		if (FramebufferSpecs specs = m_framebuffer2->getSpecification();
-			m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f &&
-			(specs.width != m_viewportSize.x || specs.height != m_viewportSize.y))
-		{
-			m_framebuffer2->resize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
-			m_cameraController->setViewportSize(m_viewportSize.x, m_viewportSize.y);
-			m_pScene->onViewportResize((u32)m_viewportSize.x, (u32)m_viewportSize.y);
-			m_pCamera->setViewportSize(m_viewportSize.x, m_viewportSize.y);
-		}
-
 		m_framebuffer->bind();
 
 		// TODO: implement onUpdate func
@@ -109,36 +97,63 @@ namespace Sogas
 		{
 		case Sogas::EditorLayer::eSceneState::Edit:
 		{
-			//if (m_viewportFocused)
-			//{
-			//	m_cameraController->onUpdate(dt);
-			//}
-			//m_pScene->onEditorUpdate(dt);
+			if (m_viewportFocused)
+			{
+				m_cameraController->onUpdate(dt);
+			}
+			m_pScene->onEditorUpdate(dt);
 
-			//// Editor render
+			// Editor render
+			Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
+			m_framebuffer->clearAttachment(1, -1);
+			Renderer::get()->draw();
+			if (!m_pGrid)
+			{
+				m_pGrid = std::make_shared<Mesh>();
+				m_pGrid->createGrid();
+			}
+			Renderer::get()->renderGrid(m_pGrid);
+			Renderer::get()->renderEditorUI();
+			Renderer::get()->endScene();
+			ImGui::SetCurrentContext(Application::getImguiContext());
 
-			//Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
-			//m_framebuffer->clearAttachment(1, -1);
-			//Renderer::get()->draw();
-			//if (!m_pGrid)
-			//{
-			//	m_pGrid = std::make_shared<Mesh>();
-			//	m_pGrid->createGrid();
-			//}
-			//Renderer::get()->renderGrid(m_pGrid);
-			//Renderer::get()->renderEditorUI();
-			//Renderer::get()->endScene();
+			// Mouse picking
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= m_viewportBounds[0].x;
+			my -= m_viewportBounds[0].y;
+			glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+			my = viewportSize.y - my;
+			i32 mouseX = (i32)mx;
+			i32 mouseY = (i32)my;
 
-			//break;
+			if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
+			{
+				// TODO: this has a high computational cost, in the future it probably needs a refactor
+				i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
+
+				if (pixelData == -1)
+				{
+					m_hoveredEntity.lock() = nullptr;
+				}
+				else
+				{
+					// TODO: likely to be a bug
+					m_hoveredEntity = m_pScene->findEntityById(pixelData);
+				}
+
+				m_entityIdHovered = pixelData;
+			}
+
+			break;
 		}
 		case Sogas::EditorLayer::eSceneState::Play:
 		{
-			//m_pScene->onRuntimeUpdate(dt);
-			//
-			//Renderer::get()->beginRuntimeScene(m_pScene);
-			//m_framebuffer->clearAttachment(1, -1);
-			//Renderer::get()->draw();
-			//Renderer::get()->endScene();
+			m_pScene->onRuntimeUpdate(dt);
+			
+			Renderer::get()->beginRuntimeScene(m_pScene);
+			m_framebuffer->clearAttachment(1, -1);
+			Renderer::get()->draw();
+			Renderer::get()->endScene();
 			break;
 		}
 		case Sogas::EditorLayer::eSceneState::Pause:
@@ -146,72 +161,7 @@ namespace Sogas
 		default:
 			break;
 		}
-
-		if (m_viewportFocused)
-		{
-			m_cameraController->onUpdate(dt);
-		}
-		m_pScene->onEditorUpdate(dt);
-
-		// Editor render
-
-		Renderer::get()->beginEditorScene(m_pScene, m_pCamera);
-		m_framebuffer->clearAttachment(1, -1);
-		Renderer::get()->draw();
-		if (!m_pGrid)
-		{
-			m_pGrid = std::make_shared<Mesh>();
-			m_pGrid->createGrid();
-		}
-		Renderer::get()->renderGrid(m_pGrid);
-		Renderer::get()->renderEditorUI();
-		Renderer::get()->endScene();
-
-		// TODO: Mouse picking
-
-		ImGui::SetCurrentContext(Application::getImguiContext());
-
-		auto [mx, my] = ImGui::GetMousePos();
-		mx -= m_viewportBounds[0].x;
-		my -= m_viewportBounds[0].y;
-		glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
-		my = viewportSize.y - my;
-		i32 mouseX = (i32)mx;
-		i32 mouseY = (i32)my;
-
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
-		{
-			// TODO: this has a high computational cost, in the future it probably needs a refactor
-			i32 pixelData = m_framebuffer->readPixel(1, mouseX, mouseY);
-
-			if (pixelData == -1)
-			{
-				m_hoveredEntity.lock() = nullptr;
-			}
-			else
-			{
-				// TODO: likely to be a bug
-				m_hoveredEntity = m_pScene->findEntityById(pixelData);
-			}
-
-			m_entityIdHovered = pixelData;
-		}
-
 		m_framebuffer->unbind();
-
-		m_framebuffer2->bind();
-
-		if (m_sceneState == Sogas::EditorLayer::eSceneState::Play)
-		{
-			m_pScene->onRuntimeUpdate(dt);
-			
-			Renderer::get()->beginRuntimeScene(m_pScene);
-			m_framebuffer2->clearAttachment(1, -1);
-			Renderer::get()->draw();
-			Renderer::get()->endScene();
-		}
-
-		m_framebuffer2->unbind();
 	}
 
 	void EditorLayer::onImguiRender()
@@ -416,11 +366,6 @@ namespace Sogas
 			}
 		}
 
-		ImGui::End();
-
-		// Runtime View for debuggin purposes
-		ImGui::Begin("Runtime View");
-		ImGui::Image((ImTextureID)m_framebuffer2->getColorAttachment(), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });	
 		ImGui::End();
 
 		ImGui::PopStyleVar();
