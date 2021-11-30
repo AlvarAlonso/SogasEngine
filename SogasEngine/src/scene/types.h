@@ -34,7 +34,7 @@ namespace Sogas
 	// Used to map an EntityId to the needed node type
 	enum class SceneNodeType
 	{
-		ROOT = 0, ANY, EMPTY, CAMERA, ENVIRONMENT, LIGHT, MATERIAL, GEOMETRY, // order matters 
+		ROOT = 0, ANY, TRANSFORM, CAMERA, ENVIRONMENT, LIGHT, MATERIAL, GEOMETRY, // order matters 
 		LAST // invalid location (like an iterator.end())
 	};
 

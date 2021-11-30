@@ -60,28 +60,10 @@ namespace Sogas
 		{
 			EntityId entityId = entity->getId();
 			NodeId nodeId = getNextNodeID();
-			
-			if(T::getStaticName() == "_empty")
-			{
-				// TODO: WTF is that
-				std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, transform, entity->getName(), entityId));
-
-				Entity* parent = entity->getParent();
-				EntityId parentId = 0;
-				if (parent)
-				{
-					parentId = parent->getId();
-				}
-
-				if (placeNode(newNode, entity->getId(), parentId))
-					registerNodeToMaps(newNode);
-
-				return;
-			}
 
 			std::string nodeName = entity->getName().append(T::getStaticName());
 			// generate new node for an existing entity represented by an empty node
-			std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, transform, nodeName, entityId));
+			std::shared_ptr<T> newNode = std::make_shared<T>(T(nodeId, nodeName, entityId));
 			// populate the new node
 			if(data)
 				newNode->updateNode(data);	// TODO: this is a bug. In reinterprets de void pointer and initializes the pointer even

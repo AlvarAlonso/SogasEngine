@@ -113,7 +113,7 @@ namespace Sogas
 		u32 type = 0;
 
 		// if the node is empty, its parent must be a node from another entity
-		if(nodeType == SceneNodeType::EMPTY)
+		if(nodeType == SceneNodeType::TRANSFORM)
 		{
 			type = (u32)(u32(SceneNodeType::LAST));
 		}
@@ -122,7 +122,7 @@ namespace Sogas
 			type = (u32)((u32)nodeType - 1);
 		}
 
-		for(type; type >= (u32)SceneNodeType::EMPTY; type--)
+		for(type; type >= (u32)SceneNodeType::TRANSFORM; type--)
 		{
 			std::shared_ptr<ISceneNode> lastNode = findNode(entityId, (SceneNodeType)type);
 
@@ -148,7 +148,7 @@ namespace Sogas
 		NodeId nodeId = node->getNodeProperties()->getNodeId();
 
 		// if it is a new entity we have to add it to the entity to scene nodes map
-		if(node->getNodeProperties()->getType() == SceneNodeType::EMPTY)
+		if(node->getNodeProperties()->getType() == SceneNodeType::TRANSFORM)
 		{
 			TypeNodeMap typeNodeMap;
 			m_entityNodesMap.insert({ entityId, typeNodeMap });
@@ -200,33 +200,14 @@ namespace Sogas
 			SGSDEBUG("The entity id specified has not been found in the EntityToSceneNodesMap");
 			return;
 		}
-
-		// The EMPTY type represents an update in the transform.
-		if(nodeType == SceneNodeType::EMPTY)
+		TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(nodeType);
+		if (typeNodeIt == entityToSceneNodesIt->second.end())
 		{
-			//TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.begin();
-			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(SceneNodeType::EMPTY);
-
-			if(typeNodeIt != entityToSceneNodesIt->second.end())
-			{
-				typeNodeIt->second->updateNodeTransform(data);
-			}
-			else
-			{
-				SGSDEBUG("Could not change the transform on the material node");
-			}
+			SGSDEBUG("The node type specified has not been found in the type to scene node map");
+			return;
 		}
-		else
-		{
-			TypeNodeMap::iterator typeNodeIt = entityToSceneNodesIt->second.find(nodeType);
-			if (typeNodeIt == entityToSceneNodesIt->second.end())
-			{
-				SGSDEBUG("The node type specified has not been found in the type to scene node map");
-				return;
-			}
 
-			typeNodeIt->second->updateNode(data);
-		}
+		typeNodeIt->second->updateNode(data);
 	}
 
 	void SceneGraph::renderAlphaPass()
@@ -249,7 +230,7 @@ namespace Sogas
 		SceneNodeType nodeType = node->getNodeProperties()->getType();
 
 		// if the node is empty and it has parent
-		if (parentId == 0 && nodeType == SceneNodeType::EMPTY) // TODO: change the way to access node properties because it looks shitty as fuck
+		if (parentId == 0 && nodeType == SceneNodeType::TRANSFORM) // TODO: change the way to access node properties because it looks shitty as fuck
 		{
 			// TODO: This must be changed. It does not child the node to the node of the id you pass, it just childs it to a root node depending
 			// on the render pass. The id of the node needs to be passed
@@ -260,7 +241,7 @@ namespace Sogas
 		{
 			std::shared_ptr<ISceneNode> lastNode = nullptr;
 
-			if(nodeType == SceneNodeType::EMPTY)
+			if(nodeType == SceneNodeType::TRANSFORM)
 			{
 				// search the corresponding place in the nodes belonging to the parent entity
 				lastNode = findLastEntityNode(parentId, nodeType);
@@ -321,34 +302,32 @@ namespace Sogas
 		// TODO: refactor this hardcoded mess
 
 		EntityId entityId = entity->getId();
-		// any object starts its representation in the graph with an empty node that sets the transform
-		glm::mat4 transform = entity->getComponent<TransformComponent>().lock()->getLocalTransform();
-		std::shared_ptr<EmptyNode> emptyNode = std::make_shared<EmptyNode>(EmptyNode(getNextNodeID(), transform, entity->getName(), entityId));
+		std::shared_ptr<TransformNode> transformNode = std::make_shared<TransformNode>(TransformNode(getNextNodeID(), entity->getName(), entityId));
 
 		if(entity->has<LightComponent>() && entity->has<RenderComponent>())
 		{
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(LightNode::getStaticName()), light, entityId));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), entity->getName().append(LightNode::getStaticName()), light, entityId));
 
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(MaterialNode::getStaticName()), material, entityId));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), entity->getName().append(MaterialNode::getStaticName()), material, entityId));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
 			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(GeometryNode::getStaticName()), mesh, primitive, entityId));
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), entity->getName().append(GeometryNode::getStaticName()), mesh, primitive, entityId));
 
 			materialNode->addChild(geometryNode);
 			lightNode->addChild(materialNode);
-			emptyNode->addChild(lightNode);
+			transformNode->addChild(lightNode);
 
 			TypeNodeMap* typeToNode = new TypeNodeMap;
-			typeToNode->insert({ SceneNodeType::EMPTY, emptyNode });
+			typeToNode->insert({ SceneNodeType::TRANSFORM, transformNode });
 			typeToNode->insert({ SceneNodeType::LIGHT, lightNode });
 			typeToNode->insert({ SceneNodeType::MATERIAL, materialNode });
 			typeToNode->insert({ SceneNodeType::GEOMETRY, geometryNode });
 
-			m_nodeMap.insert({ emptyNode->getNodeProperties()->getNodeId(), emptyNode });
+			m_nodeMap.insert({ transformNode->getNodeProperties()->getNodeId(), transformNode });
 			m_nodeMap.insert({ lightNode->getNodeProperties()->getNodeId(), lightNode });
 			m_nodeMap.insert({ materialNode->getNodeProperties()->getNodeId(), materialNode });
 			m_nodeMap.insert({ geometryNode->getNodeProperties()->getNodeId(), geometryNode });
@@ -360,21 +339,21 @@ namespace Sogas
 		else if (entity->has<RenderComponent>())
 		{
 			std::weak_ptr<Material> material = entity->getComponent<RenderComponent>().lock()->getMaterial();
-			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), transform, entity->getName().append(MaterialNode::getStaticName()), material, entityId));
+			std::shared_ptr<MaterialNode> materialNode = std::make_shared<MaterialNode>(MaterialNode(getNextNodeID(), entity->getName().append(MaterialNode::getStaticName()), material, entityId));
 
 			std::weak_ptr<Mesh> mesh = entity->getComponent<RenderComponent>().lock()->getMesh();
 			Primitive primitive = entity->getComponent<RenderComponent>().lock()->getPrimitive();
-			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), transform, entity->getName().append(GeometryNode::getStaticName()), mesh, primitive, entityId));
+			std::shared_ptr<GeometryNode> geometryNode = std::make_shared<GeometryNode>(GeometryNode(getNextNodeID(), entity->getName().append(GeometryNode::getStaticName()), mesh, primitive, entityId));
 
 			materialNode->addChild(geometryNode);
-			emptyNode->addChild(materialNode);
+			transformNode->addChild(materialNode);
 
 			TypeNodeMap* typeToNode = new TypeNodeMap;
-			typeToNode->insert({ SceneNodeType::EMPTY,  emptyNode });
+			typeToNode->insert({ SceneNodeType::TRANSFORM,  transformNode });
 			typeToNode->insert({ SceneNodeType::MATERIAL, materialNode });
 			typeToNode->insert({ SceneNodeType::GEOMETRY, geometryNode });
 
-			m_nodeMap.insert({ emptyNode->getNodeProperties()->getNodeId(), emptyNode });
+			m_nodeMap.insert({ transformNode->getNodeProperties()->getNodeId(), transformNode });
 			m_nodeMap.insert({ materialNode->getNodeProperties()->getNodeId(), materialNode });
 			m_nodeMap.insert({ geometryNode->getNodeProperties()->getNodeId(), geometryNode });
 
@@ -385,15 +364,15 @@ namespace Sogas
 		{
 			std::weak_ptr<Light> light = entity->getComponent<LightComponent>().lock()->getLight();
 
-			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), transform, entity->getName().append(LightNode::getStaticName()), light, entityId));
+			std::shared_ptr<LightNode> lightNode = std::make_shared<LightNode>(LightNode(getNextNodeID(), entity->getName().append(LightNode::getStaticName()), light, entityId));
 
-			emptyNode->addChild(lightNode);
+			transformNode->addChild(lightNode);
 
 			TypeNodeMap* typeToNode = new TypeNodeMap;
-			typeToNode->insert({ SceneNodeType::EMPTY, emptyNode });
+			typeToNode->insert({ SceneNodeType::TRANSFORM, transformNode });
 			typeToNode->insert({ SceneNodeType::LIGHT, lightNode });
 
-			m_nodeMap.insert({ emptyNode->getNodeProperties()->getNodeId(), emptyNode });
+			m_nodeMap.insert({ transformNode->getNodeProperties()->getNodeId(), transformNode });
 			m_nodeMap.insert({ lightNode->getNodeProperties()->getNodeId(), lightNode });
 
 			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
@@ -402,15 +381,15 @@ namespace Sogas
 		else
 		{
 			TypeNodeMap* typeToNode = new TypeNodeMap;
-			typeToNode->insert({ SceneNodeType::EMPTY , emptyNode });
+			typeToNode->insert({ SceneNodeType::TRANSFORM , transformNode });
 
 			m_entityNodesMap.insert({ entity->getId(), *typeToNode });
 
-			m_nodeMap.insert({ emptyNode->getNodeProperties()->getNodeId(), emptyNode });
+			m_nodeMap.insert({ transformNode->getNodeProperties()->getNodeId(), transformNode });
 
 			typeToNode = nullptr;
 		}
 
-		return emptyNode;
+		return transformNode;
 	}
 }

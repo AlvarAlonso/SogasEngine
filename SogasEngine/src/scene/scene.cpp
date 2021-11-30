@@ -61,7 +61,8 @@ namespace Sogas
 		// add to render scene graph
 		if (!m_isInitialized) return entity;
 
-		m_sceneGraph->addNode<EmptyNode>(entity, glm::mat4(1), nullptr);
+		glm::mat4 pMatrix = entity->getComponent<TransformComponent>().lock().get()->getGlobalTransform();
+		m_sceneGraph->addNode<TransformNode>(entity, glm::mat4(1), (void*)&pMatrix);
 
 		return entity;
 	}
@@ -161,7 +162,7 @@ namespace Sogas
 		m_sceneGraph->onRender(pScene, pCamera);
 	}
 
-	/*
+	/**
 	* @brief Search for the entity with the correspondant id and returns it
 	* @param EntityId
 	* @return StrongEntityPtr (shared_ptr<Entity>)

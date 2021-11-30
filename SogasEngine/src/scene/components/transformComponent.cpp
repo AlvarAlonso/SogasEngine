@@ -69,7 +69,7 @@ namespace Sogas
 		m_translation = translation; 
 		updateMatrix();
 
-		scene->updateSceneGraphNode(id, SceneNodeType::EMPTY, (void*)&translation);
+		scene->updateSceneGraphNode(id, SceneNodeType::TRANSFORM, (void*)&translation);
 	}
 
 	// ----------------------------------------------

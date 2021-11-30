@@ -10,13 +10,13 @@
 
 namespace Sogas
 {
-	SceneNode::SceneNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, const EntityId entityId)
+	SceneNode::SceneNode(const NodeId nodeId, const std::string name, const EntityId entityId)
 	{
-		m_properties.nodeId = nodeId;
-		m_properties.entityId = entityId;
-		m_properties.radius = 0.0f;
-		m_properties.transform = transform;
-		m_properties.name = name;
+		m_properties.nodeId		= nodeId;
+		m_properties.entityId	= entityId;
+		m_properties.radius		= 0.0f;
+		m_properties.transform  = glm::mat4(1); // TODO Should it be initialized to identity?
+		m_properties.name		= name;
 		m_properties.renderPass = MainRenderPass::OPAQUE;
 	}
 
@@ -95,32 +95,23 @@ namespace Sogas
 		return;
 	}
 
-	void SceneNode::updateNodeTransform(void* data)
-	{
-		glm::vec3* newTransform = (glm::vec3*)data;
-		m_properties.transform[3].x = newTransform->x;
-		m_properties.transform[3].y = newTransform->y;
-		m_properties.transform[3].z = newTransform->z;
-		newTransform = nullptr;
-	}
-
-	RootNode::RootNode(const NodeId nodeId, glm::mat4 transform, const std::string name)
-		: SceneNode(nodeId, transform, name)
+	RootNode::RootNode(const NodeId nodeId, const std::string name)
+		: SceneNode(nodeId, name)
 	{
 		m_properties.setType(SceneNodeType::ROOT);
 
 		m_children.reserve((size_t)MainRenderPass::LAST);
 
 		std::shared_ptr<SceneNode> opaqueGroup(new SceneNode(
-			(u32)MainRenderPass::OPAQUE, glm::mat4(1), "OpaqueGroupNode"));
+			(u32)MainRenderPass::OPAQUE, "OpaqueGroupNode"));
 		m_children.push_back(opaqueGroup);
 
 		std::shared_ptr<SceneNode> transparentGroup(new SceneNode(
-			(u32)MainRenderPass::TRANSPARENT, glm::mat4(1), "TransparentGroupNode"));
+			(u32)MainRenderPass::TRANSPARENT, "TransparentGroupNode"));
 		m_children.push_back(transparentGroup);
 
 		std::shared_ptr<SceneNode> environmentGroup(new SceneNode(
-			(u32)MainRenderPass::ENVIRONMENT, glm::mat4(1), "EnvironmentGroupNode"));
+			(u32)MainRenderPass::ENVIRONMENT, "EnvironmentGroupNode"));
 		m_children.push_back(environmentGroup);
 	}
 
@@ -144,14 +135,15 @@ namespace Sogas
 		// TODO: clean up the root node
 	}
 
-	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId)
+	CameraNode::CameraNode(const NodeId nodeId, const std::string name, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId)
 	{
+		m_pCamera = nullptr;
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
 
-	CameraNode::CameraNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Camera> camera, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_pCamera(camera.lock().get())
+	CameraNode::CameraNode(const NodeId nodeId, const std::string name, std::weak_ptr<Camera> camera, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId), m_pCamera(camera.lock().get())
 	{
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
@@ -199,14 +191,15 @@ namespace Sogas
 		m_pCamera->setPosition(pos);
 	}
 
-	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId)
+	LightNode::LightNode(const NodeId nodeId, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId)
 	{
+		m_pLight = nullptr;
 		m_properties.setType(SceneNodeType::LIGHT);
 	}
 
-	LightNode::LightNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Light> light, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_pLight(light.lock().get())
+	LightNode::LightNode(const NodeId nodeId, const std::string name, std::weak_ptr<Light> light, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId), m_pLight(light.lock().get())
 	{
 		m_properties.setType(SceneNodeType::LIGHT);
 	}
@@ -216,15 +209,15 @@ namespace Sogas
 		m_pLight = static_cast<Light*>(data);
 	}
 
-	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId)
+	MaterialNode::MaterialNode(const NodeId nodeId, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId)
 	{
 		m_properties.setType(SceneNodeType::MATERIAL);
 		m_pMaterial = nullptr;
 	}
 
-	MaterialNode::MaterialNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Material> material, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_pMaterial(material.lock().get())
+	MaterialNode::MaterialNode(const NodeId nodeId, const std::string name, std::weak_ptr<Material> material, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId), m_pMaterial(material.lock().get())
 	{
 		m_properties.setType(SceneNodeType::MATERIAL);
 	}
@@ -244,15 +237,15 @@ namespace Sogas
 		m_pMaterial = static_cast<Material*>(data);
 	}
 
-	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
-		: m_primitive(Primitive::TRIANGLES), SceneNode(nodeId, transform, name, entityId)
+	GeometryNode::GeometryNode(const NodeId nodeId, std::string name, const EntityId entityId)
+		: m_primitive(Primitive::TRIANGLES), SceneNode(nodeId, name, entityId)
 	{
 		m_properties.setType(SceneNodeType::GEOMETRY);
 		m_pMesh = nullptr;
 	}
 
-	GeometryNode::GeometryNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_pMesh(mesh.lock().get()), m_primitive(primitive)
+	GeometryNode::GeometryNode(const NodeId nodeId, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId), m_pMesh(mesh.lock().get()), m_primitive(primitive)
 	{
 		m_properties.setType(SceneNodeType::GEOMETRY);
 	}
@@ -273,14 +266,15 @@ namespace Sogas
 		m_pMesh = static_cast<Mesh*>(data);
 	}
 
-	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, std::string name, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId)
+	EnvironmentNode::EnvironmentNode(const NodeId nodeId, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId)
 	{
+		m_pEnvironment = nullptr;
 		m_properties.setType(SceneNodeType::ENVIRONMENT);
 	}
 
-	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const glm::mat4 transform, const std::string name, std::weak_ptr<Environment> environment, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId), m_pEnvironment(environment.lock().get())
+	EnvironmentNode::EnvironmentNode(const NodeId nodeId, const std::string name, std::weak_ptr<Environment> environment, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId), m_pEnvironment(environment.lock().get())
 	{
 		m_properties.setType(SceneNodeType::ENVIRONMENT);
 	}
@@ -299,19 +293,21 @@ namespace Sogas
 	{
 	}
 
-	EmptyNode::EmptyNode(NodeId nodeId, glm::mat4 transform, std::string name, const EntityId entityId)
-		: SceneNode(nodeId, transform, name, entityId)
+	TransformNode::TransformNode(NodeId nodeId, std::string name, const EntityId entityId)
+		: SceneNode(nodeId, name, entityId)
 	{
-		m_properties.setType(SceneNodeType::EMPTY);
+		m_transform = glm::mat4(1);
+		m_properties.setType(SceneNodeType::TRANSFORM);
 	}
 
-	void EmptyNode::preRender(SceneGraph* pScene)
+	void TransformNode::preRender(SceneGraph* pScene)
 	{
 		Renderer::get()->submit(m_properties.getTransform());
 	}
 
-	void EmptyNode::updateNode(void* data)
+	void TransformNode::updateNode(void* data)
 	{
-		// TODO: update transform
+		glm::mat4* mat = static_cast<glm::mat4*>(data);
+		m_properties.setTransform(*mat);
 	}
 }
