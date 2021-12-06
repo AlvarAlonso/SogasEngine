@@ -335,6 +335,14 @@ namespace Sogas
 				rotation = glm::radians(rotation);
 				component.lock()->setRotation(rotation);
 				DrawVec3Control("Scale", component.lock()->getScale(), 1.0f);
+				if (sceneGraph)
+				{
+					glm::mat4 matrix = component.lock()->getGlobalTransform();
+					sceneGraph->updateNode(
+						component.lock()->getOwner().lock()->getId(),
+						SceneNodeType::TRANSFORM,
+						(void*)&matrix);
+				}
 			});
 
 		drawComponent<CameraComponent>("Camera", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph> sceneGraph = nullptr)
