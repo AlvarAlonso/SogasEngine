@@ -80,7 +80,7 @@ namespace Sogas
 		std::weak_ptr<SceneNode> m_parent;
 		SceneNodeProperties m_properties;
 	public:
-		SceneNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
+		SceneNode(const NodeId nodeId, const std::string& name, const EntityId entityId = 0);
 		virtual ~SceneNode();
 		virtual const SceneNodeProperties* const getNodeProperties() const override { return &m_properties; };
 		virtual SceneNodeList getChildren() const { return m_children; };
@@ -118,8 +118,8 @@ namespace Sogas
 	private:
 		Camera* m_pCamera;
 	public:
-		CameraNode(const NodeId nodeId, std::string name, const EntityId entityId = 0);
-		CameraNode(const NodeId nodeId, std::string name, std::weak_ptr<Camera> camera, const EntityId entityId = 0);
+		CameraNode(const NodeId nodeId, const std::string& name, const EntityId entityId = 0);
+		CameraNode(const NodeId nodeId, const std::string& name, const std::weak_ptr<Camera> camera, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_camera"; };
 
 		virtual void render(SceneGraph* pScene) override;
@@ -141,8 +141,8 @@ namespace Sogas
 		Light* m_pLight;
 
 	public:
-		LightNode(const NodeId nodeId, std::string name, const EntityId entityId = 0);
-		LightNode(const NodeId nodeId, std::string name, std::weak_ptr<Light> light, const EntityId entityId = 0);
+		LightNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
+		LightNode(const NodeId nodeId, const std::string name, std::weak_ptr<Light> light, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_light"; };
 
 		virtual void updateNode(void* data) override;
@@ -154,8 +154,8 @@ namespace Sogas
 		Material* m_pMaterial;
 
 	public:
-		MaterialNode(const NodeId nodeId, std::string name, const EntityId entityId = 0);
-		MaterialNode(const NodeId nodeId, std::string name, std::weak_ptr<Material> material, const EntityId entityId = 0);
+		MaterialNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
+		MaterialNode(const NodeId nodeId, const std::string name, std::weak_ptr<Material> material, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_material"; };
 
 		virtual void preRender(SceneGraph* pScene) override;
@@ -170,7 +170,7 @@ namespace Sogas
 		Primitive m_primitive;
 
 	public:
-		GeometryNode(const NodeId nodeId, std::string name, const EntityId entityId = 0);
+		GeometryNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
 		GeometryNode(const NodeId nodeId, const std::string name, std::weak_ptr<Mesh> mesh, Primitive primitive, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_geometry"; };
 
@@ -185,7 +185,7 @@ namespace Sogas
 		Environment* m_pEnvironment;
 
 	public:
-		EnvironmentNode(const NodeId nodeId, std::string name, const EntityId entityId = 0);
+		EnvironmentNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
 		EnvironmentNode(const NodeId nodeId, const std::string name, std::weak_ptr<Environment> environment, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_environment"; };
 
@@ -201,7 +201,7 @@ namespace Sogas
 	{
 		glm::mat4 m_transform;
 	public:
-		TransformNode(NodeId nodeId, std::string name, const EntityId entityId = 0);
+		TransformNode(const NodeId nodeId, const std::string name, const EntityId entityId = 0);
 		static const std::string getStaticName() { return "_transform"; };
 
 		virtual void preRender(SceneGraph* pScene) override;

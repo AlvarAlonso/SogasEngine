@@ -191,7 +191,7 @@ namespace Sogas
 
 			if (open)
 			{
-				uiFuntion(component);
+				uiFuntion(component, entity->getScene()->m_sceneGraph);
 				ImGui::TreePop();
 			}
 
@@ -327,7 +327,7 @@ namespace Sogas
 
 		ImGui::PopItemWidth();
 
-		drawComponent<TransformComponent>("Transform", entity.lock(), [](auto& component)
+		drawComponent<TransformComponent>("Transform", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph>sceneGraph = nullptr)
 			{
 				DrawVec3Control("Translation", component.lock()->getTranslation());
 				glm::vec3 rotation = glm::degrees(component.lock()->getRotation());
@@ -337,12 +337,12 @@ namespace Sogas
 				DrawVec3Control("Scale", component.lock()->getScale(), 1.0f);
 			});
 
-		drawComponent<CameraComponent>("Camera", entity.lock(), [](auto& component)
+		drawComponent<CameraComponent>("Camera", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph> sceneGraph = nullptr)
 			{
 				ImGui::Text(CameraComponent::s_name);
 			});
 
-		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component)
+		drawComponent<LightComponent>("Light", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph> sceneGraph = nullptr)
 			{
 				ImGui::ColorEdit3("Colour", &component.lock()->getColor().x);
 				ImGui::SliderFloat("Intensity", &component.lock()->getIntensity(), 0.0f, 100.0f);
@@ -350,7 +350,7 @@ namespace Sogas
 			});
 
 		
-		drawComponent<EntityScriptComponent>("Script", entity.lock(), [](auto& component)
+		drawComponent<EntityScriptComponent>("Script", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph> sceneGraph = nullptr)
 			{
 				ImGui::Text("Using an entity script");
 				
@@ -385,7 +385,7 @@ namespace Sogas
 				}
 			});
 
-		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component)
+		drawComponent<RenderComponent>("Renderer", entity.lock(), [](auto& component, std::shared_ptr<SceneGraph> sceneGraph = nullptr)
 			{
 				ImGui::Columns(3);
 				ImGui::SetColumnWidth(0, 75.0f);
@@ -403,6 +403,8 @@ namespace Sogas
 						std::filesystem::path meshPath = std::filesystem::path(g_assetsDirectory) / path;
 						std::string meshName = takeNameFromPath(meshPath.string());
 						component.lock()->setMesh(meshName.c_str());
+						sceneGraph->updateNode(component.lock()->getOwner().lock()->getId(), SceneNodeType::GEOMETRY, (void*)component.lock()->getMesh().get());
+						sceneGraph->updateNode(component.lock()->getOwner().lock()->getId(), SceneNodeType::MATERIAL, (void*)component.lock()->getMaterial().get());
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -411,8 +413,11 @@ namespace Sogas
 				{
 					std::string meshPath = FileDialog::openFile("Meshes (*.obj)\0*.obj\0");
 					std::string meshName = takeNameFromPath(meshPath);
-					if (!meshName.empty())
+					if (!meshName.empty()) {
 						component.lock()->setMesh(meshName.c_str());
+						sceneGraph->updateNode(component.lock()->getOwner().lock()->getId(), SceneNodeType::GEOMETRY, (void*)component.lock()->getMesh().get());
+						sceneGraph->updateNode(component.lock()->getOwner().lock()->getId(), SceneNodeType::MATERIAL, (void*)component.lock()->getMaterial().get());
+					}
 				}
 				ImGui::EndColumns();
 				ImGui::PopID();

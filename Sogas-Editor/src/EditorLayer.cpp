@@ -28,8 +28,8 @@
 
 #include "scripting/LuaScriptAPI.h"
 
-#include "Panels/ScenePanel.h"
 #include <core/utils.h>
+#include "Panels/ScenePanel.h"
 
 namespace Sogas 
 {
@@ -107,20 +107,7 @@ namespace Sogas
 
 		m_pScene->onRender(m_pCamera);
 
-		m_oldCamera = std::make_shared<Camera>(*m_pCamera);
-
-		/*
-		Renderer::get()->beginScene(m_pScene, m_pCamera);
-		Renderer::get()->draw();
-		if (!m_pGrid)
-		{
-			m_pGrid = std::make_shared<Mesh>();
-			m_pGrid->createGrid();
-		}
-		Renderer::get()->renderGrid(m_pGrid);
-		Renderer::get()->endScene();
-		*/
-		
+		m_oldCamera = std::make_shared<Camera>(*m_pCamera);		
 
 		// TODO: Mouse picking
 
@@ -297,7 +284,15 @@ namespace Sogas
 				StrongEntityPtr newEntity = m_pScene->createEntity();
 				m_pScene->addComponent<RenderComponent>(newEntity);
 				auto renderComponent = newEntity->getComponent<RenderComponent>();
-				renderComponent.lock()->setMesh(meshName.c_str());				
+				renderComponent.lock()->setMesh(meshName.c_str());		
+				newEntity->getScene()->m_sceneGraph->updateNode(
+					newEntity->getId(), 
+					SceneNodeType::GEOMETRY, 
+					(void*)newEntity->getComponent<RenderComponent>().lock()->getMesh().get());
+				newEntity->getScene()->m_sceneGraph->updateNode(
+					newEntity->getId(), 
+					SceneNodeType::MATERIAL, 
+					(void*)newEntity->getComponent<RenderComponent>().lock()->getMaterial().get());
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -332,26 +327,26 @@ namespace Sogas
 				}
 
 				f32 matrixTranslation[3], matrixRotation[3], matrixScale[3];
-				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), matrixTranslation, matrixRotation, matrixScale);
+				ImGuizmo::DecomposeMatrixToComponents(
+					glm::value_ptr(transform), 
+					matrixTranslation, 
+					matrixRotation, 
+					matrixScale);
 
-				// apply transformation here
-				//glm::vec3 deltaRotation = glm::make_vec3(matrixRotation) - transformComponent.lock()->getRotation();
-				//
 				glm::vec3 newTranslation = glm::make_vec3(matrixTranslation);
 				transformComponent.lock()->setTranslation(newTranslation);
 
-				//glm::vec3 rot = glm::eulerAngles(glm::quat_cast(transform));
 				glm::vec3 rot = glm::radians(glm::make_vec3(matrixRotation));
 				transformComponent.lock()->setRotation(rot);
 
 				glm::vec3 newScale = glm::make_vec3(matrixScale);
 				transformComponent.lock()->setScale(newScale);
 
-				//transformComponent.lock()->setTransform(glm::translate(glm::mat4(1), glm::make_vec3(matrixTranslation)) * 
-				//	glm::mat4(glm::quat_cast(transform)) * 
-				//	glm::scale(glm::mat4(1), glm::make_vec3(matrixScale)));
-
-				//transformComponent.lock()->setTransform(transform);
+				glm::mat4 transform = selectedEntity->getComponent<TransformComponent>().lock()->getGlobalTransform();
+				selectedEntity->getScene()->m_sceneGraph->updateNode(
+					selectedEntity->getId(), 
+					SceneNodeType::TRANSFORM, 
+					(void*)&transform);
 			}
 		}
 

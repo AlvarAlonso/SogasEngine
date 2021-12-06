@@ -30,13 +30,15 @@ namespace Sogas
 		std::shared_ptr<Environment>	m_pEnvironment;
 		StrongEntityPtr					m_selectedEntity;
 
-		std::shared_ptr<SceneGraph>		m_sceneGraph;
 
 		std::shared_ptr<Camera>			m_pMainCamera; // [TEMPORAL]: SceneGraph should create cameraNode from a CameraComponent
 
 		friend class SceneGraph;
 
 	public:
+		// TODO Should not be public
+		std::shared_ptr<SceneGraph>		m_sceneGraph;
+
 		Scene();
 		Scene(const char* filename);
 		~Scene();
@@ -97,6 +99,8 @@ namespace Sogas
 
 			// add node to render scene graph 
 			// TODO: refactor this which is currently hardcoded and avoid runtime type checking
+			// TODO: Material is part of the mesh, mesh is not added until after component has been created
+			// TODO: Same with Mesh, should create the component but mesh is not added until after this function.
 			if (!m_isInitialized) return;
 
 			std::string componentName = T::s_name;
@@ -107,21 +111,21 @@ namespace Sogas
 				Material* pMaterial = psMaterial.get();
 				if(pMaterial)
 				{
-					m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), (void*)&pMaterial);
+					m_sceneGraph->addNode<MaterialNode>(entity, (void*)&pMaterial);
 				}
 				else
 				{
-					m_sceneGraph->addNode<MaterialNode>(entity, glm::mat4(1), nullptr);
+					m_sceneGraph->addNode<MaterialNode>(entity, nullptr);
 				}
 
 				Mesh* pMesh = dynamic_cast<RenderComponent*>(pComponent.get())->getMesh().get();
 				if(pMesh)
 				{
-					m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), (void*)&pMesh);
+					m_sceneGraph->addNode<GeometryNode>(entity, (void*)&pMesh);
 				}
 				else
 				{
-					m_sceneGraph->addNode<GeometryNode>(entity, glm::mat4(1), nullptr);
+					m_sceneGraph->addNode<GeometryNode>(entity, nullptr);
 				}
 			}
 			else if (componentName == "LightComponent")
@@ -129,11 +133,11 @@ namespace Sogas
 				Light* pLight = dynamic_cast<LightComponent*>(pComponent.get())->getLight().get();
 				if(pLight)
 				{
-					m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), (void*)&pLight);
+					m_sceneGraph->addNode<LightNode>(entity, (void*)&pLight);
 				}
 				else
 				{
-					m_sceneGraph->addNode<LightNode>(entity, glm::mat4(1), nullptr);
+					m_sceneGraph->addNode<LightNode>(entity, nullptr);
 				}
 			}
 		}

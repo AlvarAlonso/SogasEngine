@@ -10,7 +10,7 @@
 
 namespace Sogas
 {
-	SceneNode::SceneNode(const NodeId nodeId, const std::string name, const EntityId entityId)
+	SceneNode::SceneNode(const NodeId nodeId, const std::string& name, const EntityId entityId)
 	{
 		m_properties.nodeId		= nodeId;
 		m_properties.entityId	= entityId;
@@ -135,19 +135,19 @@ namespace Sogas
 		// TODO: clean up the root node
 	}
 
-	CameraNode::CameraNode(const NodeId nodeId, const std::string name, const EntityId entityId)
+	CameraNode::CameraNode(const NodeId nodeId, const std::string& name, const EntityId entityId)
 		: SceneNode(nodeId, name, entityId)
 	{
 		m_pCamera = nullptr;
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
 
-	CameraNode::CameraNode(const NodeId nodeId, const std::string name, std::weak_ptr<Camera> camera, const EntityId entityId)
+	CameraNode::CameraNode(const NodeId nodeId, const std::string& name, std::weak_ptr<Camera> camera, const EntityId entityId)
 		: SceneNode(nodeId, name, entityId), m_pCamera(camera.lock().get())
 	{
 		m_properties.setType(SceneNodeType::CAMERA);
 	}
-
+	
 	void CameraNode::render(SceneGraph* pScene)
 	{
 		// TODO: draw frustum and icon of the game camera

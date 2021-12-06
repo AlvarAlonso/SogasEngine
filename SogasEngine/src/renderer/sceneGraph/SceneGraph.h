@@ -56,7 +56,7 @@ namespace Sogas
 
 		// TODO: maybe make the function addNode return a boolean
 		template<typename T>
-		void addNode(StrongEntityPtr entity, glm::mat4 transform, void* data)
+		void addNode(StrongEntityPtr entity, void* data)
 		{
 			EntityId entityId = entity->getId();
 			NodeId nodeId = getNextNodeID();

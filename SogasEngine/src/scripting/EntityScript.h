@@ -33,7 +33,7 @@ namespace Sogas
 
 		ScriptAttribute() { type = VariableType::UNDEFINED; pAttribute = new LuaPlus::LuaObject(); }
 
-		i32 getInteger() { return pAttribute->GetInteger(); }
+		i32 getInteger() { return (i32)pAttribute->GetInteger(); }
 
 		f32 getFloat() { return pAttribute->GetFloat(); }
 

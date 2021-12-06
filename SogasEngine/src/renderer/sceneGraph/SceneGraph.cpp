@@ -45,7 +45,7 @@ namespace Sogas
 				return false; // TODO: clean all the nodes created
 		}
 
-		m_currentCamera = std::make_shared<CameraNode>(getNextNodeID(), glm::mat4(1), "main camera", pScene.lock()->m_pMainCamera);
+		m_currentCamera = std::make_shared<CameraNode>(getNextNodeID(), "main camera", pScene.lock()->m_pMainCamera);
 
 		return true;
 	}

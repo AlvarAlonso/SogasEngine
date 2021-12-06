@@ -62,7 +62,7 @@ namespace Sogas
 		if (!m_isInitialized) return entity;
 
 		glm::mat4 pMatrix = entity->getComponent<TransformComponent>().lock().get()->getGlobalTransform();
-		m_sceneGraph->addNode<TransformNode>(entity, glm::mat4(1), (void*)&pMatrix);
+		m_sceneGraph->addNode<TransformNode>(entity, (void*)&pMatrix);
 
 		return entity;
 	}
