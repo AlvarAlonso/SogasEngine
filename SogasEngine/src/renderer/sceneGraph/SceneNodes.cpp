@@ -125,6 +125,20 @@ namespace Sogas
 		return m_children[(size_t)renderPass - (size_t)MainRenderPass::_0]->addChild(child);
 	}
 
+	// TODO Make it to erase based on the render pass instead of the hardcoded opaque type.
+	bool RootNode::removeChild(NodeId id)
+	{
+		for (auto child = m_children[0]->getChildren().begin();
+			child != m_children[0]->getChildren().end(); child++)
+		{
+			if (child->get()->getNodeProperties()->getNodeId() == id)
+			{
+				m_children[0]->getChildren().erase(child);
+			}
+		}
+		return true;
+	}
+
 	void RootNode::renderChildren(SceneGraph* pScene)
 	{
 		m_children[(u32)MainRenderPass::OPAQUE - (u32)MainRenderPass::_0]->renderChildren(pScene);

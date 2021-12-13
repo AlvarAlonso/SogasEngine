@@ -91,6 +91,7 @@ namespace Sogas
 
 		bool addChild(NodeId id, std::shared_ptr<ISceneNode> child);
 		bool removeChild(NodeId id);
+		bool removeEntity(EntityId id);
 		void addAlphaSceneNode(AlphaSceneNode node);
 		void updateNode(EntityId entityId, SceneNodeType nodeType, void* data);
 

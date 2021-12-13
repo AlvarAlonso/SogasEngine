@@ -55,6 +55,7 @@ namespace Sogas
 		virtual const SceneNodeProperties* const getNodeProperties() const = 0;
 
 		virtual SceneNodeList getChildren() const = 0;
+		virtual std::weak_ptr<SceneNode> getParent() const = 0;
 		virtual void setTransform(glm::mat4 transform) = 0;
 		virtual void setRenderPass(MainRenderPass renderPass) = 0;
 		virtual bool hasChildren() = 0;
@@ -84,6 +85,7 @@ namespace Sogas
 		virtual ~SceneNode();
 		virtual const SceneNodeProperties* const getNodeProperties() const override { return &m_properties; };
 		virtual SceneNodeList getChildren() const { return m_children; };
+		virtual std::weak_ptr<SceneNode> getParent() const { return m_parent; };
 		virtual void setTransform(glm::mat4 transform) override;
 		virtual void setRenderPass(MainRenderPass renderPass) override { m_properties.renderPass = renderPass; };
 		virtual bool hasChildren() { return !m_children.empty(); };
@@ -109,6 +111,7 @@ namespace Sogas
 		virtual bool addChild(std::shared_ptr<ISceneNode> child);
 		virtual void renderChildren(SceneGraph* pScene);
 		virtual bool isVisible() const { return true; }
+		virtual bool removeChild(NodeId) override;
 
 		void resetNode();
 	};

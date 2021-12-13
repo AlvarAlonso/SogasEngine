@@ -173,8 +173,4 @@ namespace Sogas
 			}
 		}
 	}
-
-	//StrongEntityPtr getChildWithID(const EntityId id) {
-	//	for()
-	//}
 }

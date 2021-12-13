@@ -78,22 +78,6 @@ namespace Sogas
 		{
 			if (currentEntity->getId() == entityId)
 			{
-				// If the entity is a root, erase from the root vector.
-				if (!currentEntity->hasParent()) {
-					i32 i = 0;
-					for (auto& ent : m_rootEntities)
-					{
-						if (ent->getId() == entityId) {
-							m_rootEntities.erase(m_rootEntities.begin() + i);
-							break;
-						}
-						i++;
-					}
-				}
-				else {
-					currentEntity->getParent()->removeChild(entityId);
-				}
-
 				// If it has childs, call their destruction recursively.
 				if (currentEntity->hasChild()) {
 					auto& childs = currentEntity->getChildList();
@@ -101,10 +85,16 @@ namespace Sogas
 						destroyEntity(child->getId());
 					}
 				}
+
+				m_sceneGraph->removeEntity(currentEntity->getId());	// Erase from scene graph
+				if (currentEntity->hasParent())
+				{
+					currentEntity->getParent()->removeChild(entityId);	// Erase from parent children vector
+				}
+				removeEntity(currentEntity->getId());
 				currentEntity->destroy();
 				currentEntity = nullptr;
 				m_entities.erase(m_entities.begin() + index);
-
 				break; // break loop after finding the entity to be deleted
 			}
 			index++;

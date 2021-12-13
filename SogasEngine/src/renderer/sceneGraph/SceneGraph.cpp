@@ -185,6 +185,39 @@ namespace Sogas
 		return true;
 	}
 
+	bool SceneGraph::removeEntity(EntityId id)
+	{
+		// TODO Make function find all nodes. Given an EntityID returns all nodes from the entity.
+		
+		auto transformNode = findNode(id, SceneNodeType::TRANSFORM);
+		if (transformNode->getParent().lock())
+		{
+			transformNode->getParent().lock()->removeChild(transformNode->getNodeProperties()->getNodeId());
+		}
+		else
+		{
+			MainRenderPass renderPass = transformNode->getNodeProperties()->getMainRenderPass();
+			m_nodeMap.at((u32)renderPass)->removeChild(transformNode->getNodeProperties()->getNodeId());
+		}
+
+		for (auto it = m_entityNodesMap.begin(); it != m_entityNodesMap.end(); it++)
+		{
+			if (it->first == id)
+			{
+				for (auto node = it->second.begin(); node != it->second.end(); node++)
+				{
+					m_nodeMap.erase(node->second->getNodeProperties()->getNodeId());
+				}
+				
+				it->second.clear();
+				m_entityNodesMap.erase(it);
+				break;
+			}
+		}	
+
+		return true;
+	}
+
 	void SceneGraph::addAlphaSceneNode(AlphaSceneNode node)
 	{
 		m_alphaNodes.push_back(node);
@@ -229,7 +262,7 @@ namespace Sogas
 	{
 		SceneNodeType nodeType = node->getNodeProperties()->getType();
 
-		// if the node is empty and it has parent
+		// if the node is a new entity to the root
 		if (parentId == 0 && nodeType == SceneNodeType::TRANSFORM) // TODO: change the way to access node properties because it looks shitty as fuck
 		{
 			// TODO: This must be changed. It does not child the node to the node of the id you pass, it just childs it to a root node depending
@@ -241,14 +274,16 @@ namespace Sogas
 		{
 			std::shared_ptr<ISceneNode> lastNode = nullptr;
 
+			// search the corresponding place in the nodes belonging to the parent entity
+			// New nested entity
 			if(nodeType == SceneNodeType::TRANSFORM)
 			{
-				// search the corresponding place in the nodes belonging to the parent entity
 				lastNode = findLastEntityNode(parentId, nodeType);
 			}
+			// search the corresponding place in the nodes belonging to the entity
+			// New node to a an existing entity
 			else
 			{
-				// search the corresponding place in the nodes belonging to the entity
 				lastNode = findLastEntityNode(entityId, nodeType);
 			}
 
